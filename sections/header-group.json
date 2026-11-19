@@ -76,7 +76,8 @@
         "slice_label": "By the slice",
         "slice_note": "Pick up only",
         "note_placeholder": "Happy birthday Mum",
-        "note_max": 60
+        "note_max": 60,
+        "collection": "pies"
       }
     }
   },
