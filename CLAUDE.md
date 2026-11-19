@@ -105,19 +105,21 @@ Sizes are desktop at 1440. Scale display sizes fluidly down to the mobile sizes 
 
 ## Navigation
 
-- Desktop header: wordmark, then order, menu, visit, about, and the cart button with count.
-- Mobile header: now baking bar, large wordmark, then order, menu, visit, about and the cart button.
+- Desktop home header (masthead): wordmark across 8 columns; right column flush right with the cart, the open/closed status line and the address with a pin (links to Google Maps directions); nav row below at Medium 40.
+- Desktop other pages: compact header, wordmark left, nav and cart right. On every desktop page a compact bar slides in once the header scrolls away.
+- Mobile header, every page: wordmark, status line, address with pin, then order, menu, visit, about and the cart button.
+- Status line: from Opening hours in theme settings, Australia/Sydney time, rechecked every minute. Open: green dot, "now baking, open now" (Now baking on in the header settings) or "open now". Closed: orange dot, "closed, opens tomorrow at 8am" and so on. Hidden until hours are set.
 - "order" opens the order panel. The panel lists help me order, pick up, pre order and wholesale as large blocks, each with a button. On desktop it is a centred panel, 6 columns wide, under the header. On mobile it is a full-screen sheet. Delivery is not shown.
 - Pre order is reached through the order panel; it is not in the header.
-- Footer: follow us posts, email sign up, links to ordering and pick up, allergens, wholesale, contact, instagram, tiktok and policies.
+- Footer group, every page: sign up band directly on top of follow us (no gap, no rule), then the footer with links to ordering and pick up, allergens, wholesale, contact, instagram, tiktok and policies. The footer has no email field.
 
 ## Sections
 
 Build each as an Online Store 2.0 section with settings so Suzie can edit content in the theme editor.
 
-- Now baking bar: on/off toggle, ticker text, dot colour. Turning it off removes the bar entirely.
+- Now baking: an on/off switch in the header settings that sets the open status wording. The ticker bar was removed in header-info (in git history if it comes back).
 - Header: masthead variant for home, compact variant for other pages.
-- Full-bleed image.
+- Full-bleed image, with an option to fill the window under the header (home hero: 100svh minus the header, at least 480).
 - Section spacer: title and copy.
 - Help me order entry block: colour, image, title, copy, button.
 - Product grid: collection picker.
@@ -125,7 +127,7 @@ Build each as an Online Store 2.0 section with settings so Suzie can edit conten
 - Photo pair.
 - About: portrait, copy, button.
 - Two-column text.
-- Sign up: title, copy, email form (Shopify customer form at launch; Klaviyo can replace it later).
+- Sign up: a band in the footer group on every page: title, copy, email field and button on one line (Shopify customer form at launch; Klaviyo can replace it later).
 - Visit: address and hours.
 - Follow us: curated posts from a metaobject (image, link, platform). No feed app at launch.
 - Menu list: groups (pies, drinks) driven by a metaobject so Suzie can edit items and prices without touching products.
@@ -198,8 +200,8 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 - Images sit on a flat brand colour at their final aspect ratio and fade in when loaded. No layout shift.
 - Panels, the help me order flow and the cart slide or scale in from their trigger in about 250ms with ease-out, and the page behind dims slightly. Help me order steps slide sideways and the progress bar animates its width.
 - Add to cart: the cart count updates, the drawer opens and the new line highlights briefly.
-- Now baking: the dot pulses slowly and the ticker scrolls.
-- Respect `prefers-reduced-motion`: no ticker scroll, no pulse, no slides, fades only.
+- Status: the green open dot pulses slowly. The compact header bar slides in over about 200ms.
+- Respect `prefers-reduced-motion`: no pulse, no slides, fades only.
 
 ## Performance and quality
 

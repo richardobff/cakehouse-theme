@@ -6,7 +6,8 @@
         "ratio": "16 / 10",
         "ratio_mobile": "4 / 5",
         "colour": "birthday-pink",
-        "preview_image": "preview-hero.jpg"
+        "preview_image": "preview-hero.jpg",
+        "fill_window": true
       }
     },
     "opening-soon": {
@@ -98,16 +99,6 @@
         "preview_image": "preview-portrait.jpg"
       }
     },
-    "sign-up": {
-      "type": "sign-up",
-      "settings": {
-        "colour": "blue-sky",
-        "title": "Sign up",
-        "copy": "<p>Get recipes and stay up to date with Suz.</p>",
-        "button_label": "sign up",
-        "anchor": "sign-up"
-      }
-    },
     "visit": {
       "type": "visit",
       "settings": {
@@ -137,7 +128,6 @@
     "photo-pair",
     "suzie",
     "about",
-    "sign-up",
     "visit",
     "visit-image"
   ]

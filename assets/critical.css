@@ -15,6 +15,7 @@
   --colour-blue-sky: #409fd7;
   --colour-black: #000000;
   --colour-white: #ffffff;
+  --colour-status-open: #2e9e4f;
 
   --colour-background: var(--colour-white);
   --colour-foreground: var(--colour-black);

@@ -2,20 +2,15 @@
   "type": "header",
   "name": "Header group",
   "sections": {
-    "now-baking": {
-      "type": "now-baking",
-      "settings": {
-        "enabled": true,
-        "messages": "Opening soon at 336 Brunswick St, Fitzroy\nPre orders for Christmas open soon\nPick up only, order two business days ahead",
-        "dot_colour": "clementine"
-      }
-    },
     "header": {
       "type": "header",
       "settings": {
         "variant": "auto",
         "menu": "main-menu",
-        "order_url": ""
+        "order_url": "",
+        "now_baking": true,
+        "address": "336 Brunswick St,\nFitzroy, Melbourne",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=336+Brunswick+St%2C+Fitzroy+VIC+3065"
       }
     },
     "order-panel": {
@@ -82,7 +77,6 @@
     }
   },
   "order": [
-    "now-baking",
     "header",
     "order-panel",
     "help-me-order-flow"

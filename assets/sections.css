@@ -341,44 +341,65 @@
  * Sign up
  * ------------------------------------------------------------------------- */
 .sign-up {
-  scroll-margin-top: var(--page-margin);
+  /* Clears the sticky compact bar when jumped to with /#sign-up. */
+  scroll-margin-top: calc(78 * var(--u));
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--grid-gutter);
   align-items: start;
-  padding: calc(20 * var(--u)) var(--page-margin) var(--section-spacing);
+  padding: calc(20 * var(--u)) var(--page-margin) calc(56 * var(--u));
   background-color: var(--sign-up-colour);
 }
 
 .sign-up__form {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   gap: calc(16 * var(--u));
+  padding-top: calc(14 * var(--u));
 }
 
 .sign-up__copy {
-  font-size: var(--type-medium-40-size);
-  line-height: var(--type-medium-40-line);
-  letter-spacing: var(--type-medium-40-tracking);
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
 }
 
+/* Field and button on one line, the same height. */
 .sign-up__fields {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: calc(16 * var(--u));
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(10 * var(--u));
 }
 
-/* The field sits on a coloured block, so keep it see-through. */
-.sign-up .field__input {
+.sign-up__fields .field {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.sign-up__fields .field__input {
+  height: var(--button-height);
   background-color: transparent;
+}
+
+.sign-up__fields > p {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* Follow us sits directly under the band: no rule, the band's own top inset. */
+.section-sign-up + .section-follow-us .follow-us {
+  padding-top: calc(20 * var(--u));
+}
+
+.section-sign-up + .section-follow-us .follow-us > .rule {
+  display: none;
 }
 
 @media (max-width: 749px) {
   .sign-up {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 20px;
+    row-gap: 16px;
     padding: 16px var(--page-margin) 32px;
   }
 
@@ -388,15 +409,12 @@
     letter-spacing: var(--type-d4-tracking);
   }
 
-  .sign-up__form,
-  .sign-up__fields {
-    gap: 20px;
+  .sign-up__form {
+    padding-top: 0;
   }
 
-  .sign-up__copy {
-    font-size: var(--type-body-l-size);
-    line-height: var(--type-body-l-line);
-    letter-spacing: var(--type-body-l-tracking);
+  .section-sign-up + .section-follow-us .follow-us {
+    padding-top: 16px;
   }
 }
 
@@ -478,4 +496,12 @@
   .follow-us__platform {
     display: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+ * Full-bleed image that fills the window under the header (home hero).
+ * ------------------------------------------------------------------------- */
+.full-bleed--fill .media {
+  aspect-ratio: auto;
+  height: max(480px, calc(100svh - var(--header-height, 263px)));
 }

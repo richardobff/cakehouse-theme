@@ -52,14 +52,19 @@
   "accessibility": {
     "skip_to_content": "Skip to content"
   },
-  "now_baking": {
-    "label": "Now baking",
-    "status": "now baking"
-  },
   "header": {
     "nav_label": "Main",
     "order": "order",
-    "cart": "Cart, items:"
+    "cart": "Cart, items:",
+    "directions": "directions in Google Maps",
+    "status": {
+      "open": "open now",
+      "now_baking_open": "now baking, open now",
+      "closed_today": "closed, opens at [time]",
+      "closed_tomorrow": "closed, opens tomorrow at [time]",
+      "closed_day": "closed, opens [day] at [time]",
+      "closed": "closed"
+    }
   },
   "footer": {
     "nav_label": "Footer",

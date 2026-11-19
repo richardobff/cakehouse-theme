@@ -1,6 +1,6 @@
 {%- comment -%}
-  Site footer: brand mark, email sign up, links and copyright.
-  The follow us posts above it are a separate section.
+  Site footer: brand mark, links and copyright. Sign up and follow us sit
+  above it in the footer group.
 {%- endcomment -%}
 <footer class="footer">
   <div class="footer__mark" style="--brand-mark-fill: var(--colour-{{ section.settings.mark_colour }});">
@@ -8,29 +8,6 @@
   </div>
 
   <div class="footer__links">
-    {%- liquid
-      assign email_label = 'footer.email' | t
-      assign sign_up_label = 'footer.sign_up' | t
-    -%}
-    {%- form 'customer', class: 'footer__signup', id: 'FooterSignup' -%}
-      <input type="hidden" name="contact[tags]" value="newsletter">
-      {% render 'field',
-        id: 'FooterSignupEmail',
-        name: 'contact[email]',
-        type: 'email',
-        label: email_label,
-        autocomplete: 'email',
-        required: true,
-        inline: true
-      %}
-      {% render 'button', label: sign_up_label, type: 'submit' %}
-      {%- if form.posted_successfully? -%}
-        <p class="footer__signup-message type-meta" role="status">{{ 'footer.sign_up_success' | t }}</p>
-      {%- elsif form.errors -%}
-        <p class="footer__signup-message type-meta" role="alert">{{ form.errors | default_errors }}</p>
-      {%- endif -%}
-    {%- endform -%}
-
     <nav aria-label="{{ 'footer.nav_label' | t }}">
       <ul class="footer__list" role="list">
         {%- for link in section.settings.menu.links -%}

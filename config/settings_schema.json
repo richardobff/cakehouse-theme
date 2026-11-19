@@ -8,6 +8,169 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Opening hours",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Used for the open and closed status in the header, in Australia/Sydney time. Use 24-hour times, e.g. 08:00 and 16:00. Leave a day empty or tick closed if the shop is shut. (to confirm)"
+      },
+      {
+        "type": "header",
+        "content": "Monday"
+      },
+      {
+        "type": "text",
+        "id": "hours_monday_open",
+        "label": "Opens",
+        "placeholder": "08:00"
+      },
+      {
+        "type": "text",
+        "id": "hours_monday_close",
+        "label": "Closes",
+        "placeholder": "16:00"
+      },
+      {
+        "type": "checkbox",
+        "id": "hours_monday_closed",
+        "label": "Closed all day",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Tuesday"
+      },
+      {
+        "type": "text",
+        "id": "hours_tuesday_open",
+        "label": "Opens",
+        "placeholder": "08:00"
+      },
+      {
+        "type": "text",
+        "id": "hours_tuesday_close",
+        "label": "Closes",
+        "placeholder": "16:00"
+      },
+      {
+        "type": "checkbox",
+        "id": "hours_tuesday_closed",
+        "label": "Closed all day",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Wednesday"
+      },
+      {
+        "type": "text",
+        "id": "hours_wednesday_open",
+        "label": "Opens",
+        "placeholder": "08:00"
+      },
+      {
+        "type": "text",
+        "id": "hours_wednesday_close",
+        "label": "Closes",
+        "placeholder": "16:00"
+      },
+      {
+        "type": "checkbox",
+        "id": "hours_wednesday_closed",
+        "label": "Closed all day",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Thursday"
+      },
+      {
+        "type": "text",
+        "id": "hours_thursday_open",
+        "label": "Opens",
+        "placeholder": "08:00"
+      },
+      {
+        "type": "text",
+        "id": "hours_thursday_close",
+        "label": "Closes",
+        "placeholder": "16:00"
+      },
+      {
+        "type": "checkbox",
+        "id": "hours_thursday_closed",
+        "label": "Closed all day",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Friday"
+      },
+      {
+        "type": "text",
+        "id": "hours_friday_open",
+        "label": "Opens",
+        "placeholder": "08:00"
+      },
+      {
+        "type": "text",
+        "id": "hours_friday_close",
+        "label": "Closes",
+        "placeholder": "16:00"
+      },
+      {
+        "type": "checkbox",
+        "id": "hours_friday_closed",
+        "label": "Closed all day",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Saturday"
+      },
+      {
+        "type": "text",
+        "id": "hours_saturday_open",
+        "label": "Opens",
+        "placeholder": "08:00"
+      },
+      {
+        "type": "text",
+        "id": "hours_saturday_close",
+        "label": "Closes",
+        "placeholder": "16:00"
+      },
+      {
+        "type": "checkbox",
+        "id": "hours_saturday_closed",
+        "label": "Closed all day",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Sunday"
+      },
+      {
+        "type": "text",
+        "id": "hours_sunday_open",
+        "label": "Opens",
+        "placeholder": "08:00"
+      },
+      {
+        "type": "text",
+        "id": "hours_sunday_close",
+        "label": "Closes",
+        "placeholder": "16:00"
+      },
+      {
+        "type": "checkbox",
+        "id": "hours_sunday_closed",
+        "label": "Closed all day",
+        "default": false
+      }
+    ]
+  },
+  {
     "name": "Ordering",
     "settings": [
       {
