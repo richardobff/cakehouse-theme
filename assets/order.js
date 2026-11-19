@@ -205,7 +205,8 @@
       } else if (iso < now.date) {
         return 'unavailable';
       }
-      if (hasCaps) {
+      // The cap counts whole pies only; slices come from the counter's stock.
+      if (hasCaps && format !== 'slice') {
         const v = pickup.variants[iso];
         if (!v) return 'unavailable';
         if (!v.available) return 'full';

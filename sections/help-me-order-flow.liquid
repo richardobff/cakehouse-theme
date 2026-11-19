@@ -236,7 +236,7 @@
           {
             "id": {{ product.id }},
             "title": {{ product.title | json }},
-            "image": {{ product.featured_image | image_url: width: 1100 | json }},
+            "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 1100 | json }}{% else %}null{% endif %},
             "variants": [
               {%- for variant in product.variants -%}
                 {
