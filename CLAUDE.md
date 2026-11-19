@@ -149,20 +149,22 @@ Decided: theme only, no pick up app.
 
 Store these as theme settings with defaults marked "to confirm". Suzie fills them in and changes them later. Do not hard-code values.
 
-- Lead time for whole pies, in business days.
+- Lead time for whole pies, in business days. Business days are the days the shop is open: not a closed weekday and not a blackout date.
 - Daily cut-off time for the next available day.
 - Closed days (weekdays) and blackout dates.
 - Pre order windows, each with its own pick up dates.
 - Slices: available from the counter's stock, pick up only.
 
+Starting defaults (confirmed as defaults; Suzie can change them): whole pie lead time 2 business days, slice lead time 0 (same day), no cut-off, orders up to 63 days ahead, note up to 60 characters.
+
 The date picker only offers valid dates: it applies the lead time, cut-off, closed days, blackout dates and pre order windows, and greys out days that are sold out.
 
 Daily caps:
 
-- A hidden "pick up" product has one variant per pick up date. Each variant's inventory is the day's cap.
+- A hidden "pick up" product has one variant per pick up date. Each variant's option value is the date as YYYY-MM-DD, and its inventory is the day's cap.
 - The chosen date's variant is added to the cart as a $0 line, so Shopify's checkout blocks a day once it is sold out.
 - The pick up product is hidden from search, collections and the storefront grid, and its line is shown in the cart as the pick up date, not as a product.
-- To confirm with Rich: whether the pick up line counts one unit per order or one per pie. The earlier brief asked for a cap per pie; one pick up product caps the day as a whole.
+- Confirmed: the pick up line's quantity is one per whole pie in the cart. Slices do not count toward the cap. A cart with only slices still carries the pick up date attribute but no pick up line.
 
 Cart rules:
 

@@ -73,5 +73,58 @@
   "products": {
     "from_price": "from {{ price }}",
     "sold_out": "sold out"
+  },
+  "general": {
+    "close": "close"
+  },
+  "order_panel": {
+    "heading": "Order"
+  },
+  "help_me_order": {
+    "progress": "{{ current }} of {{ total }}",
+    "titles": {
+      "pie": "Which pie?",
+      "size": "What size?",
+      "when": "When and how?",
+      "note": "Add a note?",
+      "order": "Your order"
+    },
+    "choose": "choose",
+    "chosen": "chosen",
+    "next": "next",
+    "back": "back",
+    "browse": "browse the shop",
+    "skip": "skip",
+    "add_another": "add another",
+    "add_to_cart": "add to cart",
+    "change": "change",
+    "pick_up": "pick up",
+    "weekdays": "M,T,W,T,F,S,S",
+    "note_label": "Note, written by hand on a card",
+    "note_hint": "Written by hand on a card with your order.",
+    "note_hint_short": "Written by hand on a card.",
+    "rows": {
+      "pie": "Pie",
+      "pick_up": "Pick up",
+      "note": "Note",
+      "total": "Total"
+    },
+    "lead_info": "[address]. Order [days] business days ahead. Greyed out days are full.",
+    "lead_info_one": "[address]. Order one business day ahead. Greyed out days are full.",
+    "lead_info_none": "[address]. Greyed out days are full.",
+    "slice_info": "[address]. Slices come from the counter, pick up only. Greyed out days are full.",
+    "day_available": "available",
+    "day_full": "full",
+    "day_unavailable": "not available",
+    "month_prev": "previous month, [month]",
+    "month_next": "next month, [month]",
+    "no_note": "No note",
+    "added": "Added to your cart.",
+    "added_another": "Added. Pick another pie.",
+    "error": "That did not work. Please try again.",
+    "conflict": "Your cart is set for pick up on [date]. An order has one pick up date. Which should we use?",
+    "conflict_keep": "keep that date",
+    "conflict_use": "use this date",
+    "pie_size": "[pie], [size]"
   }
 }

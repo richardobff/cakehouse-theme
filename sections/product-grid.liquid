@@ -11,6 +11,7 @@
   {%- if grid_collection != blank and grid_collection.products_count > 0 -%}
     <ul class="product-grid__list" role="list">
       {%- for product in grid_collection.products limit: section.settings.limit -%}
+        {%- if settings.pickup_product != blank and product.id == settings.pickup_product.id -%}{%- continue -%}{%- endif -%}
         {%- assign colour_index = forloop.index0 | modulo: 4 -%}
         <li class="card">
           <a class="card__link" href="{{ product.url }}">

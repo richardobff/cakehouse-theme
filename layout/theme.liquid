@@ -12,6 +12,8 @@
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'sections.css' | asset_url | stylesheet_tag }}
+    {{ 'order.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'order.js' | asset_url }}" defer></script>
 
     {{ content_for_header }}
   </head>
