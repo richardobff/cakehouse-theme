@@ -14,7 +14,7 @@
       "settings": {
         "title": "Opening soon",
         "copy": "<p>336 Brunswick St, Fitzroy. Come to the opening party, the first cake is on us.</p>",
-        "spacing_top": "default",
+        "spacing_top": "tight",
         "prompt": "",
         "button_label": "get an invite",
         "button_link": "",
