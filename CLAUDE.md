@@ -221,11 +221,11 @@ Update this after every branch: move items between lists and add new ones as the
 ### Done
 - Figma: all pages desktop and mobile, order flow (5 steps), cart, states, opening options, header/home info component, later section for cookies and merch.
 - Repo connected to the store as an unpublished theme. Live landing page untouched.
-- Merged: foundations, home, home-scale (one-unit scaling with floors).
+- Merged: foundations, home, home-scale (one-unit scaling with floors), order-panel (order panel, help me order pop out, ordering rules in theme settings, pick up line per whole pie; pointed at the test data).
 - Store: pick up address, timezone Australia/Sydney, header and footer menus, follow_us_post metaobject, test data (4 test pies tagged test, Pies collection, hidden Pick up product with dates 2026-11-20 to 2026-12-10, cap 20, 21 and 28 Nov sold out).
 
 ### In progress
-- order-panel: built, pick up line per whole pie. Waiting on Rich's review, then merge.
+- header-info: started.
 
 ### Next, in order
 1. header-info: info masthead (wordmark 8 columns, cart, status line, address with pin), opening hours settings and open/closed status (green/orange dot), hero fills the window, sticky compact header, new mobile header, sign up band flush above follow us in the footer group, footer email field removed.
@@ -233,7 +233,7 @@ Update this after every branch: move items between lists and add new ones as the
 3. Product page: format choice, pick up date, note (whole pie only), help me order prompt, sold out state, more pies.
 4. Cart drawer and cart page: lines, pick up date, empty state, date conflict prompt, live count.
 5. Pages: menu (metaobject, pies and drinks), about, pre order, wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
-6. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback.
+6. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
 7. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
 8. Launch: real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
 
