@@ -1,0 +1,40 @@
+{%- comment -%}
+  Photo pair: two 4:5 images side by side, edge to edge.
+{%- endcomment -%}
+<section class="photo-pair{% unless section.settings.show_mobile %} photo-pair--desktop-only{% endunless %}">
+  {% render 'media',
+    image: section.settings.image_1,
+    preview: section.settings.preview_image_1,
+    ratio: '4 / 5',
+    sizes: '50vw',
+    colour: 'strawberry'
+  %}
+  {% render 'media',
+    image: section.settings.image_2,
+    preview: section.settings.preview_image_2,
+    ratio: '4 / 5',
+    sizes: '50vw',
+    colour: 'blue-sky'
+  %}
+</section>
+
+{% schema %}
+{
+  "name": "Photo pair",
+  "class": "section-photo-pair",
+  "settings": [
+    { "type": "image_picker", "id": "image_1", "label": "Left image" },
+    { "type": "image_picker", "id": "image_2", "label": "Right image" },
+    { "type": "checkbox", "id": "show_mobile", "label": "Show on mobile", "default": true },
+    { "type": "header", "content": "Temporary preview images" },
+    {
+      "type": "text",
+      "id": "preview_image_1",
+      "label": "Left",
+      "info": "Theme asset from Figma, shown until an image is chosen. Clear before launch."
+    },
+    { "type": "text", "id": "preview_image_2", "label": "Right" }
+  ],
+  "presets": [{ "name": "Photo pair" }]
+}
+{% endschema %}

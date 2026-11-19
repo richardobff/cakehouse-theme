@@ -1,0 +1,42 @@
+{% doc %}
+  Colour split: half colour block with text, half image. 720 + 720 on
+  desktop; stacked on mobile with the image first. Used by the help me
+  order entry block and the colour split section.
+
+  @param {object} section - The calling section (for settings).
+  @param {string} [button_size] - 'large' for the entry block button.
+
+  @example
+  {% render 'split', section: section, button_size: 'large' %}
+{% enddoc %}
+{%- liquid
+  assign s = section.settings
+  assign image_colour = 'birthday-pink'
+  if s.colour == 'birthday-pink'
+    assign image_colour = 'clementine'
+  endif
+-%}
+<section
+  class="split split--image-{{ s.image_side }}"
+  style="--split-colour: var(--colour-{{ s.colour }}); --media-ratio: {{ s.ratio }};"
+>
+  <div class="split__text">
+    <h2 class="split__title type-d3">{{ s.title | escape }}</h2>
+    <div class="split__bottom">
+      {%- if s.copy != blank -%}
+        <div class="split__copy">{{ s.copy }}</div>
+      {%- endif -%}
+      {%- if s.button_label != blank -%}
+        {% render 'button', label: s.button_label, url: s.button_link, size: button_size %}
+      {%- endif -%}
+    </div>
+  </div>
+  {% render 'media',
+    image: s.image,
+    preview: s.preview_image,
+    ratio: s.ratio,
+    sizes: '(min-width: 750px) 50vw, 100vw',
+    colour: image_colour,
+    class: 'split__media'
+  %}
+</section>

@@ -2,6 +2,16 @@
   "type": "footer",
   "name": "Footer group",
   "sections": {
+    "follow-us": {
+      "type": "follow-us",
+      "settings": {
+        "title": "Follow us",
+        "limit": 4,
+        "instagram_url": "",
+        "tiktok_url": "",
+        "preview_posts": true
+      }
+    },
     "footer": {
       "type": "footer",
       "settings": {
@@ -13,5 +23,8 @@
       }
     }
   },
-  "order": ["footer"]
+  "order": [
+    "follow-us",
+    "footer"
+  ]
 }

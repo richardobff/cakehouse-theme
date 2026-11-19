@@ -1,0 +1,114 @@
+{%- comment -%}
+  Follow us: curated posts from the follow_us_post metaobject (image, link,
+  platform), with links to Instagram and TikTok. No feed app.
+  With no posts the section shows the title and links only.
+  "Temporary preview posts" shows the Figma photos until real posts exist.
+{%- endcomment -%}
+{%- liquid
+  assign posts = shop.metaobjects.follow_us_post.values
+  assign has_posts = false
+  if posts.size > 0
+    assign has_posts = true
+  endif
+  assign show_preview = false
+  if has_posts == false and section.settings.preview_posts
+    assign show_preview = true
+  endif
+  assign preview_files = 'preview-follow-1.jpg,preview-portrait.jpg,preview-photo-pair-1.jpg,preview-photo-pair-2.jpg' | split: ','
+  assign preview_platforms = 'instagram,tiktok,instagram,tiktok' | split: ','
+  assign colours = 'blue-sky,birthday-pink,clementine,strawberry' | split: ','
+-%}
+<section class="follow-us page-width{% unless has_posts or show_preview %} follow-us--empty{% endunless %}">
+  {% render 'rule' %}
+  <div class="follow-us__head">
+    <h2 class="follow-us__title type-d3">{{ section.settings.title | escape }}</h2>
+  </div>
+
+  {%- if has_posts or show_preview -%}
+    <ul class="follow-us__posts" role="list">
+      {%- if has_posts -%}
+        {%- for post in posts limit: section.settings.limit -%}
+          {%- assign colour_index = forloop.index0 | modulo: 4 -%}
+          <li class="follow-us__post">
+            {%- assign post_link = post.link.value -%}
+            {%- if post_link != blank -%}
+              <a href="{{ post_link }}" class="follow-us__link" target="_blank" rel="noopener">
+            {%- else -%}
+              <div class="follow-us__link">
+            {%- endif -%}
+              {% render 'media',
+                image: post.image.value,
+                ratio: '4 / 5',
+                sizes: '(min-width: 750px) 25vw, 50vw',
+                colour: colours[colour_index],
+                class: 'follow-us__media'
+              %}
+              <span class="follow-us__platform type-body">{{ post.platform.value | downcase | escape }}</span>
+            {%- if post_link != blank -%}</a>{%- else -%}</div>{%- endif -%}
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for file in preview_files -%}
+          {%- assign i = forloop.index0 -%}
+          <li class="follow-us__post">
+            <div class="follow-us__link">
+              {% render 'media',
+                preview: file,
+                ratio: '4 / 5',
+                colour: colours[i],
+                class: 'follow-us__media'
+              %}
+              <span class="follow-us__platform type-body">{{ preview_platforms[i] }}</span>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if section.settings.instagram_url != blank or section.settings.tiktok_url != blank -%}
+    <div class="follow-us__buttons">
+      {%- if section.settings.instagram_url != blank -%}
+        {%- assign label = 'footer.instagram' | t -%}
+        {% render 'button', label: label, url: section.settings.instagram_url, style: 'outline' %}
+      {%- endif -%}
+      {%- if section.settings.tiktok_url != blank -%}
+        {%- assign label = 'footer.tiktok' | t -%}
+        {% render 'button', label: label, url: section.settings.tiktok_url, style: 'outline' %}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Follow us",
+  "class": "section-follow-us",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Follow us" },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Posts to show",
+      "min": 2,
+      "max": 8,
+      "step": 2,
+      "default": 4
+    },
+    { "type": "url", "id": "instagram_url", "label": "Instagram" },
+    { "type": "url", "id": "tiktok_url", "label": "TikTok" },
+    {
+      "type": "paragraph",
+      "content": "Posts come from Content > Metaobjects > Follow us post (image, link, platform)."
+    },
+    {
+      "type": "checkbox",
+      "id": "preview_posts",
+      "label": "Temporary preview posts",
+      "info": "Shows the Figma photos until follow us posts are added. Turn off before launch.",
+      "default": false
+    }
+  ],
+  "presets": [{ "name": "Follow us" }]
+}
+{% endschema %}

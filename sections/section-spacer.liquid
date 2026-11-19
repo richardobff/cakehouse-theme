@@ -1,0 +1,79 @@
+{%- comment -%}
+  Section spacer: a rule, then a display title beside a short paragraph.
+  Optional button (with an optional lead-in line) sits 24 under the copy, in the copy column.
+{%- endcomment -%}
+<section class="spacer spacer--top-{{ section.settings.spacing_top }} spacer--bottom-{{ section.settings.spacing_bottom }}">
+  <div class="spacer__inner page-width">
+    {% render 'rule' %}
+    <div class="spacer__row">
+      {%- if section.settings.title != blank -%}
+        <h2 class="spacer__title type-d3">{{ section.settings.title | escape }}</h2>
+      {%- endif -%}
+      <div class="spacer__body">
+        {%- if section.settings.copy != blank -%}
+          <div class="spacer__copy">{{ section.settings.copy }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <div class="spacer__action{% unless section.settings.button_mobile %} spacer__action--desktop-only{% endunless %}">
+            {%- if section.settings.prompt != blank -%}
+              <p class="spacer__prompt type-product">{{ section.settings.prompt | escape }}</p>
+            {%- endif -%}
+            {% render 'button',
+              label: section.settings.button_label,
+              url: section.settings.button_link,
+              style: section.settings.button_style
+            %}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Section spacer",
+  "class": "section-spacer",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Title" },
+    { "type": "richtext", "id": "copy", "label": "Copy", "default": "<p>Short paragraph.</p>" },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "Space above",
+      "options": [
+        { "value": "default", "label": "Section (140, mobile 64)" },
+        { "value": "tight", "label": "Tight (24, mobile 16)" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "Space below",
+      "info": "Tight when the next section belongs to this one (a grid or portrait). Section before a colour block.",
+      "options": [
+        { "value": "tight", "label": "Tight (28)" },
+        { "value": "section", "label": "Section (140)" }
+      ],
+      "default": "tight"
+    },
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "prompt", "label": "Lead-in line", "info": "Optional, e.g. Not sure what to get?" },
+    { "type": "text", "id": "button_label", "label": "Label" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style",
+      "options": [
+        { "value": "solid", "label": "Solid" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "solid"
+    },
+    { "type": "checkbox", "id": "button_mobile", "label": "Show button on mobile", "default": true }
+  ],
+  "presets": [{ "name": "Section spacer" }]
+}
+{% endschema %}

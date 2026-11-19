@@ -1,0 +1,59 @@
+{%- comment -%}
+  Sign up: colour block with a title, copy and an email form. Uses the
+  Shopify customer form at launch; Klaviyo can replace it later.
+{%- endcomment -%}
+{%- liquid
+  assign email_label = 'footer.email' | t
+  assign form_id = 'SignUp-' | append: section.id
+  assign field_id = 'SignUpEmail-' | append: section.id
+-%}
+<section class="sign-up" style="--sign-up-colour: var(--colour-{{ section.settings.colour }});">
+  <h2 class="sign-up__title type-d3">{{ section.settings.title | escape }}</h2>
+  <div class="sign-up__form">
+    {%- if section.settings.copy != blank -%}
+      <div class="sign-up__copy">{{ section.settings.copy }}</div>
+    {%- endif -%}
+    {%- form 'customer', id: form_id, class: 'sign-up__fields' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {% render 'field',
+        id: field_id,
+        name: 'contact[email]',
+        type: 'email',
+        label: email_label,
+        autocomplete: 'email',
+        required: true
+      %}
+      {% render 'button', label: section.settings.button_label, type: 'submit' %}
+      {%- if form.posted_successfully? -%}
+        <p class="type-meta" role="status">{{ 'footer.sign_up_success' | t }}</p>
+      {%- elsif form.errors -%}
+        <p class="type-meta" role="alert">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sign up",
+  "class": "section-sign-up",
+  "settings": [
+    {
+      "type": "select",
+      "id": "colour",
+      "label": "Colour",
+      "options": [
+        { "value": "blue-sky", "label": "Blue sky" },
+        { "value": "clementine", "label": "Clementine" },
+        { "value": "birthday-pink", "label": "Birthday pink" },
+        { "value": "strawberry", "label": "Strawberry" }
+      ],
+      "default": "blue-sky"
+    },
+    { "type": "text", "id": "title", "label": "Title", "default": "Sign up" },
+    { "type": "richtext", "id": "copy", "label": "Copy", "default": "<p>Get recipes and stay up to date with Suz.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "sign up" }
+  ],
+  "presets": [{ "name": "Sign up" }]
+}
+{% endschema %}

@@ -1,4 +1,143 @@
 {
-  "sections": {},
-  "order": []
+  "sections": {
+    "hero": {
+      "type": "full-bleed",
+      "settings": {
+        "ratio": "16 / 10",
+        "ratio_mobile": "4 / 5",
+        "colour": "birthday-pink",
+        "preview_image": "preview-hero.jpg"
+      }
+    },
+    "opening-soon": {
+      "type": "section-spacer",
+      "settings": {
+        "title": "Opening soon",
+        "copy": "<p>336 Brunswick St, Fitzroy. Come to the opening party, the first cake is on us.</p>",
+        "spacing_top": "tight",
+        "prompt": "",
+        "button_label": "get an invite",
+        "button_link": "",
+        "button_style": "solid",
+        "button_mobile": true,
+        "spacing_bottom": "section"
+      }
+    },
+    "help-me-order": {
+      "type": "help-me-order",
+      "settings": {
+        "colour": "clementine",
+        "title": "Help me order",
+        "copy": "<p>Pick a pie, a size and a day. We will do the rest.</p>",
+        "button_label": "start an order",
+        "button_link": "/pages/order",
+        "image_side": "right",
+        "ratio": "1 / 1",
+        "preview_image": "preview-hero.jpg"
+      }
+    },
+    "order-pies": {
+      "type": "section-spacer",
+      "settings": {
+        "title": "Order pies",
+        "copy": "<p>Pies baked in Fitzroy and picked up from the counter.</p>",
+        "spacing_top": "default",
+        "prompt": "Not sure what to get?",
+        "button_label": "help me order",
+        "button_link": "/pages/order",
+        "button_style": "outline",
+        "button_mobile": false,
+        "spacing_bottom": "tight"
+      }
+    },
+    "product-grid": {
+      "type": "product-grid",
+      "settings": {
+        "limit": 8,
+        "button_label": "add to cart",
+        "empty_text": "Pies are on their way."
+      }
+    },
+    "pre-order": {
+      "type": "colour-split",
+      "settings": {
+        "colour": "birthday-pink",
+        "title": "Pre order",
+        "copy": "<p>Pre order for Christmas. Order window and pick up dates to come.</p>",
+        "button_label": "pre order",
+        "button_link": "",
+        "image_side": "right",
+        "ratio": "4 / 5",
+        "preview_image": "preview-pre-order.jpg"
+      }
+    },
+    "photo-pair": {
+      "type": "photo-pair",
+      "settings": {
+        "show_mobile": false,
+        "preview_image_1": "preview-photo-pair-1.jpg",
+        "preview_image_2": "preview-photo-pair-2.jpg"
+      }
+    },
+    "suzie": {
+      "type": "section-spacer",
+      "settings": {
+        "title": "Suzie",
+        "copy": "<p>Timeless treats. Flaky pastry, tasty fillings and smells that take you back to your childhood.</p>",
+        "spacing_top": "default",
+        "button_label": "",
+        "spacing_bottom": "tight"
+      }
+    },
+    "about": {
+      "type": "about",
+      "settings": {
+        "copy": "<p>Copy about Suzie and the bakery to come.</p>",
+        "button_label": "about",
+        "button_link": "",
+        "preview_image": "preview-portrait.jpg"
+      }
+    },
+    "sign-up": {
+      "type": "sign-up",
+      "settings": {
+        "colour": "blue-sky",
+        "title": "Sign up",
+        "copy": "<p>Get recipes and stay up to date with Suz.</p>",
+        "button_label": "sign up"
+      }
+    },
+    "visit": {
+      "type": "visit",
+      "settings": {
+        "title": "Visit",
+        "address": "336 Brunswick St\nFitzroy VIC 3065",
+        "hours": "Hours to come",
+        "spacing_top": "default"
+      }
+    },
+    "visit-image": {
+      "type": "full-bleed",
+      "settings": {
+        "ratio": "16 / 9",
+        "ratio_mobile": "13 / 10",
+        "colour": "clementine",
+        "preview_image": "preview-visit.jpg"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "opening-soon",
+    "help-me-order",
+    "order-pies",
+    "product-grid",
+    "pre-order",
+    "photo-pair",
+    "suzie",
+    "about",
+    "sign-up",
+    "visit",
+    "visit-image"
+  ]
 }

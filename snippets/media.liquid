@@ -1,0 +1,70 @@
+{% doc %}
+  Responsive image on a flat brand colour at a fixed aspect ratio. The
+  colour block holds the space so there is no layout shift, and the image
+  fades in once it has loaded. With no image, the colour block shows on
+  its own.
+
+  @param {object} [image] - Shopify image (from an image_picker or media).
+  @param {string} [preview] - Theme asset filename used when no image is set. Temporary, for preview only.
+  @param {string} [ratio] - Aspect ratio on desktop, e.g. '4 / 5'. Default '4 / 5'.
+  @param {string} [ratio_mobile] - Aspect ratio below 750px. Defaults to ratio.
+  @param {string} [sizes] - The sizes attribute. Default '100vw'.
+  @param {string} [colour] - Brand colour token behind the image. Default 'birthday-pink'.
+  @param {boolean} [priority] - true for the first hero image: eager, high priority, preloaded.
+  @param {string} [alt] - Alt text. Defaults to the image's own alt text.
+  @param {string} [class] - Extra classes.
+
+  @example
+  {% render 'media', image: section.settings.image, ratio: '16 / 10', ratio_mobile: '4 / 5', colour: 'clementine' %}
+{% enddoc %}
+{%- liquid
+  assign ratio = ratio | default: '4 / 5'
+  assign ratio_mobile = ratio_mobile | default: ratio
+  assign sizes = sizes | default: '100vw'
+  assign colour = colour | default: 'birthday-pink'
+  assign onload = "this.classList.add('is-loaded')"
+  assign preload = false
+  assign alt_text = alt | default: image.alt
+  assign ratio_parts = ratio | split: '/'
+  assign preview_width = ratio_parts[0] | strip | times: 100
+  assign preview_height = ratio_parts[1] | strip | times: 100
+  if priority
+    assign preload = true
+    assign loading = 'eager'
+    assign fetchpriority = 'high'
+  else
+    assign loading = 'lazy'
+    assign fetchpriority = 'auto'
+  endif
+-%}
+<div
+  class="media{% if class != blank %} {{ class }}{% endif %}"
+  style="--media-ratio: {{ ratio }}; --media-ratio-mobile: {{ ratio_mobile }}; --media-bg: var(--colour-{{ colour }});"
+>
+  {%- if image != blank -%}
+    {{
+      image
+      | image_url: width: 3000
+      | image_tag:
+        widths: '375, 550, 750, 1100, 1500, 1780, 2000, 2400, 3000',
+        sizes: sizes,
+        loading: loading,
+        fetchpriority: fetchpriority,
+        preload: preload,
+        class: 'media__img',
+        alt: alt_text,
+        onload: onload
+    }}
+  {%- elsif preview != blank -%}
+    <img
+      src="{{ preview | asset_url }}"
+      alt="{{ alt | escape }}"
+      class="media__img"
+      width="{{ preview_width }}"
+      height="{{ preview_height }}"
+      loading="{{ loading }}"
+      fetchpriority="{{ fetchpriority }}"
+      onload="{{ onload }}"
+    >
+  {%- endif -%}
+</div>

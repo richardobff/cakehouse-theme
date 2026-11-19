@@ -1,0 +1,72 @@
+{%- comment -%}
+  Full-bleed image, edge to edge, at a fixed aspect ratio per breakpoint.
+  The first section on a page loads eagerly and is preloaded.
+{%- endcomment -%}
+{%- liquid
+  assign priority = false
+  if section.index == 1
+    assign priority = true
+  endif
+-%}
+<section class="full-bleed" aria-label="{{ section.settings.image.alt | default: shop.name | escape }}">
+  {% render 'media',
+    image: section.settings.image,
+    preview: section.settings.preview_image,
+    ratio: section.settings.ratio,
+    ratio_mobile: section.settings.ratio_mobile,
+    colour: section.settings.colour,
+    priority: priority
+  %}
+</section>
+
+{% schema %}
+{
+  "name": "Full-bleed image",
+  "class": "section-full-bleed",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Shape on desktop",
+      "options": [
+        { "value": "16 / 10", "label": "Wide (1440 x 900)" },
+        { "value": "16 / 9", "label": "Widescreen (1440 x 810)" },
+        { "value": "3 / 2", "label": "Landscape" },
+        { "value": "1 / 1", "label": "Square" }
+      ],
+      "default": "16 / 10"
+    },
+    {
+      "type": "select",
+      "id": "ratio_mobile",
+      "label": "Shape on mobile",
+      "options": [
+        { "value": "4 / 5", "label": "Portrait (390 x 488)" },
+        { "value": "13 / 10", "label": "Landscape (390 x 300)" },
+        { "value": "1 / 1", "label": "Square" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "select",
+      "id": "colour",
+      "label": "Colour while loading",
+      "options": [
+        { "value": "birthday-pink", "label": "Birthday pink" },
+        { "value": "clementine", "label": "Clementine" },
+        { "value": "blue-sky", "label": "Blue sky" },
+        { "value": "strawberry", "label": "Strawberry" }
+      ],
+      "default": "birthday-pink"
+    },
+    {
+      "type": "text",
+      "id": "preview_image",
+      "label": "Temporary preview image",
+      "info": "Theme asset from Figma, shown until an image is chosen. Clear before launch."
+    }
+  ],
+  "presets": [{ "name": "Full-bleed image" }]
+}
+{% endschema %}

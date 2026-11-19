@@ -1,0 +1,75 @@
+{%- comment -%}
+  Product grid from a chosen collection: 4 across on desktop, 2 on mobile.
+  The button goes to the product page, where format and pick up date are
+  chosen. With no collection or no products it shows a short empty state.
+{%- endcomment -%}
+{%- liquid
+  assign grid_collection = section.settings.collection
+  assign colours = 'birthday-pink,clementine,blue-sky,strawberry' | split: ','
+-%}
+<section class="product-grid page-width">
+  {%- if grid_collection != blank and grid_collection.products_count > 0 -%}
+    <ul class="product-grid__list" role="list">
+      {%- for product in grid_collection.products limit: section.settings.limit -%}
+        {%- assign colour_index = forloop.index0 | modulo: 4 -%}
+        <li class="card">
+          <a class="card__link" href="{{ product.url }}">
+            {% render 'media',
+              image: product.featured_image,
+              ratio: '4 / 5',
+              sizes: '(min-width: 750px) 25vw, 50vw',
+              colour: colours[colour_index],
+              alt: product.title,
+              class: 'card__media'
+            %}
+            <span class="card__name">{{ product.title | escape }}</span>
+          </a>
+          <p class="card__price type-product">
+            {%- if product.price_varies -%}
+              {{ 'products.from_price' | t: price: product.price_min | money }}
+            {%- else -%}
+              {{ product.price | money }}
+            {%- endif -%}
+          </p>
+          {%- if product.available -%}
+            {% render 'button', label: section.settings.button_label, url: product.url, style: 'outline' %}
+          {%- else -%}
+            {%- assign sold_out = 'products.sold_out' | t -%}
+            {% render 'button', label: sold_out, style: 'outline', attributes: 'disabled' %}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
+    <div class="product-grid__empty">
+      <p class="product-grid__empty-text">{{ section.settings.empty_text | escape }}</p>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Product grid",
+  "class": "section-product-grid",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products to show",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 8
+    },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "add to cart" },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Text when there are no products",
+      "default": "Pies are on their way."
+    }
+  ],
+  "presets": [{ "name": "Product grid" }]
+}
+{% endschema %}
