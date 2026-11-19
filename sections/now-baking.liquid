@@ -1,0 +1,77 @@
+{%- comment -%}
+  Now baking bar. Pulsing dot, then a scrolling ticker of short messages.
+  Turning it off removes the bar entirely. Desktop shows it on home only;
+  mobile shows it on every page.
+{%- endcomment -%}
+{%- if section.settings.enabled -%}
+  {%- liquid
+    assign messages = section.settings.messages | newline_to_br | split: '<br />'
+    assign mobile_only = true
+    if template.name == 'index'
+      assign mobile_only = false
+    endif
+    assign duration = section.settings.messages | size | divided_by: 4 | at_least: 20
+  -%}
+  <aside
+    class="now-baking{% if mobile_only %} now-baking--mobile-only{% endif %}"
+    style="--now-baking-dot: var(--colour-{{ section.settings.dot_colour }}); --ticker-duration: {{ duration }}s;"
+    aria-label="{{ 'now_baking.label' | t }}"
+  >
+    <p class="now-baking__status">
+      <span class="now-baking__dot" aria-hidden="true"></span>
+      {{ 'now_baking.status' | t }}
+    </p>
+
+    {%- if section.settings.messages != blank -%}
+      <div class="now-baking__ticker">
+        <div class="now-baking__track">
+          {%- for pass in (1..2) -%}
+            <ul class="now-baking__list" role="list" {% if pass == 2 %}aria-hidden="true"{% endif %}>
+              {%- for message in messages -%}
+                {%- assign text = message | strip -%}
+                {%- if text != blank -%}
+                  <li>{{ text }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </aside>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Now baking bar",
+  "class": "section-now-baking",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show now baking bar",
+      "info": "Turning this off removes the bar from every page.",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "messages",
+      "label": "Ticker text",
+      "info": "One message per line.",
+      "default": "Opening soon at 336 Brunswick St, Fitzroy\nPre orders for Christmas open soon\nPick up only, order two business days ahead"
+    },
+    {
+      "type": "select",
+      "id": "dot_colour",
+      "label": "Dot colour",
+      "options": [
+        { "value": "clementine", "label": "Clementine" },
+        { "value": "strawberry", "label": "Strawberry" },
+        { "value": "birthday-pink", "label": "Birthday pink" },
+        { "value": "blue-sky", "label": "Blue sky" }
+      ],
+      "default": "clementine"
+    }
+  ]
+}
+{% endschema %}

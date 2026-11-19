@@ -1,0 +1,23 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "now-baking": {
+      "type": "now-baking",
+      "settings": {
+        "enabled": true,
+        "messages": "Opening soon at 336 Brunswick St, Fitzroy\nPre orders for Christmas open soon\nPick up only, order two business days ahead",
+        "dot_colour": "clementine"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "variant": "auto",
+        "menu": "main-menu",
+        "order_url": ""
+      }
+    }
+  },
+  "order": ["now-baking", "header"]
+}

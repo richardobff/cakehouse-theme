@@ -67,5 +67,26 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "now_baking": {
+    "label": "Now baking",
+    "status": "now baking"
+  },
+  "header": {
+    "nav_label": "Main",
+    "order": "order",
+    "cart": "Cart, items:"
+  },
+  "footer": {
+    "nav_label": "Footer",
+    "email": "email",
+    "sign_up": "sign up",
+    "sign_up_success": "Thanks, you are signed up.",
+    "instagram": "instagram",
+    "tiktok": "tiktok",
+    "policies": "policies"
   }
 }

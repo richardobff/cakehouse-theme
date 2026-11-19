@@ -1,20 +1,160 @@
-/** Critical CSS for the theme. This file is included on every page. */
+/**
+ * Cakehouse critical CSS: tokens, reset and base type.
+ * Loaded on every page. Values follow the tables in CLAUDE.md.
+ * @font-face rules live in snippets/font-faces.liquid (they need asset_url).
+ */
 
-/* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
-* {
+/* ---------------------------------------------------------------------------
+ * Tokens
+ * ------------------------------------------------------------------------- */
+:root {
+  /* Colour */
+  --colour-clementine: #ff6e1e;
+  --colour-strawberry: #dd2230;
+  --colour-birthday-pink: #f098b2;
+  --colour-blue-sky: #409fd7;
+  --colour-black: #000000;
+  --colour-white: #ffffff;
+
+  --colour-background: var(--colour-white);
+  --colour-foreground: var(--colour-black);
+
+  /* Rules */
+  --rule-width: 1px;
+  --rule-width-progress: 3px;
+  --stroke-width: 1.5px;
+
+  /* Fonts */
+  --font-display: 'Futura Condensed ExtraBold', 'Futura', sans-serif;
+  --font-text: 'Futura Medium', 'Futura', sans-serif;
+
+  /*
+   * Type styles. Sizes are desktop at 1440.
+   * Display sizes D1 to D3 scale fluidly from 64px at 390 up to their desktop size at 1440.
+   */
+  --fluid-display: (100vw - 390px) / 1050;
+
+  --type-d1-size: clamp(64px, calc(64px + 266 * (var(--fluid-display))), 330px);
+  --type-d1-line: 0.86;
+  --type-d1-tracking: -0.03em;
+
+  --type-d2-size: clamp(64px, calc(64px + 136 * (var(--fluid-display))), 200px);
+  --type-d2-line: 0.88;
+  --type-d2-tracking: -0.02em;
+
+  --type-d3-size: clamp(64px, calc(64px + 56 * (var(--fluid-display))), 120px);
+  --type-d3-line: 0.9;
+  --type-d3-tracking: -0.015em;
+
+  --type-d4-size: 64px;
+  --type-d4-line: 0.92;
+  --type-d4-tracking: -0.005em;
+
+  --type-h-size: 32px;
+  --type-h-line: 1;
+  --type-h-tracking: 0;
+
+  --type-name-size: 20px;
+  --type-name-line: 1.1;
+  --type-name-tracking: 0.005em;
+
+  --type-label-size: 14px;
+  --type-label-line: 1.1;
+  --type-label-tracking: 0.03em;
+
+  --type-body-xl-size: 48px;
+  --type-body-xl-line: 1.12;
+  --type-body-xl-tracking: -0.01em;
+
+  --type-nav-xl-size: 72px;
+  --type-nav-xl-line: 1;
+  --type-nav-xl-tracking: -0.02em;
+
+  --type-medium-40-size: 40px;
+  --type-medium-40-line: 1.15;
+  --type-medium-40-tracking: -0.01em;
+
+  --type-body-l-size: 24px;
+  --type-body-l-line: 1.3;
+  --type-body-l-tracking: -0.005em;
+
+  --type-product-size: 20px;
+  --type-product-line: 1.25;
+  --type-product-tracking: -0.005em;
+
+  --type-body-size: 17px;
+  --type-body-line: 1.4;
+  --type-body-tracking: 0;
+
+  --type-button-size: 15px;
+  --type-button-line: 1;
+  --type-button-tracking: 0;
+
+  --type-meta-size: 12px;
+  --type-meta-line: 1.35;
+  --type-meta-tracking: 0;
+
+  /*
+   * Grid. Desktop frame 1440: margin 24, 12 columns, gutter 24 (column 94).
+   * Mobile frame 390: margin 16.
+   */
+  --page-margin: 24px;
+  --grid-columns: 12;
+  --grid-gutter: 24px;
+  --grid-column: calc(
+    (100vw - var(--page-margin) * 2 - var(--grid-gutter) * (var(--grid-columns) - 1)) / var(--grid-columns)
+  );
+  --section-spacing: 140px;
+
+  /* Components */
+  --button-height: 43px;
+  --field-height: 48px;
+  --radius-pill: 999px;
+  --radius-message: 24px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-panel: 250ms;
+}
+
+@media (max-width: 749px) {
+  :root {
+    --page-margin: 16px;
+    --grid-gutter: 16px;
+    --section-spacing: 64px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Reset
+ * ------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   display: flex;
   flex-direction: column;
-  margin: 0;
   min-height: 100svh;
+  background-color: var(--colour-background);
+  color: var(--colour-foreground);
+  font-family: var(--font-text);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
-  overflow: hidden;
+main {
+  flex: 1 0 auto;
 }
 
 img,
@@ -28,25 +168,34 @@ svg {
 }
 
 input,
+button,
 textarea,
 select {
   font: inherit;
-  border-radius: var(--style-border-radius-inputs);
+  color: inherit;
 }
 
-select {
-  background-color: var(--color-background);
-  color: currentcolor;
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
-dialog {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+a {
+  color: inherit;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
 }
 
 p {
   text-wrap: pretty;
 }
+
 p,
 h1,
 h2,
@@ -57,62 +206,116 @@ h6 {
   overflow-wrap: break-word;
 }
 
-p:empty {
-  display: none;
+html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
+  overflow: hidden;
 }
 
-:is(p, h1, h2, h3, h4, h5, h6):first-child,
-:empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
-  margin-block-start: 0;
+:focus-visible {
+  outline: 2px solid var(--colour-black);
+  outline-offset: 3px;
 }
 
-:is(p, h1, h2, h3, h4, h5, h6):last-child,
-:where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
-  margin-block-end: 0;
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-/** Theme styles below */
-body {
-  font-family: var(--font-primary--family);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+.skip-link:focus {
+  position: fixed !important;
+  z-index: 100;
+  top: 8px;
+  left: 8px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  clip: auto;
+  padding: 12px 20px;
+  background: var(--colour-white);
 }
 
-/** Block container layout utilities */
+/* ---------------------------------------------------------------------------
+ * Type styles. Condensed styles are always uppercase.
+ * ------------------------------------------------------------------------- */
+.type-d1,
+.type-d2,
+.type-d3,
+.type-d4,
+.type-h,
+.type-name,
+.type-label {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+}
 
-/**
- * Setup a grid that enables both full-width and constrained layouts
- * depending on the class of the child elements.
- *
- * By default, a minimum content margin is set on the left and right
- * sides of the container and the content is centered in the viewport
- * to not exceed the maximum page width.
- *
- * When a child element is given the `full-width` class, it will span
- * the entire viewport.
- */
-.block-container {
-  --content-width: min(
-    calc(var(--page-width) - var(--page-margin) * 2),
-    calc(100% - var(--page-margin) * 2)
-  );
-  --content-margin: minmax(var(--page-margin), 1fr);
-  --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
+.type-body-xl,
+.type-nav-xl,
+.type-medium-40,
+.type-body-l,
+.type-product,
+.type-body,
+.type-button,
+.type-meta {
+  font-family: var(--font-text);
+  font-weight: 400;
+}
 
-  /* This is required to make <img> elements work as background images */
-  position: relative;
-  grid-template-columns: var(--content-grid);
+.type-d1 { font-size: var(--type-d1-size); line-height: var(--type-d1-line); letter-spacing: var(--type-d1-tracking); }
+.type-d2 { font-size: var(--type-d2-size); line-height: var(--type-d2-line); letter-spacing: var(--type-d2-tracking); }
+.type-d3 { font-size: var(--type-d3-size); line-height: var(--type-d3-line); letter-spacing: var(--type-d3-tracking); }
+.type-d4 { font-size: var(--type-d4-size); line-height: var(--type-d4-line); letter-spacing: var(--type-d4-tracking); }
+.type-h { font-size: var(--type-h-size); line-height: var(--type-h-line); letter-spacing: var(--type-h-tracking); }
+.type-name { font-size: var(--type-name-size); line-height: var(--type-name-line); letter-spacing: var(--type-name-tracking); }
+.type-label { font-size: var(--type-label-size); line-height: var(--type-label-line); letter-spacing: var(--type-label-tracking); }
+.type-body-xl { font-size: var(--type-body-xl-size); line-height: var(--type-body-xl-line); letter-spacing: var(--type-body-xl-tracking); }
+.type-nav-xl { font-size: var(--type-nav-xl-size); line-height: var(--type-nav-xl-line); letter-spacing: var(--type-nav-xl-tracking); }
+.type-medium-40 { font-size: var(--type-medium-40-size); line-height: var(--type-medium-40-line); letter-spacing: var(--type-medium-40-tracking); }
+.type-body-l { font-size: var(--type-body-l-size); line-height: var(--type-body-l-line); letter-spacing: var(--type-body-l-tracking); }
+.type-product { font-size: var(--type-product-size); line-height: var(--type-product-line); letter-spacing: var(--type-product-tracking); }
+.type-body { font-size: var(--type-body-size); line-height: var(--type-body-line); letter-spacing: var(--type-body-tracking); }
+.type-button { font-size: var(--type-button-size); line-height: var(--type-button-line); letter-spacing: var(--type-button-tracking); }
+.type-meta { font-size: var(--type-meta-size); line-height: var(--type-meta-line); letter-spacing: var(--type-meta-tracking); }
+
+/* ---------------------------------------------------------------------------
+ * Grid
+ * ------------------------------------------------------------------------- */
+.page-width {
+  padding-inline: var(--page-margin);
+}
+
+.grid {
   display: grid;
-  text-align: var(--text-align, left);
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+}
+
+/* Span helpers: .span-6 covers 6 of 12 columns. */
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; }
+.span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; }
+.span-8 { grid-column: span 8; }
+.span-9 { grid-column: span 9; }
+.span-10 { grid-column: span 10; }
+.span-11 { grid-column: span 11; }
+.span-12 { grid-column: 1 / -1; }
+
+/* Mobile overrides: .span-m-6 is half width, .span-m-12 is full width at 390. */
+@media (max-width: 749px) {
+  .span-m-6 { grid-column: span 6; }
+  .span-m-12 { grid-column: 1 / -1; }
+}
+
+.full-bleed {
   width: 100%;
-}
-
-/* Child elements, by default, are constrained to the central column of the grid. */
-.block-container > * {
-  grid-column: 2;
-}
-
-/* Child elements that use the full-width utility class span the entire viewport. */
-.block-container > .full-width {
-  grid-column: 1 / -1;
 }
