@@ -1,31 +1,32 @@
 {%- comment -%}
   Section spacer: a rule, then a display title beside a short paragraph.
-  Optional button (with an optional lead-in line) sits under the copy.
+  Optional button (with an optional lead-in line) sits 24 under the copy, in the copy column.
 {%- endcomment -%}
-<section class="spacer spacer--top-{{ section.settings.spacing_top }}">
+<section class="spacer spacer--top-{{ section.settings.spacing_top }} spacer--bottom-{{ section.settings.spacing_bottom }}">
   <div class="spacer__inner page-width">
     {% render 'rule' %}
     <div class="spacer__row">
       {%- if section.settings.title != blank -%}
         <h2 class="spacer__title type-d3">{{ section.settings.title | escape }}</h2>
       {%- endif -%}
-      {%- if section.settings.copy != blank -%}
-        <div class="spacer__copy">{{ section.settings.copy }}</div>
-      {%- endif -%}
-    </div>
-
-    {%- if section.settings.button_label != blank -%}
-      <div class="spacer__action spacer__action--{{ section.settings.action_spacing }}{% unless section.settings.button_mobile %} spacer__action--desktop-only{% endunless %}">
-        {%- if section.settings.prompt != blank -%}
-          <p class="spacer__prompt type-product">{{ section.settings.prompt | escape }}</p>
+      <div class="spacer__body">
+        {%- if section.settings.copy != blank -%}
+          <div class="spacer__copy">{{ section.settings.copy }}</div>
         {%- endif -%}
-        {% render 'button',
-          label: section.settings.button_label,
-          url: section.settings.button_link,
-          style: section.settings.button_style
-        %}
+        {%- if section.settings.button_label != blank -%}
+          <div class="spacer__action{% unless section.settings.button_mobile %} spacer__action--desktop-only{% endunless %}">
+            {%- if section.settings.prompt != blank -%}
+              <p class="spacer__prompt type-product">{{ section.settings.prompt | escape }}</p>
+            {%- endif -%}
+            {% render 'button',
+              label: section.settings.button_label,
+              url: section.settings.button_link,
+              style: section.settings.button_style
+            %}
+          </div>
+        {%- endif -%}
       </div>
-    {%- endif -%}
+    </div>
   </div>
 </section>
 
@@ -46,6 +47,17 @@
       ],
       "default": "default"
     },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "Space below",
+      "info": "Tight when the next section belongs to this one (a grid or portrait). Section before a colour block.",
+      "options": [
+        { "value": "tight", "label": "Tight (28)" },
+        { "value": "section", "label": "Section (140)" }
+      ],
+      "default": "tight"
+    },
     { "type": "header", "content": "Button" },
     { "type": "text", "id": "prompt", "label": "Lead-in line", "info": "Optional, e.g. Not sure what to get?" },
     { "type": "text", "id": "button_label", "label": "Label" },
@@ -59,16 +71,6 @@
         { "value": "outline", "label": "Outline" }
       ],
       "default": "solid"
-    },
-    {
-      "type": "select",
-      "id": "action_spacing",
-      "label": "Space below button",
-      "options": [
-        { "value": "large", "label": "Section (140)" },
-        { "value": "small", "label": "Small (40)" }
-      ],
-      "default": "large"
     },
     { "type": "checkbox", "id": "button_mobile", "label": "Show button on mobile", "default": true }
   ],

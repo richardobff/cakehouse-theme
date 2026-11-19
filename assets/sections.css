@@ -1,6 +1,7 @@
 /**
  * Cakehouse page sections. Tokens live in critical.css, components in base.css.
  * Desktop values follow Figma at 1440, mobile values (below 750px) at 390.
+ * Desktop sizes use the --u scale unit from critical.css.
  */
 
 /* ---------------------------------------------------------------------------
@@ -36,10 +37,10 @@
   }
 }
 
-/* Large button: entry block, 63px. */
+/* Large button: entry block, 63 at 1440. */
 .button--large {
-  padding: calc(17.5px - var(--stroke-width)) calc(32px - var(--stroke-width))
-    calc(20.5px - var(--stroke-width));
+  padding: calc(calc(17.5 * var(--u)) - var(--stroke-width)) calc(calc(32 * var(--u)) - var(--stroke-width))
+    calc(calc(20.5 * var(--u)) - var(--stroke-width));
   font-size: var(--type-product-size);
   line-height: var(--type-product-line);
   letter-spacing: var(--type-product-tracking);
@@ -68,7 +69,20 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--grid-gutter);
-  padding: 14px 0 28px;
+  padding: calc(14 * var(--u)) 0 calc(28 * var(--u));
+}
+
+/* Space below: section padding before a colour block or image block. */
+.spacer--bottom-section .spacer__row {
+  padding-bottom: var(--section-spacing);
+}
+
+/* Copy column: copy, then the button 24 below it. */
+.spacer__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(24 * var(--u));
 }
 
 .spacer__copy {
@@ -81,20 +95,10 @@
   font-style: normal;
 }
 
-/* The action row lines up with the copy column. */
 .spacer__action {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-left: calc(50% + var(--grid-gutter) / 2);
-}
-
-.spacer__action--large {
-  padding-bottom: var(--section-spacing);
-}
-
-.spacer__action--small {
-  padding-bottom: 40px;
+  gap: calc(16 * var(--u));
 }
 
 @media (max-width: 749px) {
@@ -116,13 +120,13 @@
     letter-spacing: var(--type-body-l-tracking);
   }
 
-  .spacer__action {
-    margin-left: 0;
+  /* Mobile keeps the 390 frame: 24 below the row either way. */
+  .spacer--bottom-section .spacer__row {
+    padding-bottom: 24px;
   }
 
-  .spacer__action--large,
-  .spacer__action--small {
-    padding-bottom: 24px;
+  .spacer__body {
+    gap: 24px;
   }
 
   .spacer__action--desktop-only {
@@ -147,19 +151,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 24px;
-  padding: 20px var(--page-margin) 32px;
+  gap: calc(24 * var(--u));
+  padding: calc(20 * var(--u)) var(--page-margin) calc(32 * var(--u));
 }
 
 .split__bottom {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
+  gap: calc(24 * var(--u));
 }
 
 .split__copy {
-  max-width: 560px;
+  max-width: calc(560 * var(--u));
   font-size: var(--type-medium-40-size);
   line-height: var(--type-medium-40-line);
   letter-spacing: var(--type-medium-40-tracking);
@@ -207,7 +211,7 @@
 .product-grid__list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 72px var(--grid-gutter);
+  gap: calc(72 * var(--u)) var(--grid-gutter);
   margin: 0;
 }
 
@@ -215,7 +219,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: calc(14 * var(--u));
   text-align: center;
 }
 
@@ -223,7 +227,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: calc(14 * var(--u));
   width: 100%;
   color: inherit;
   text-decoration: none;
@@ -308,13 +312,13 @@
 .about__copy {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: flex-start;
-  gap: 24px;
+  gap: calc(24 * var(--u));
 }
 
 .about__text {
-  max-width: 460px;
+  max-width: calc(460 * var(--u));
 }
 
 @media (max-width: 749px) {
@@ -340,16 +344,16 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--grid-gutter);
-  min-height: 560px;
-  padding: 20px var(--page-margin) 32px;
+  align-items: start;
+  padding: calc(20 * var(--u)) var(--page-margin) var(--section-spacing);
   background-color: var(--sign-up-colour);
 }
 
 .sign-up__form {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 16px;
+  justify-content: flex-start;
+  gap: calc(16 * var(--u));
 }
 
 .sign-up__copy {
@@ -362,7 +366,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: calc(16 * var(--u));
 }
 
 /* The field sits on a coloured block, so keep it see-through. */
@@ -374,7 +378,6 @@
   .sign-up {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 20px;
-    min-height: 0;
     padding: 16px var(--page-margin) 32px;
   }
 
@@ -407,7 +410,7 @@
     'title buttons'
     'posts posts';
   align-items: center;
-  gap: 24px;
+  gap: calc(24 * var(--u));
   padding-block: var(--section-spacing);
 }
 
@@ -422,27 +425,27 @@
 .follow-us__buttons {
   grid-area: buttons;
   display: flex;
-  gap: 10px;
+  gap: calc(10 * var(--u));
 }
 
 .follow-us__posts {
   grid-area: posts;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
+  gap: calc(24 * var(--u));
   margin: 0;
 }
 
 .follow-us__link {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: calc(12 * var(--u));
   color: inherit;
   text-decoration: none;
 }
 
 .follow-us__media {
-  border-radius: 24px;
+  border-radius: calc(24 * var(--u));
 }
 
 @media (max-width: 749px) {

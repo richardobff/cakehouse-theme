@@ -29,97 +29,109 @@
   --font-text: 'Futura Medium', 'Futura', sans-serif;
 
   /*
-   * Type styles. Sizes are desktop at 1440.
-   * Display sizes D1 to D3 scale fluidly from 64px at 390 up to their desktop size at 1440.
+   * Scale unit. Desktop is drawn at 1440 and scales as one unit:
+   * 1u = 100vw / 1440, clamped so it stops shrinking at 1024 and stops
+   * growing at 1920. Sizes are written as calc(N * var(--u)) where N is the
+   * Figma value at 1440. Below 750 the unit is 1px and the mobile values
+   * from the 390 frame apply.
    */
-  --fluid-display: (100vw - 390px) / 1050;
+  --u: 1px;
 
-  --type-d1-size: clamp(64px, calc(64px + 266 * (var(--fluid-display))), 330px);
+  /* Type styles. N is the desktop size at 1440. */
+  --type-d1-size: calc(330 * var(--u));
   --type-d1-line: 0.86;
   --type-d1-tracking: -0.03em;
 
-  --type-d2-size: clamp(64px, calc(64px + 136 * (var(--fluid-display))), 200px);
+  --type-d2-size: calc(200 * var(--u));
   --type-d2-line: 0.88;
   --type-d2-tracking: -0.02em;
 
-  --type-d3-size: clamp(64px, calc(64px + 56 * (var(--fluid-display))), 120px);
+  --type-d3-size: calc(120 * var(--u));
   --type-d3-line: 0.9;
   --type-d3-tracking: -0.015em;
 
-  --type-d4-size: 64px;
+  --type-d4-size: calc(64 * var(--u));
   --type-d4-line: 0.92;
   --type-d4-tracking: -0.005em;
 
-  --type-h-size: 32px;
+  --type-h-size: calc(32 * var(--u));
   --type-h-line: 1;
   --type-h-tracking: 0;
 
-  --type-name-size: 20px;
+  --type-name-size: calc(20 * var(--u));
   --type-name-line: 1.1;
   --type-name-tracking: 0.005em;
 
-  --type-label-size: 14px;
+  --type-label-size: calc(14 * var(--u));
   --type-label-line: 1.1;
   --type-label-tracking: 0.03em;
 
-  --type-body-xl-size: 48px;
+  --type-body-xl-size: calc(48 * var(--u));
   --type-body-xl-line: 1.12;
   --type-body-xl-tracking: -0.01em;
 
-  --type-nav-xl-size: 72px;
+  --type-nav-xl-size: calc(72 * var(--u));
   --type-nav-xl-line: 1;
   --type-nav-xl-tracking: -0.02em;
 
-  --type-medium-40-size: 40px;
+  --type-medium-40-size: calc(40 * var(--u));
   --type-medium-40-line: 1.15;
   --type-medium-40-tracking: -0.01em;
 
-  --type-body-l-size: 24px;
+  --type-body-l-size: calc(24 * var(--u));
   --type-body-l-line: 1.3;
   --type-body-l-tracking: -0.005em;
 
-  --type-product-size: 20px;
+  --type-product-size: calc(20 * var(--u));
   --type-product-line: 1.25;
   --type-product-tracking: -0.005em;
 
-  --type-body-size: 17px;
+  --type-body-size: calc(17 * var(--u));
   --type-body-line: 1.4;
   --type-body-tracking: 0;
 
-  --type-button-size: 15px;
+  --type-button-size: calc(15 * var(--u));
   --type-button-line: 1;
   --type-button-tracking: 0;
 
-  --type-meta-size: 12px;
+  --type-meta-size: calc(12 * var(--u));
   --type-meta-line: 1.35;
   --type-meta-tracking: 0;
 
   /*
    * Grid. Desktop frame 1440: margin 24, 12 columns, gutter 24 (column 94).
-   * Mobile frame 390: margin 16.
+   * Columns are fractions of the full width, so backgrounds and full-bleed
+   * images always run edge to edge. Mobile frame 390: margin 16.
    */
-  --page-margin: 24px;
+  --page-margin: calc(24 * var(--u));
   --grid-columns: 12;
-  --grid-gutter: 24px;
-  --grid-column: calc(
-    (100vw - var(--page-margin) * 2 - var(--grid-gutter) * (var(--grid-columns) - 1)) / var(--grid-columns)
-  );
-  --section-spacing: 140px;
+  --grid-gutter: calc(24 * var(--u));
+  --section-spacing: calc(140 * var(--u));
 
   /* Components */
-  --button-height: 43px;
-  --field-height: 48px;
-  --field-height-inline: 39px;
+  --button-height: calc(43 * var(--u));
+  --field-height: calc(48 * var(--u));
+  --field-height-inline: calc(39 * var(--u));
   --radius-pill: 999px;
-  --radius-message: 24px;
+  --radius-message: calc(24 * var(--u));
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-panel: 250ms;
 }
 
+@media (min-width: 750px) {
+  :root {
+    --u: calc(clamp(1024px, 100vw, 1920px) / 1440);
+  }
+}
+
+/* Mobile values from the 390 frame. With --u at 1px the rest match Figma. */
 @media (max-width: 749px) {
   :root {
+    --type-d1-size: 64px;
+    --type-d2-size: 64px;
+    --type-d3-size: 64px;
     --page-margin: 16px;
     --grid-gutter: 16px;
     --section-spacing: 64px;

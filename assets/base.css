@@ -30,10 +30,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: calc(10 * var(--u));
   min-height: var(--button-height);
-  padding: calc(12.5px - var(--stroke-width)) calc(22px - var(--stroke-width))
-    calc(15.5px - var(--stroke-width));
+  padding: calc(calc(12.5 * var(--u)) - var(--stroke-width)) calc(calc(22 * var(--u)) - var(--stroke-width))
+    calc(calc(15.5 * var(--u)) - var(--stroke-width));
   border: var(--stroke-width) solid var(--colour-black);
   border-radius: var(--radius-pill);
   background-color: var(--button-bg);
@@ -83,7 +83,7 @@
   display: block;
   width: 100%;
   height: var(--field-height);
-  padding: 0 20px;
+  padding: 0 calc(20 * var(--u));
   border: var(--stroke-width) solid var(--colour-black);
   border-radius: var(--radius-pill);
   background-color: var(--colour-white);
@@ -104,7 +104,7 @@
   outline-offset: 2px;
 }
 
-/* Inline with a button (desktop footer sign up): 39px, as in Figma.
+/* Inline with a button (desktop footer sign up): 39 at 1440, as in Figma.
  * On mobile these fields stack above their button and go back to 48px. */
 @media (min-width: 750px) {
   .field--inline .field__input {
@@ -114,8 +114,8 @@
 
 .field--message .field__input {
   height: auto;
-  min-height: 160px;
-  padding: 16px 20px;
+  min-height: calc(160 * var(--u));
+  padding: calc(16 * var(--u)) calc(20 * var(--u));
   border-radius: var(--radius-message);
   resize: vertical;
 }
@@ -138,30 +138,30 @@
   display: flex;
   flex: none;
   align-items: center;
-  gap: 10px;
-  padding: 10px 34px;
+  gap: calc(10 * var(--u));
+  padding: calc(10 * var(--u)) calc(34 * var(--u));
   white-space: nowrap;
 }
 
 .now-baking__dot {
   flex: none;
-  width: 14px;
-  height: 14px;
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
   border-radius: 50%;
   background-color: var(--now-baking-dot);
-  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--now-baking-dot) 90%, transparent);
+  box-shadow: 0 0 calc(10 * var(--u)) 2px color-mix(in srgb, var(--now-baking-dot) 90%, transparent);
   animation: now-baking-pulse 2.4s ease-in-out infinite;
 }
 
 .now-baking__ticker {
-  --ticker-gap: 44px;
+  --ticker-gap: calc(44 * var(--u));
 
   display: flex;
   flex: 1 1 auto;
   min-width: 0;
   align-items: center;
   overflow: hidden;
-  padding-left: 24px;
+  padding-left: calc(24 * var(--u));
   background-color: var(--colour-birthday-pink);
 }
 
@@ -295,8 +295,8 @@
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
-  padding: 12px 20px 12px 18px;
+  gap: calc(10 * var(--u));
+  padding: calc(12 * var(--u)) calc(20 * var(--u)) calc(12 * var(--u)) calc(18 * var(--u));
   border-radius: var(--radius-pill);
   background-color: var(--colour-black);
   color: var(--colour-white);
@@ -308,8 +308,8 @@
 }
 
 .cart-button svg {
-  width: 20px;
-  height: 20px;
+  width: calc(20 * var(--u));
+  height: calc(20 * var(--u));
 }
 
 .cart-button__count {
@@ -319,16 +319,16 @@
 
 /* Masthead (home, desktop): wordmark across the full content width, Nav XL links. */
 .header--masthead {
-  padding-top: 24px;
+  padding-top: calc(24 * var(--u));
 }
 
 .header--masthead .header__nav {
   align-items: flex-end;
-  padding: 14px 0 18px;
+  padding: calc(14 * var(--u)) 0 calc(18 * var(--u));
 }
 
 .header--masthead .header__link {
-  font-size: clamp(20px, 5vw, var(--type-nav-xl-size));
+  font-size: var(--type-nav-xl-size);
   line-height: var(--type-nav-xl-line);
   letter-spacing: var(--type-nav-xl-tracking);
 }
@@ -338,18 +338,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
-  padding-block: 18px;
+  gap: calc(32 * var(--u));
+  padding-block: calc(18 * var(--u));
 }
 
 .header--compact .header__wordmark {
   flex: none;
-  width: 240px;
+  width: calc(240 * var(--u));
 }
 
 .header--compact .header__nav {
   align-items: center;
-  gap: 32px;
+  gap: calc(32 * var(--u));
 }
 
 .header--compact .header__link {
@@ -401,7 +401,6 @@
 .footer__mark {
   flex: none;
   width: 50%;
-  max-width: 720px;
 }
 
 .footer__mark svg {
@@ -414,20 +413,20 @@
   flex: 1 1 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
+  gap: calc(20 * var(--u));
   min-width: 0;
-  padding: 0 var(--page-margin) var(--page-margin) 12px;
+  padding: 0 var(--page-margin) var(--page-margin) calc(12 * var(--u));
 }
 
 .footer__signup {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: calc(10 * var(--u));
 }
 
 .footer__signup .field {
-  width: 320px;
+  width: calc(320 * var(--u));
 }
 
 .footer__signup-message {
@@ -437,7 +436,7 @@
 .footer__list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: calc(6 * var(--u));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -466,7 +465,6 @@
 
   .footer__mark {
     width: 100%;
-    max-width: none;
   }
 
   .footer__links {

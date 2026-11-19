@@ -14,13 +14,13 @@
       "settings": {
         "title": "Opening soon",
         "copy": "<p>336 Brunswick St, Fitzroy. Come to the opening party, the first cake is on us.</p>",
-        "spacing_top": "tight",
+        "spacing_top": "default",
         "prompt": "",
         "button_label": "get an invite",
         "button_link": "",
         "button_style": "solid",
-        "action_spacing": "large",
-        "button_mobile": true
+        "button_mobile": true,
+        "spacing_bottom": "section"
       }
     },
     "help-me-order": {
@@ -46,8 +46,8 @@
         "button_label": "help me order",
         "button_link": "/pages/order",
         "button_style": "outline",
-        "action_spacing": "small",
-        "button_mobile": false
+        "button_mobile": false,
+        "spacing_bottom": "tight"
       }
     },
     "product-grid": {
@@ -85,7 +85,8 @@
         "title": "Suzie",
         "copy": "<p>Timeless treats. Flaky pastry, tasty fillings and smells that take you back to your childhood.</p>",
         "spacing_top": "default",
-        "button_label": ""
+        "button_label": "",
+        "spacing_bottom": "tight"
       }
     },
     "about": {

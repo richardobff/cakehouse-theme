@@ -6,14 +6,14 @@
     {% render 'rule' %}
     <div class="spacer__row">
       <h2 class="spacer__title type-d3">{{ section.settings.title | escape }}</h2>
-      <div class="spacer__copy">
+      <div class="spacer__body"><div class="spacer__copy">
         {%- if section.settings.address != blank -%}
           <address class="visit__address">{{ section.settings.address | escape | newline_to_br }}</address>
         {%- endif -%}
         {%- if section.settings.hours != blank -%}
           <p class="visit__hours">{{ section.settings.hours | escape | newline_to_br }}</p>
         {%- endif -%}
-      </div>
+      </div></div>
     </div>
   </div>
 </section>
