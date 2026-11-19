@@ -41,6 +41,8 @@ All current designs are on the page `06 DESIGN PREVIEW`. Use `get_design_context
 | Contact | 62:951 |
 | Menu, about, pre order, wholesale, ordering and pick up, ingredients and allergens, policy, 404, password, gift card (desktop and mobile) | section 238:1507 |
 | Later: cookies and merch (not for this build) | section 243:2406 |
+| Opening options | section 249:2676 |
+| Header and home info component (page 05 design playground) | 250:779 |
 
 The page `05 design playground` holds the source components (button, header, product card, section spacer, footer, cart lines).
 
@@ -209,3 +211,37 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 - Content comes from Suzie. Use the holding copy in Figma until it is supplied.
 - Do not invent prices, lead times, hours, ingredients or allergen information.
 - Keep interface copy short and lowercase on buttons, as in Figma.
+
+## Roadmap
+
+Update this after every branch: move items between lists and add new ones as they come up.
+
+### Done
+- Figma: all pages desktop and mobile, order flow (5 steps), cart, states, opening options, header/home info component, later section for cookies and merch.
+- Repo connected to the store as an unpublished theme. Live landing page untouched.
+- Merged: foundations, home, home-scale (one-unit scaling with floors).
+- Store: pick up address, timezone Australia/Sydney, header and footer menus, follow_us_post metaobject, test data (4 test pies tagged test, Pies collection, hidden Pick up product with dates 2026-11-20 to 2026-12-10, cap 20, 21 and 28 Nov sold out).
+
+### In progress
+- order-panel: built, pick up line per whole pie. Waiting on Rich's review, then merge.
+
+### Next, in order
+1. header-info: info masthead (wordmark 8 columns, cart, status line, address with pin), opening hours settings and open/closed status (green/orange dot), hero fills the window, sticky compact header, new mobile header, sign up band flush above follow us in the footer group, footer email field removed.
+2. Links check: pre order, about, get an invite (#sign-up), Instagram. TikTok empty.
+3. Product page: format choice, pick up date, note (whole pie only), help me order prompt, sold out state, more pies.
+4. Cart drawer and cart page: lines, pick up date, empty state, date conflict prompt, live count.
+5. Pages: menu (metaobject, pies and drinks), about, pre order, wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
+6. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback.
+7. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
+8. Launch: real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
+
+### Backlog (not scheduled)
+- How pick up date variants are created and topped up over time, so Suzie doesn't do it by hand.
+- Cookies and merch (designs kept in Figma).
+- Gift cards: off for now.
+- Klaviyo for sign up, later.
+
+### Waiting on Suzie
+- Pie list, prices and photos.
+- Ordering rule values: lead time, cut-off, daily cap, closed days.
+- Opening hours, about copy, policy wording, wholesale details, drinks for the menu, TikTok link.
