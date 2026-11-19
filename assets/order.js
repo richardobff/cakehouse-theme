@@ -437,6 +437,16 @@
     }
 
     const isPickupLine = (item) => config.pickup.productId && item.product_id === config.pickup.productId;
+    /** A whole pie line: Format property or variant option says whole pie. */
+    const isWholePie = (item) => {
+      if (isPickupLine(item)) return false;
+      const format =
+        (item.properties && item.properties.Format) ||
+        (item.options_with_values || []).map((o) => o.value).join(' ') ||
+        item.variant_title ||
+        '';
+      return format.toLowerCase().includes('whole');
+    };
     const visibleCount = (cart) => cart.items.reduce((n, item) => (isPickupLine(item) ? n : n + item.quantity), 0);
 
     /** Returns the cart's existing pick up date if it differs from ours. */
@@ -478,11 +488,23 @@
         }
 
         const cart = await json(config.routes.cartJs);
-        // One pick up line per order: drop pick up lines for any other date.
         const pickupVariant = config.pickup.variants[state.date];
+        const adding = state.format === 'slice' ? 0 : 1;
+        const wholePies = cart.items.reduce((n, item) => (isWholePie(item) ? n + item.quantity : n), 0) + adding;
+
+        // The pick up line counts whole pies (slices do not count toward the cap).
+        // Set it before adding the pie, so a full day is refused before the pie goes in.
         for (const item of cart.items) {
-          if (isPickupLine(item) && (!pickupVariant || item.variant_id !== pickupVariant.id)) {
-            await json(config.routes.change, { id: item.key, quantity: 0 });
+          if (!isPickupLine(item)) continue;
+          const isThisDate = pickupVariant && item.variant_id === pickupVariant.id;
+          if (!isThisDate) await json(config.routes.change, { id: item.key, quantity: 0 });
+        }
+        if (pickupVariant) {
+          const line = cart.items.find((item) => item.variant_id === pickupVariant.id);
+          if (line && line.quantity !== wholePies) {
+            await json(config.routes.change, { id: line.key, quantity: wholePies });
+          } else if (!line && wholePies > 0) {
+            await json(config.routes.add, { items: [{ id: pickupVariant.id, quantity: wholePies }] });
           }
         }
 
@@ -492,11 +514,7 @@
         };
         if (state.format !== 'slice' && state.note.trim()) properties.Note = state.note.trim();
 
-        const items = [{ id: v.id, quantity: 1, properties }];
-        const hasPickupLine = pickupVariant && cart.items.some((item) => item.variant_id === pickupVariant.id);
-        if (pickupVariant && !hasPickupLine) items.push({ id: pickupVariant.id, quantity: 1 });
-
-        await json(config.routes.add, { items });
+        await json(config.routes.add, { items: [{ id: v.id, quantity: 1, properties }] });
         const updated = await json(config.routes.update, { attributes: { 'Pick up date': state.date } });
 
         document.querySelectorAll('[data-cart-count]').forEach((el) => (el.textContent = String(visibleCount(updated))));
