@@ -1,0 +1,89 @@
+{%- comment -%}
+  Site header. Masthead on home (large wordmark, Nav XL links) and compact
+  everywhere else. On mobile every page uses the large wordmark.
+  "order" opens the order panel once it is built; until then it links to
+  the order URL so it always works without JavaScript.
+{%- endcomment -%}
+{%- liquid
+  assign variant = section.settings.variant
+  if variant == 'auto'
+    if template.name == 'index'
+      assign variant = 'masthead'
+    else
+      assign variant = 'compact'
+    endif
+  endif
+
+  assign order_url = section.settings.order_url | default: routes.all_products_collection_url
+-%}
+<header class="header header--{{ variant }}">
+  <a class="visually-hidden skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+  <div class="header__row">
+    <a class="header__wordmark" href="{{ routes.root_url }}">
+      <span class="visually-hidden">{{ shop.name }}</span>
+      {{ 'logo-wordmark.svg' | inline_asset_content }}
+    </a>
+
+    <nav class="header__nav" aria-label="{{ 'header.nav_label' | t }}">
+      <a
+        class="header__link"
+        href="{{ order_url }}"
+        data-order-trigger
+        aria-haspopup="dialog"
+      >
+        {{- 'header.order' | t -}}
+      </a>
+      {%- for link in section.settings.menu.links -%}
+        <a
+          class="header__link"
+          href="{{ link.url }}"
+          {% if link.current %}aria-current="page"{% endif %}
+        >
+          {{- link.title | downcase -}}
+        </a>
+      {%- endfor -%}
+      <a class="cart-button" href="{{ routes.cart_url }}" data-cart-trigger>
+        {{ 'icon-cart.svg' | inline_asset_content }}
+        <span class="visually-hidden">{{ 'header.cart' | t }}</span>
+        <span class="cart-button__count" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+    </nav>
+  </div>
+
+  {% render 'rule' %}
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout",
+      "info": "Automatic uses the masthead on home and compact on other pages.",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "masthead", "label": "Masthead" },
+        { "value": "compact", "label": "Compact" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "Links after \"order\": menu, visit, about.",
+      "default": "main-menu"
+    },
+    {
+      "type": "url",
+      "id": "order_url",
+      "label": "Order link",
+      "info": "Where \"order\" goes before the order panel loads. Defaults to all products."
+    }
+  ]
+}
+{% endschema %}

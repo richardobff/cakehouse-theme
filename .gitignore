@@ -18,3 +18,9 @@ release
 
 ## Local listings
 listings/
+
+# Source font files stay out of the repo (kept in ~/cakehouse-fonts)
+*.ttf
+*.TTF
+*.otf
+*.OTF

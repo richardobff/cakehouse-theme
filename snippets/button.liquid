@@ -1,0 +1,28 @@
+{% doc %}
+  Pill button. Renders a link when url is set, otherwise a <button>.
+  Interface copy is lowercase, as in Figma.
+
+  @param {string} label - Button text.
+  @param {string} [url] - Link target. Use routes.* for storefront paths.
+  @param {string} [style] - 'solid' (default) or 'outline'.
+  @param {string} [type] - Button type when no url is set. Default 'button'.
+  @param {string} [class] - Extra classes.
+  @param {string} [attributes] - Extra HTML attributes, already escaped.
+
+  @example
+  {% render 'button', label: 'shop', url: routes.collections_url, style: 'outline' %}
+{% enddoc %}
+{%- liquid
+  assign classes = 'button'
+  if style == 'outline'
+    assign classes = classes | append: ' button--outline'
+  endif
+  if class != blank
+    assign classes = classes | append: ' ' | append: class
+  endif
+-%}
+{%- if url != blank -%}
+  <a href="{{ url }}" class="{{ classes }}" {{ attributes }}>{{ label }}</a>
+{%- else -%}
+  <button type="{{ type | default: 'button' }}" class="{{ classes }}" {{ attributes }}>{{ label }}</button>
+{%- endif -%}

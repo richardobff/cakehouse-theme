@@ -1,0 +1,10 @@
+{% doc %}
+  A 1px black rule across the full content width.
+
+  @param {string} [variant] - 'progress' for the 3px active progress rule.
+  @param {string} [class] - Extra classes.
+
+  @example
+  {% render 'rule' %}
+{% enddoc %}
+<hr class="rule{% if variant == 'progress' %} rule--progress{% endif %}{% if class != blank %} {{ class }}{% endif %}">

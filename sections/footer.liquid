@@ -1,0 +1,100 @@
+{%- comment -%}
+  Site footer: brand mark, email sign up, links and copyright.
+  The follow us posts above it are a separate section.
+{%- endcomment -%}
+<footer class="footer">
+  <div class="footer__mark" style="--brand-mark-fill: var(--colour-{{ section.settings.mark_colour }});">
+    {{ 'logo-brand-mark.svg' | inline_asset_content }}
+  </div>
+
+  <div class="footer__links">
+    {%- liquid
+      assign email_label = 'footer.email' | t
+      assign sign_up_label = 'footer.sign_up' | t
+    -%}
+    {%- form 'customer', class: 'footer__signup', id: 'FooterSignup' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {% render 'field',
+        id: 'FooterSignupEmail',
+        name: 'contact[email]',
+        type: 'email',
+        label: email_label,
+        autocomplete: 'email',
+        required: true,
+        inline: true
+      %}
+      {% render 'button', label: sign_up_label, type: 'submit' %}
+      {%- if form.posted_successfully? -%}
+        <p class="footer__signup-message type-meta" role="status">{{ 'footer.sign_up_success' | t }}</p>
+      {%- elsif form.errors -%}
+        <p class="footer__signup-message type-meta" role="alert">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+    {%- endform -%}
+
+    <nav aria-label="{{ 'footer.nav_label' | t }}">
+      <ul class="footer__list" role="list">
+        {%- for link in section.settings.menu.links -%}
+          <li><a href="{{ link.url }}">{{ link.title | downcase }}</a></li>
+        {%- endfor -%}
+        {%- if section.settings.instagram_url != blank -%}
+          <li class="footer__item--social"><a href="{{ section.settings.instagram_url }}">{{ 'footer.instagram' | t }}</a></li>
+        {%- endif -%}
+        {%- if section.settings.tiktok_url != blank -%}
+          <li class="footer__item--social"><a href="{{ section.settings.tiktok_url }}">{{ 'footer.tiktok' | t }}</a></li>
+        {%- endif -%}
+        {%- if section.settings.policies_url != blank -%}
+          <li><a href="{{ section.settings.policies_url }}">{{ 'footer.policies' | t }}</a></li>
+        {%- endif -%}
+      </ul>
+    </nav>
+
+    <p class="footer__copyright type-body">&copy; {{ 'now' | date: '%Y' }} {{ shop.name | downcase }}</p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "settings": [
+    {
+      "type": "select",
+      "id": "mark_colour",
+      "label": "Brand mark colour",
+      "options": [
+        { "value": "blue-sky", "label": "Blue sky" },
+        { "value": "clementine", "label": "Clementine" },
+        { "value": "birthday-pink", "label": "Birthday pink" },
+        { "value": "strawberry", "label": "Strawberry" }
+      ],
+      "default": "blue-sky"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "Ordering and pick up, allergens, wholesale, contact.",
+      "default": "footer"
+    },
+    {
+      "type": "header",
+      "content": "Social and policies"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok"
+    },
+    {
+      "type": "url",
+      "id": "policies_url",
+      "label": "Policies page"
+    }
+  ]
+}
+{% endschema %}

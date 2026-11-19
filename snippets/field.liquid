@@ -1,0 +1,43 @@
+{% doc %}
+  Pill text field with a label. The label is visually hidden by default
+  and the placeholder carries the visible prompt, as in Figma.
+
+  @param {string} id - Unique input id.
+  @param {string} name - Input name.
+  @param {string} label - Accessible label.
+  @param {string} [type] - Input type. Default 'text'.
+  @param {string} [placeholder] - Visible prompt. Defaults to the label.
+  @param {string} [value] - Current value.
+  @param {boolean} [message] - true renders a textarea with a 24px radius.
+  @param {boolean} [required] - Marks the field as required.
+  @param {boolean} [show_label] - true shows the label above the field.
+  @param {boolean} [inline] - true when the field sits on one line with a button (39px on desktop). Stacked fields stay 48px.
+  @param {string} [autocomplete] - Autocomplete hint.
+  @param {string} [class] - Extra classes.
+
+  @example
+  {% render 'field', id: 'Email', name: 'contact[email]', type: 'email', label: 'email', autocomplete: 'email', required: true %}
+{% enddoc %}
+<div class="field{% if message %} field--message{% endif %}{% if inline %} field--inline{% endif %}{% if class != blank %} {{ class }}{% endif %}">
+  <label for="{{ id }}" class="field__label{% unless show_label %} visually-hidden{% endunless %}">{{ label }}</label>
+  {%- if message -%}
+    <textarea
+      id="{{ id }}"
+      name="{{ name }}"
+      class="field__input"
+      placeholder="{{ placeholder | default: label }}"
+      {% if required %}required{% endif %}
+    >{{ value }}</textarea>
+  {%- else -%}
+    <input
+      id="{{ id }}"
+      name="{{ name }}"
+      type="{{ type | default: 'text' }}"
+      class="field__input"
+      placeholder="{{ placeholder | default: label }}"
+      value="{{ value }}"
+      {% if autocomplete != blank %}autocomplete="{{ autocomplete }}"{% endif %}
+      {% if required %}required{% endif %}
+    >
+  {%- endif -%}
+</div>
