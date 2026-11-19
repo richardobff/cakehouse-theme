@@ -5,6 +5,7 @@
   @param {string} label - Button text.
   @param {string} [url] - Link target. Use routes.* for storefront paths.
   @param {string} [style] - 'solid' (default) or 'outline'.
+  @param {string} [size] - 'large' for the 63px entry block button. Default is 43px.
   @param {string} [type] - Button type when no url is set. Default 'button'.
   @param {string} [class] - Extra classes.
   @param {string} [attributes] - Extra HTML attributes, already escaped.
@@ -16,6 +17,9 @@
   assign classes = 'button'
   if style == 'outline'
     assign classes = classes | append: ' button--outline'
+  endif
+  if size == 'large'
+    assign classes = classes | append: ' button--large'
   endif
   if class != blank
     assign classes = classes | append: ' ' | append: class

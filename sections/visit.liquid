@@ -1,0 +1,42 @@
+{%- comment -%}
+  Visit: address and hours beside a display title, in the section spacer layout.
+{%- endcomment -%}
+<section class="spacer spacer--top-{{ section.settings.spacing_top }}">
+  <div class="spacer__inner page-width">
+    {% render 'rule' %}
+    <div class="spacer__row">
+      <h2 class="spacer__title type-d3">{{ section.settings.title | escape }}</h2>
+      <div class="spacer__copy">
+        {%- if section.settings.address != blank -%}
+          <address class="visit__address">{{ section.settings.address | escape | newline_to_br }}</address>
+        {%- endif -%}
+        {%- if section.settings.hours != blank -%}
+          <p class="visit__hours">{{ section.settings.hours | escape | newline_to_br }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Visit",
+  "class": "section-visit",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Visit" },
+    { "type": "textarea", "id": "address", "label": "Address", "default": "336 Brunswick St\nFitzroy VIC 3065" },
+    { "type": "textarea", "id": "hours", "label": "Hours", "info": "One line per day or range." },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "Space above",
+      "options": [
+        { "value": "default", "label": "Section (140, mobile 64)" },
+        { "value": "tight", "label": "Tight (24, mobile 16)" }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [{ "name": "Visit" }]
+}
+{% endschema %}

@@ -69,5 +69,9 @@
     "instagram": "instagram",
     "tiktok": "tiktok",
     "policies": "policies"
+  },
+  "products": {
+    "from_price": "from {{ price }}",
+    "sold_out": "sold out"
   }
 }
