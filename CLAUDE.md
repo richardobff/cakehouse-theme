@@ -143,21 +143,31 @@ index, product, collection (pies), cart, page.menu, page.about, page.pre-order, 
 
 ## Ordering rules
 
-Store these as editable settings with defaults marked "to confirm". Suzie fills them in and changes them later. Do not hard-code values.
+Decided: theme only, no pick up app.
+
+Store these as theme settings with defaults marked "to confirm". Suzie fills them in and changes them later. Do not hard-code values.
 
 - Lead time for whole pies, in business days.
 - Daily cut-off time for the next available day.
-- Daily cap per pie.
-- Closed days and blackout dates.
+- Closed days (weekdays) and blackout dates.
 - Pre order windows, each with its own pick up dates.
 - Slices: available from the counter's stock, pick up only.
 
+The date picker only offers valid dates: it applies the lead time, cut-off, closed days, blackout dates and pre order windows, and greys out days that are sold out.
+
+Daily caps:
+
+- A hidden "pick up" product has one variant per pick up date. Each variant's inventory is the day's cap.
+- The chosen date's variant is added to the cart as a $0 line, so Shopify's checkout blocks a day once it is sold out.
+- The pick up product is hidden from search, collections and the storefront grid, and its line is shown in the cart as the pick up date, not as a product.
+- To confirm with Rich: whether the pick up line counts one unit per order or one per pie. The earlier brief asked for a cap per pie; one pick up product caps the day as a whole.
+
 Cart rules:
 
-- An order has a single pick up date, stored as a cart attribute. If an item is added with a different date, ask the customer which date to keep.
+- An order has a single pick up date, stored as a cart attribute and matched by the pick up line. If an item is added with a different date, ask the customer which date to keep.
 - Each line keeps its format and any note as line item properties.
-- Enforce cut-offs and caps at checkout with a Shopify Function (cart validation), or with a pick up app if that decision is made instead. Confirm with Rich before choosing.
-- The store timezone must be Australia/Melbourne. Check Settings › General before writing any date logic.
+- Lead times, cut-offs, closed days and blackout dates are enforced in the theme (date picker and cart). Caps are enforced by Shopify inventory at checkout.
+- The store timezone is Australia/Sydney (AEDT, the same as Melbourne). Check Settings › General before writing any date logic.
 
 ## Help me order
 

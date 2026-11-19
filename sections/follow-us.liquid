@@ -31,13 +31,17 @@
           {%- assign colour_index = forloop.index0 | modulo: 4 -%}
           <li class="follow-us__post">
             {%- assign post_link = post.link.value -%}
+            {%- comment -%} image is a file_reference: a media image, so use its preview image. {%- endcomment -%}
+            {%- assign post_image = post.image.value.preview_image | default: post.image.value -%}
+            {%- assign post_alt = post.image.value.alt | default: post.platform.value -%}
             {%- if post_link != blank -%}
               <a href="{{ post_link }}" class="follow-us__link" target="_blank" rel="noopener">
             {%- else -%}
               <div class="follow-us__link">
             {%- endif -%}
               {% render 'media',
-                image: post.image.value,
+                image: post_image,
+                alt: post_alt,
                 ratio: '4 / 5',
                 sizes: '(min-width: 750px) 25vw, 50vw',
                 colour: colours[colour_index],

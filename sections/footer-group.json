@@ -7,7 +7,7 @@
       "settings": {
         "title": "Follow us",
         "limit": 4,
-        "instagram_url": "",
+        "instagram_url": "https://www.instagram.com/cake_house_collective/",
         "tiktok_url": "",
         "preview_posts": true
       }
@@ -17,7 +17,7 @@
       "settings": {
         "mark_colour": "blue-sky",
         "menu": "footer",
-        "instagram_url": "",
+        "instagram_url": "https://www.instagram.com/cake_house_collective/",
         "tiktok_url": "",
         "policies_url": ""
       }

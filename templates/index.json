@@ -17,7 +17,7 @@
         "spacing_top": "tight",
         "prompt": "",
         "button_label": "get an invite",
-        "button_link": "",
+        "button_link": "/#sign-up",
         "button_style": "solid",
         "button_mobile": true,
         "spacing_bottom": "section"
@@ -65,7 +65,7 @@
         "title": "Pre order",
         "copy": "<p>Pre order for Christmas. Order window and pick up dates to come.</p>",
         "button_label": "pre order",
-        "button_link": "",
+        "button_link": "/pages/pre-order",
         "image_side": "right",
         "ratio": "4 / 5",
         "preview_image": "preview-pre-order.jpg"
@@ -94,7 +94,7 @@
       "settings": {
         "copy": "<p>Copy about Suzie and the bakery to come.</p>",
         "button_label": "about",
-        "button_link": "",
+        "button_link": "/pages/about",
         "preview_image": "preview-portrait.jpg"
       }
     },
@@ -104,7 +104,8 @@
         "colour": "blue-sky",
         "title": "Sign up",
         "copy": "<p>Get recipes and stay up to date with Suz.</p>",
-        "button_label": "sign up"
+        "button_label": "sign up",
+        "anchor": "sign-up"
       }
     },
     "visit": {

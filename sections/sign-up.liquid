@@ -7,7 +7,10 @@
   assign form_id = 'SignUp-' | append: section.id
   assign field_id = 'SignUpEmail-' | append: section.id
 -%}
-<section class="sign-up" style="--sign-up-colour: var(--colour-{{ section.settings.colour }});">
+<section
+  class="sign-up"
+  {% if section.settings.anchor != blank %}id="{{ section.settings.anchor | handle }}"{% endif %}
+  style="--sign-up-colour: var(--colour-{{ section.settings.colour }});">
   <h2 class="sign-up__title type-d3">{{ section.settings.title | escape }}</h2>
   <div class="sign-up__form">
     {%- if section.settings.copy != blank -%}
@@ -52,7 +55,14 @@
     },
     { "type": "text", "id": "title", "label": "Title", "default": "Sign up" },
     { "type": "richtext", "id": "copy", "label": "Copy", "default": "<p>Get recipes and stay up to date with Suz.</p>" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "sign up" }
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "sign up" },
+    {
+      "type": "text",
+      "id": "anchor",
+      "label": "Link name",
+      "info": "Buttons can jump here with /#this-name.",
+      "default": "sign-up"
+    }
   ],
   "presets": [{ "name": "Sign up" }]
 }
