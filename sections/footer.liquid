@@ -20,7 +20,8 @@
         type: 'email',
         label: email_label,
         autocomplete: 'email',
-        required: true
+        required: true,
+        inline: true
       %}
       {% render 'button', label: sign_up_label, type: 'submit' %}
       {%- if form.posted_successfully? -%}

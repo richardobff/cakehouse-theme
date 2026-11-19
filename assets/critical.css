@@ -109,6 +109,7 @@
   /* Components */
   --button-height: 43px;
   --field-height: 48px;
+  --field-height-inline: 39px;
   --radius-pill: 999px;
   --radius-message: 24px;
 

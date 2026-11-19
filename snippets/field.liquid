@@ -11,13 +11,14 @@
   @param {boolean} [message] - true renders a textarea with a 24px radius.
   @param {boolean} [required] - Marks the field as required.
   @param {boolean} [show_label] - true shows the label above the field.
+  @param {boolean} [inline] - true when the field sits on one line with a button (39px on desktop). Stacked fields stay 48px.
   @param {string} [autocomplete] - Autocomplete hint.
   @param {string} [class] - Extra classes.
 
   @example
   {% render 'field', id: 'Email', name: 'contact[email]', type: 'email', label: 'email', autocomplete: 'email', required: true %}
 {% enddoc %}
-<div class="field{% if message %} field--message{% endif %}{% if class != blank %} {{ class }}{% endif %}">
+<div class="field{% if message %} field--message{% endif %}{% if inline %} field--inline{% endif %}{% if class != blank %} {{ class }}{% endif %}">
   <label for="{{ id }}" class="field__label{% unless show_label %} visually-hidden{% endunless %}">{{ label }}</label>
   {%- if message -%}
     <textarea

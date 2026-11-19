@@ -104,6 +104,14 @@
   outline-offset: 2px;
 }
 
+/* Inline with a button (desktop footer sign up): 39px, as in Figma.
+ * On mobile these fields stack above their button and go back to 48px. */
+@media (min-width: 750px) {
+  .field--inline .field__input {
+    height: var(--field-height-inline);
+  }
+}
+
 .field--message .field__input {
   height: auto;
   min-height: 160px;

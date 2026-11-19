@@ -11,3 +11,9 @@
 #
 # Ignore templates and sections with a regular expression:
 #   /(templates|sections)/.*\.json/
+
+# Source font files stay out of the repo (kept in ~/cakehouse-fonts)
+*.ttf
+*.TTF
+*.otf
+*.OTF
