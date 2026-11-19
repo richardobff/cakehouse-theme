@@ -1,0 +1,61 @@
+{%- comment -%}
+  Order panel. Opened by "order" in the header. A centred panel six columns
+  wide under the header on desktop, a full-screen sheet on mobile.
+  Each option is a block: a title and a button that links somewhere or
+  opens the help me order flow.
+{%- endcomment -%}
+<dialog
+  class="order-panel"
+  id="OrderPanel"
+  aria-labelledby="OrderPanelHeading"
+  data-order-panel
+  scroll-lock
+>
+  <h2 class="visually-hidden" id="OrderPanelHeading">{{ 'order_panel.heading' | t }}</h2>
+  <div class="order-panel__top">
+    {%- assign close_label = 'general.close' | t -%}
+    {% render 'button', label: close_label, style: 'outline', attributes: 'data-dialog-close' %}
+  </div>
+
+  <ul class="order-panel__list" role="list">
+    {%- for block in section.blocks -%}
+      <li class="order-panel__option" {{ block.shopify_attributes }}>
+        <h3 class="order-panel__title type-d4">{{ block.settings.title | escape }}</h3>
+        {%- if block.settings.action == 'help_me_order' -%}
+          {% render 'button', label: block.settings.button_label, attributes: 'data-help-me-order-open' %}
+        {%- else -%}
+          {% render 'button', label: block.settings.button_label, url: block.settings.link %}
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</dialog>
+
+{% schema %}
+{
+  "name": "Order panel",
+  "class": "section-order-panel",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "option",
+      "name": "Option",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Pick up" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "order with us" },
+        {
+          "type": "select",
+          "id": "action",
+          "label": "Button",
+          "options": [
+            { "value": "link", "label": "Goes to a link" },
+            { "value": "help_me_order", "label": "Opens help me order" }
+          ],
+          "default": "link"
+        },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -15,6 +15,15 @@
   endif
 
   assign order_url = section.settings.order_url | default: routes.all_products_collection_url
+
+  assign cart_count = cart.item_count
+  if settings.pickup_product != blank
+    for item in cart.items
+      if item.product_id == settings.pickup_product.id
+        assign cart_count = cart_count | minus: item.quantity
+      endif
+    endfor
+  endif
 -%}
 <header class="header header--{{ variant }}">
   <a class="visually-hidden skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
@@ -46,7 +55,7 @@
       <a class="cart-button" href="{{ routes.cart_url }}" data-cart-trigger>
         {{ 'icon-cart.svg' | inline_asset_content }}
         <span class="visually-hidden">{{ 'header.cart' | t }}</span>
-        <span class="cart-button__count" data-cart-count>{{ cart.item_count }}</span>
+        <span class="cart-button__count" data-cart-count>{{ cart_count }}</span>
       </a>
     </nav>
   </div>

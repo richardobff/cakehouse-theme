@@ -17,7 +17,73 @@
         "menu": "main-menu",
         "order_url": ""
       }
+    },
+    "order-panel": {
+      "type": "order-panel",
+      "blocks": {
+        "help": {
+          "type": "option",
+          "settings": {
+            "title": "Help me order",
+            "button_label": "start",
+            "action": "help_me_order",
+            "link": ""
+          }
+        },
+        "pickup": {
+          "type": "option",
+          "settings": {
+            "title": "Pick up",
+            "button_label": "order with us",
+            "action": "link",
+            "link": "/collections/all"
+          }
+        },
+        "preorder": {
+          "type": "option",
+          "settings": {
+            "title": "Pre order",
+            "button_label": "order ahead",
+            "action": "link",
+            "link": "/pages/pre-order"
+          }
+        },
+        "wholesale": {
+          "type": "option",
+          "settings": {
+            "title": "Wholesale",
+            "button_label": "stock cakehouse",
+            "action": "link",
+            "link": "/pages/wholesale"
+          }
+        }
+      },
+      "block_order": [
+        "help",
+        "pickup",
+        "preorder",
+        "wholesale"
+      ],
+      "settings": {}
+    },
+    "help-me-order-flow": {
+      "type": "help-me-order-flow",
+      "settings": {
+        "label": "Order a pie",
+        "empty_text": "Pies are on their way.",
+        "whole_label": "Whole pie",
+        "whole_note": "Serves to come",
+        "slice_label": "By the slice",
+        "slice_note": "Pick up only",
+        "note_placeholder": "Happy birthday Mum",
+        "note_max": 60
+      }
     }
   },
-  "order": ["now-baking", "header"]
+  "order": [
+    "now-baking",
+    "header",
+    "order-panel",
+    "help-me-order-flow"
+  ]
 }

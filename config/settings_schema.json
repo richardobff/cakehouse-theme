@@ -6,5 +6,126 @@
     "theme_author": "Office BFF",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "Ordering",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Rules for the pick up date picker. Values marked (to confirm) are placeholders until Suzie confirms them. Dates use Australia/Sydney time."
+      },
+      {
+        "type": "text",
+        "id": "pickup_address",
+        "label": "Pick up address",
+        "default": "336 Brunswick St, Fitzroy"
+      },
+      {
+        "type": "range",
+        "id": "lead_time_days",
+        "label": "Lead time for whole pies (to confirm)",
+        "info": "Business days between ordering and pick up.",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "d",
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "slice_lead_days",
+        "label": "Lead time for slices (to confirm)",
+        "info": "0 means same day, from the counter's stock.",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "unit": "d",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "cutoff_time",
+        "label": "Daily cut-off (to confirm)",
+        "info": "24-hour time, e.g. 14:00. Orders after this lose the next available day. Leave empty for no cut-off."
+      },
+      {
+        "type": "range",
+        "id": "booking_horizon_days",
+        "label": "How far ahead people can order",
+        "min": 14,
+        "max": 126,
+        "step": 7,
+        "unit": "d",
+        "default": 63
+      },
+      {
+        "type": "header",
+        "content": "Closed days (to confirm)"
+      },
+      {
+        "type": "checkbox",
+        "id": "closed_monday",
+        "label": "Monday",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "closed_tuesday",
+        "label": "Tuesday",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "closed_wednesday",
+        "label": "Wednesday",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "closed_thursday",
+        "label": "Thursday",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "closed_friday",
+        "label": "Friday",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "closed_saturday",
+        "label": "Saturday",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "closed_sunday",
+        "label": "Sunday",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "blackout_dates",
+        "label": "Blackout dates",
+        "info": "One date per line, as YYYY-MM-DD."
+      },
+      {
+        "type": "textarea",
+        "id": "preorder_windows",
+        "label": "Pre order windows",
+        "info": "One window per line: order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24"
+      },
+      {
+        "type": "header",
+        "content": "Daily caps"
+      },
+      {
+        "type": "product",
+        "id": "pickup_product",
+        "label": "Pick up dates product",
+        "info": "Hidden product with one variant per pick up date (option value YYYY-MM-DD). Each variant's stock is that day's cap."
+      }
+    ]
   }
 ]

@@ -1,0 +1,340 @@
+{%- comment -%}
+  Help me order: a five step pop out (which pie, size, pick up and date,
+  note, your order). A ten column panel under the header on desktop, a
+  full-screen sheet on mobile. Steps, the calendar and the review are run by
+  assets/order.js from the JSON below. Ordering rules live in theme settings
+  (Ordering). Choosing "by the slice" locks pick up and skips the note step.
+{%- endcomment -%}
+{%- liquid
+  assign pie_collection = section.settings.collection
+  assign pickup_product = settings.pickup_product
+  assign total_steps = 5
+-%}
+<dialog
+  class="hmo"
+  id="HelpMeOrder"
+  aria-labelledby="HelpMeOrderTitle"
+  data-hmo
+  data-step="1"
+  scroll-lock
+>
+  <div class="hmo__top">
+    <div class="hmo__progress">
+      <p class="hmo__label">{{ section.settings.label | escape }}</p>
+      <div class="hmo__progress-right">
+        <p class="hmo__count" data-hmo-count>{{ 'help_me_order.progress' | t: current: 1, total: total_steps }}</p>
+        {%- assign close_label = 'general.close' | t -%}
+        {% render 'button', label: close_label, style: 'outline', attributes: 'data-dialog-close' %}
+      </div>
+    </div>
+    <div class="hmo__bar" aria-hidden="true"><span class="hmo__bar-fill"></span></div>
+    <h2 class="hmo__title type-d3" id="HelpMeOrderTitle" tabindex="-1" data-hmo-title>
+      {{- 'help_me_order.titles.pie' | t -}}
+    </h2>
+  </div>
+
+  <div class="hmo__answers">
+    {%- comment -%} 1. Which pie {%- endcomment -%}
+    <section class="hmo__step" data-hmo-step="1" aria-labelledby="HelpMeOrderTitle">
+      {%- assign tile_count = 0 -%}
+      <ul class="hmo-tiles" role="list">
+        {%- if pie_collection != blank -%}
+          {%- for product in pie_collection.products -%}
+            {%- if pickup_product != blank and product.id == pickup_product.id -%}{%- continue -%}{%- endif -%}
+            {%- assign tile_count = tile_count | plus: 1 -%}
+            <li>
+              <button type="button" class="hmo-tile" data-product-id="{{ product.id }}" aria-pressed="false">
+                {% render 'media',
+                  image: product.featured_image,
+                  ratio: '4 / 5',
+                  ratio_mobile: '1 / 1',
+                  sizes: '(min-width: 750px) 18vw, 45vw',
+                  colour: 'clementine',
+                  alt: '',
+                  class: 'hmo-tile__media'
+                %}
+                <span class="hmo-tile__text">
+                  <span class="hmo-tile__name">{{ product.title | escape }}</span>
+                  <span class="hmo-tile__price">{{ product.price_min | money }}</span>
+                </span>
+                <span class="hmo-tile__state button button--outline" aria-hidden="true">
+                  <span class="hmo-tile__choose">{{ 'help_me_order.choose' | t }}</span>
+                  <span class="hmo-tile__chosen">{{ 'help_me_order.chosen' | t }}</span>
+                </span>
+              </button>
+            </li>
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+      {%- if tile_count == 0 -%}
+        <p class="hmo__empty" data-hmo-empty>{{ section.settings.empty_text | escape }}</p>
+      {%- endif -%}
+    </section>
+
+    {%- comment -%} 2. What size {%- endcomment -%}
+    <section class="hmo__step" data-hmo-step="2" hidden>
+      <ul class="hmo-sizes" role="list" data-hmo-sizes></ul>
+    </section>
+
+    {%- comment -%} 3. When and how {%- endcomment -%}
+    <section class="hmo__step" data-hmo-step="3" hidden>
+      <div class="hmo-when">
+        <div class="hmo-when__how">
+          <div class="hmo-when__toggle">
+            <span class="button button--large hmo-when__mode" aria-current="true">{{ 'help_me_order.pick_up' | t }}</span>
+          </div>
+          <p class="hmo-when__info" data-hmo-info></p>
+        </div>
+        <div class="hmo-cal" data-hmo-calendar>
+          <div class="hmo-cal__month">
+            <p class="hmo-cal__name" aria-live="polite" data-hmo-month></p>
+            <div class="hmo-cal__arrows">
+              <button type="button" class="button button--outline" data-hmo-prev></button>
+              <button type="button" class="button button--outline" data-hmo-next-month></button>
+            </div>
+          </div>
+          {% render 'rule' %}
+          <div class="hmo-cal__days" aria-hidden="true">
+            {%- assign weekdays = 'help_me_order.weekdays' | t | split: ',' -%}
+            {%- for d in weekdays -%}<span>{{ d }}</span>{%- endfor -%}
+          </div>
+          <div class="hmo-cal__grid" role="group" data-hmo-grid></div>
+        </div>
+      </div>
+    </section>
+
+    {%- comment -%} 4. Note {%- endcomment -%}
+    <section class="hmo__step" data-hmo-step="4" hidden>
+      <div class="hmo-note">
+        <label class="visually-hidden" for="HelpMeOrderNote">{{ 'help_me_order.note_label' | t }}</label>
+        <textarea
+          class="hmo-note__field"
+          id="HelpMeOrderNote"
+          maxlength="{{ section.settings.note_max }}"
+          placeholder="{{ section.settings.note_placeholder | escape }}"
+          aria-describedby="HelpMeOrderNoteMeta"
+          data-hmo-note
+        ></textarea>
+        <div class="hmo-note__meta" id="HelpMeOrderNoteMeta">
+          <p>
+            <span class="hmo-note__hint">{{ 'help_me_order.note_hint' | t }}</span>
+            <span class="hmo-note__hint-short">{{ 'help_me_order.note_hint_short' | t }}</span>
+          </p>
+          <p><span data-hmo-note-count>0</span> / {{ section.settings.note_max }}</p>
+        </div>
+        {%- assign skip_label = 'help_me_order.skip' | t -%}
+        {% render 'button', label: skip_label, style: 'outline', class: 'hmo-note__skip', attributes: 'data-hmo-skip' %}
+      </div>
+    </section>
+
+    {%- comment -%} 5. Your order {%- endcomment -%}
+    <section class="hmo__step" data-hmo-step="5" hidden>
+      <div class="hmo-review">
+        <div class="media hmo-review__media" style="--media-ratio: 1 / 1; --media-ratio-mobile: 358 / 220; --media-bg: var(--colour-birthday-pink);">
+          <img class="media__img is-loaded" alt="" width="1100" height="1100" data-hmo-review-image hidden>
+        </div>
+        <div class="hmo-review__summary">
+          {% render 'rule' %}
+          {%- assign change_label = 'help_me_order.change' | t -%}
+          <div class="hmo-review__row">
+            <p class="hmo-review__label">{{ 'help_me_order.rows.pie' | t }}</p>
+            <p class="hmo-review__value" data-hmo-review="pie"></p>
+            {% render 'button', label: change_label, style: 'outline', attributes: 'data-hmo-goto="1"' %}
+          </div>
+          {% render 'rule' %}
+          <div class="hmo-review__row">
+            <p class="hmo-review__label">{{ 'help_me_order.rows.pick_up' | t }}</p>
+            <p class="hmo-review__value" data-hmo-review="date"></p>
+            {% render 'button', label: change_label, style: 'outline', attributes: 'data-hmo-goto="3"' %}
+          </div>
+          {% render 'rule' %}
+          <div class="hmo-review__row" data-hmo-review-note-row>
+            <p class="hmo-review__label">{{ 'help_me_order.rows.note' | t }}</p>
+            <p class="hmo-review__value" data-hmo-review="note"></p>
+            {% render 'button', label: change_label, style: 'outline', attributes: 'data-hmo-goto="4"' %}
+          </div>
+          {% render 'rule', class: 'hmo-review__note-rule' %}
+          <div class="hmo-review__total">
+            <p>{{ 'help_me_order.rows.total' | t }}</p>
+            <p data-hmo-review="total"></p>
+          </div>
+        </div>
+      </div>
+      <div class="hmo-conflict" data-hmo-conflict hidden>
+        <p class="hmo-conflict__text" data-hmo-conflict-text></p>
+        <div class="hmo-conflict__actions">
+          {%- assign keep_label = 'help_me_order.conflict_keep' | t -%}
+          {%- assign use_label = 'help_me_order.conflict_use' | t -%}
+          {% render 'button', label: keep_label, style: 'outline', attributes: 'data-hmo-conflict="keep"' %}
+          {% render 'button', label: use_label, attributes: 'data-hmo-conflict="use"' %}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="hmo__bottom">
+    {% render 'rule' %}
+    <div class="hmo__nav">
+      {%- assign browse_url = pie_collection.url | default: routes.all_products_collection_url -%}
+      <a class="button button--outline button--large hmo__browse" href="{{ browse_url }}">{{ 'help_me_order.browse' | t }}</a>
+      <button type="button" class="button button--outline button--large hmo__back" data-hmo-back>{{ 'help_me_order.back' | t }}</button>
+      <div class="hmo__actions">
+        <button type="button" class="button button--outline button--large hmo__skip" data-hmo-skip>{{ 'help_me_order.skip' | t }}</button>
+        <button type="button" class="button button--outline button--large hmo__another" data-hmo-add="another">{{ 'help_me_order.add_another' | t }}</button>
+        <button type="button" class="button button--large hmo__next" data-hmo-next>{{ 'help_me_order.next' | t }}</button>
+        <button type="button" class="button button--large hmo__add" data-hmo-add="cart">
+          {{- 'help_me_order.add_to_cart' | t }}<span class="hmo__add-price" data-hmo-review="total"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <p class="visually-hidden" role="status" data-hmo-status></p>
+</dialog>
+
+{%- comment -%} Data for assets/order.js. {%- endcomment -%}
+{%- liquid
+  assign closed_days = ''
+  if settings.closed_monday
+    assign closed_days = closed_days | append: '1,'
+  endif
+  if settings.closed_tuesday
+    assign closed_days = closed_days | append: '2,'
+  endif
+  if settings.closed_wednesday
+    assign closed_days = closed_days | append: '3,'
+  endif
+  if settings.closed_thursday
+    assign closed_days = closed_days | append: '4,'
+  endif
+  if settings.closed_friday
+    assign closed_days = closed_days | append: '5,'
+  endif
+  if settings.closed_saturday
+    assign closed_days = closed_days | append: '6,'
+  endif
+  if settings.closed_sunday
+    assign closed_days = closed_days | append: '0,'
+  endif
+-%}
+<script type="application/json" data-hmo-config>
+  {
+    "routes": {
+      "cart": {{ routes.cart_url | json }},
+      "add": {{ routes.cart_add_url | append: '.js' | json }},
+      "change": {{ routes.cart_change_url | append: '.js' | json }},
+      "update": {{ routes.cart_update_url | append: '.js' | json }},
+      "cartJs": {{ routes.cart_url | append: '.js' | json }}
+    },
+    "products": [
+      {%- if pie_collection != blank -%}
+        {%- assign first = true -%}
+        {%- for product in pie_collection.products -%}
+          {%- if pickup_product != blank and product.id == pickup_product.id -%}{%- continue -%}{%- endif -%}
+          {%- unless first -%},{%- endunless -%}
+          {%- assign first = false -%}
+          {
+            "id": {{ product.id }},
+            "title": {{ product.title | json }},
+            "image": {{ product.featured_image | image_url: width: 1100 | json }},
+            "variants": [
+              {%- for variant in product.variants -%}
+                {
+                  "id": {{ variant.id }},
+                  "format": {{ variant.option1 | json }},
+                  "price": {{ variant.price | money | json }},
+                  "available": {{ variant.available | json }}
+                }{%- unless forloop.last -%},{%- endunless -%}
+              {%- endfor -%}
+            ]
+          }
+        {%- endfor -%}
+      {%- endif -%}
+    ],
+    "pickup": {
+      {%- if pickup_product != blank -%}
+        "productId": {{ pickup_product.id }},
+        "variants": {
+          {%- for variant in pickup_product.variants -%}
+            {{ variant.option1 | json }}: { "id": {{ variant.id }}, "available": {{ variant.available | json }} }{%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        }
+      {%- else -%}
+        "productId": null,
+        "variants": {}
+      {%- endif -%}
+    },
+    "rules": {
+      "timezone": "Australia/Sydney",
+      "leadDays": {{ settings.lead_time_days | default: 0 }},
+      "sliceLeadDays": {{ settings.slice_lead_days | default: 0 }},
+      "cutoff": {{ settings.cutoff_time | strip | json }},
+      "horizonDays": {{ settings.booking_horizon_days | default: 63 }},
+      "closed": [{{ closed_days | split: ',' | join: ',' }}],
+      "blackout": {{ settings.blackout_dates | json }},
+      "windows": {{ settings.preorder_windows | json }},
+      "address": {{ settings.pickup_address | json }}
+    },
+    "formats": {
+      "whole": {{ section.settings.whole_label | json }},
+      "wholeNote": {{ section.settings.whole_note | json }},
+      "slice": {{ section.settings.slice_label | json }},
+      "sliceNote": {{ section.settings.slice_note | json }}
+    },
+    "strings": {
+      "progress": {{ 'help_me_order.progress' | t: current: '[current]', total: '[total]' | json }},
+      "titles": [
+        {{ 'help_me_order.titles.pie' | t | json }},
+        {{ 'help_me_order.titles.size' | t | json }},
+        {{ 'help_me_order.titles.when' | t | json }},
+        {{ 'help_me_order.titles.note' | t | json }},
+        {{ 'help_me_order.titles.order' | t | json }}
+      ],
+      "choose": {{ 'help_me_order.choose' | t | json }},
+      "chosen": {{ 'help_me_order.chosen' | t | json }},
+      "leadInfo": {{ 'help_me_order.lead_info' | t | json }},
+      "leadInfoOne": {{ 'help_me_order.lead_info_one' | t | json }},
+      "leadInfoNone": {{ 'help_me_order.lead_info_none' | t | json }},
+      "sliceInfo": {{ 'help_me_order.slice_info' | t | json }},
+      "dayAvailable": {{ 'help_me_order.day_available' | t | json }},
+      "dayFull": {{ 'help_me_order.day_full' | t | json }},
+      "dayUnavailable": {{ 'help_me_order.day_unavailable' | t | json }},
+      "monthPrev": {{ 'help_me_order.month_prev' | t | json }},
+      "monthNext": {{ 'help_me_order.month_next' | t | json }},
+      "noNote": {{ 'help_me_order.no_note' | t | json }},
+      "added": {{ 'help_me_order.added' | t | json }},
+      "addedAnother": {{ 'help_me_order.added_another' | t | json }},
+      "error": {{ 'help_me_order.error' | t | json }},
+      "conflict": {{ 'help_me_order.conflict' | t | json }},
+      "pieSize": {{ 'help_me_order.pie_size' | t | json }}
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Help me order",
+  "class": "section-help-me-order-flow",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Pies collection" },
+    { "type": "text", "id": "label", "label": "Label above the steps", "default": "Order a pie" },
+    { "type": "text", "id": "empty_text", "label": "Text when there are no pies", "default": "Pies are on their way." },
+    { "type": "header", "content": "Sizes" },
+    { "type": "text", "id": "whole_label", "label": "Whole pie label", "default": "Whole pie" },
+    { "type": "text", "id": "whole_note", "label": "Whole pie note", "default": "Serves to come" },
+    { "type": "text", "id": "slice_label", "label": "Slice label", "default": "By the slice" },
+    { "type": "text", "id": "slice_note", "label": "Slice note", "default": "Pick up only" },
+    { "type": "header", "content": "Note" },
+    { "type": "text", "id": "note_placeholder", "label": "Example note", "default": "Happy birthday Mum" },
+    {
+      "type": "range",
+      "id": "note_max",
+      "label": "Note length (to confirm)",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "default": 60
+    }
+  ]
+}
+{% endschema %}
