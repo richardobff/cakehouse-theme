@@ -248,6 +248,7 @@ Update this after every branch: move items between lists and add new ones as the
 - pages (stacked on cart): built and pushed, waiting on review. Menu and today's counter from the menu_item metaobject, about, pre order (soon, open and closed states from the theme setting windows; pre order pies get window dates only and a "pre order" button), wholesale and contact (Shopify contact form; not test-submitted), ordering and pick up plus ingredients and allergens (both on the info template, each list limited to its page), policy styling, 404, opening soon password page, gift card. Not previewable yet: the password page (store not password protected) and the gift card (gift cards off).
 - meta (stacked on pages): favicon and link previews built and pushed, waiting on review. Favicon approved as is.
 - motion (stacked on meta), also carrying the product redesign round: product page redesign (gallery and sticky buy column, quantity, info rows from product metafields), ingredients from pies, counter links to products, footer credit and policy links, cart quantity stepper, page sharing image field. Built and pushed, waiting on review.
+- motion, order panel and wholesale: delivery row (theme settings link, hidden until set), pre order button from the window name, wholesale ruled rows and full-width send enquiry. Waiting on review.
 - motion, latest fixes: all pies page, order panel rules (pick up to /collections/pies, pre order only while a window is set), keyboard-only focus ring, mobile size row, home h1. Waiting on review.
 - motion, first part: Nav colour underline (option B) with aria-current, order active on product pages and while the panel is open, button and cart hover fills, focus rings, cross-document view transitions, prefetch on hover, cart count bump. Panels, help me order steps, progress bar, image fades, status pulse, sticky bar and the drawer highlight were already in place.
 
@@ -265,6 +266,7 @@ Update this after every branch: move items between lists and add new ones as the
 - Instagram live sync: a scheduled function (likely on Vercel) reads @cakehousepies posts through the Instagram API (professional account, Suzie authorises once), refreshes its own token and writes the latest posts into follow_us_post. The theme stays unchanged. TikTok stays manual unless we apply for TikTok API access after launch.
 
 ### Waiting on Suzie
+- Delivery service link (e.g. Uber Eats) for the order panel, if she wants delivery at launch.
 - Confirm "We reply within two business days" (contact page).
 - Pie list, prices and photos.
 - Opening times for December (open every day). Daily cap numbers, if caps are switched on.
