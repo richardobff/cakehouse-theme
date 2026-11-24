@@ -591,8 +591,46 @@
     display: block;
   }
 
+  /* Mobile sticky nav: a slim white bar (48) with the nav row and the cart,
+   * and the bar's 1px rule underneath. assets/header.js shows it while
+   * scrolling up. */
   .header-sticky {
+    padding-inline: var(--page-margin);
+  }
+
+  .header-sticky .header__wordmark {
     display: none;
+  }
+
+  .header-sticky__row {
+    height: 48px;
+  }
+
+  .header-sticky .header__nav {
+    flex: 1 1 auto;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .header-sticky .header__links {
+    gap: 22px;
+  }
+
+  .header-sticky .cart-button {
+    padding: 6px 14px 6px 12px;
+  }
+}
+
+@media (max-width: 749px) and (prefers-reduced-motion: reduce) {
+  .header-sticky,
+  .header-sticky.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .header-sticky:not(.is-visible) {
+    visibility: hidden;
   }
 }
 
