@@ -158,7 +158,9 @@ index, product, collection (pies), cart, page.menu, page.about, page.pre-order, 
 - One product per pie.
 - Option "Format" with values "Whole pie" and "By the slice".
 - By the slice is pick up only and has no handwritten note.
-- The product page (templates/product.json): hero image (3:2, 4:5 on mobile), then the buy block: title and "add to cart $price" on the top line; description and the pick up line on the left; on the right, format as two buttons (whole pie, by the slice), pick up date (opens a date panel with the same calendar and rules as help me order), handwritten message (whole pie only) and the help me order prompt (opens the flow with this pie chosen). Then the pre order split and "More pies" (the product grid, leaving out the pie being viewed).
+- The product page (templates/product.json). Desktop: two columns. The photo runs from the screen edge to the end of column 7 at 4:5. Because a 4:5 photo at 7 columns is taller than the window, the right column is the sticky one: it stays under the compact bar while the photo scrolls past (to confirm with Rich: the brief asked for a sticky photo). The right column (columns 8 to 12) has the title (D3), price and add to cart, the description and pick up line, then four rows: format as two buttons (whole pie, by the slice), pick up date (opens a date panel with the same calendar and rules as help me order), handwritten message (whole pie only) and the help me order prompt (opens the flow with this pie chosen). Everything needed to buy is visible on load at 1280 and up.
+- Mobile: photo at 4:5, then title and add to cart directly under it, then description and rows. While the main add to cart button is out of view, a slim bar at the bottom shows "add to cart $price".
+- Below: the pre order split and "More pies" (the product grid, leaving out the pie being viewed).
 - Sold out: when the chosen format is unavailable, "sold out" replaces add to cart.
 - Add to cart on the product page and in help me order share one cart routine (assets/order.js): pick up line per whole pie, one pick up date per order with the conflict prompt.
 
@@ -174,7 +176,13 @@ Store these as theme settings with defaults marked "to confirm". Suzie fills the
 - Pre order windows, each with its own pick up dates.
 - Slices: available from the counter's stock, pick up only.
 
-Starting defaults (confirmed as defaults; Suzie can change them): whole pie lead time 2 business days, slice lead time 0 (same day), no cut-off, orders up to 63 days ahead, note up to 60 characters.
+Values from Suzie (set as the theme setting defaults; she can change them):
+
+- Lead time for whole pies: 2 business days.
+- Cut-off: 12:00 midday, Australia/Sydney. Orders before midday count the lead time from that day; orders after midday count from the next day. The cut-off applies to slices too (after midday, the first slice day is tomorrow).
+- Daily caps: off for now ("Use daily caps" in theme settings, default off). When off, the pick up product is not added to the cart and no day shows as full. The code path stays for when caps are switched on.
+- Open every day in December (no closed weekdays). Opening times still to come.
+- Other defaults: slice lead time 0 (same day), orders up to 63 days ahead, note up to 60 characters.
 
 The date picker only offers valid dates: it applies the lead time, cut-off, closed days, blackout dates and pre order windows, and greys out days that are sold out.
 
@@ -191,6 +199,14 @@ Cart rules:
 - Each line keeps its format and any note as line item properties.
 - Lead times, cut-offs, closed days and blackout dates are enforced in the theme (date picker and cart). Caps are enforced by Shopify inventory at checkout.
 - The store timezone is Australia/Sydney (AEDT, the same as Melbourne). Check Settings › General before writing any date logic.
+
+## Pre order (planned for the pages step)
+
+- A "pre-order" collection holds the pre order pies.
+- A pre order window in theme settings: ordering opens, ordering closes, and the allowed pick up dates.
+- Before the window opens, the pre order page shows "Pre orders for Christmas open soon" with the sign up form.
+- Inside the window, the page shows the pre-order collection, and the date picker offers only the window's pick up dates.
+- Product pages for pre order pies say "pre order" on the button instead of "add to cart".
 
 ## Help me order
 

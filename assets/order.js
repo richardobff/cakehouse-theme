@@ -169,7 +169,8 @@
     const windows = parseWindows(raw.windows);
     const cutoffMatch = (raw.cutoff || '').match(/^(\d{1,2}):(\d{2})$/);
     const cutoff = cutoffMatch ? Number(cutoffMatch[1]) * 60 + Number(cutoffMatch[2]) : null;
-    const hasCaps = pickup && pickup.productId && Object.keys(pickup.variants || {}).length > 0;
+    // Daily caps are optional (Use daily caps); off means no day is ever full.
+    const hasCaps = Boolean(raw.useCaps) && pickup && pickup.productId && Object.keys(pickup.variants || {}).length > 0;
 
     const isOpenDay = (iso) => !closed.has(weekday(iso)) && !blackout.has(iso);
 
@@ -306,10 +307,12 @@
         if ((await resolveConflict(existing)) === 'keep') date = existing;
       }
 
-      const pickupVariant = config.pickup.variants[date];
+      // With daily caps off, the pick up line is left out entirely.
+      const useCaps = Boolean(config.rules.useCaps);
+      const pickupVariant = useCaps ? config.pickup.variants[date] : null;
       const adding = format === 'slice' ? 0 : 1;
       const wholePies = cart.items.reduce((n, item) => (isWholePie(item) ? n + item.quantity : n), 0) + adding;
-      for (const item of cart.items) {
+      for (const item of useCaps ? cart.items : []) {
         if (!isPickupLine(item)) continue;
         const isThisDate = pickupVariant && item.variant_id === pickupVariant.id;
         if (!isThisDate) await json(config.routes.change, { id: item.key, quantity: 0 });
@@ -440,7 +443,7 @@
       const lead = config.rules.leadDays;
       const template =
         state.format === 'slice' ? s.sliceInfo : lead === 0 ? s.leadInfoNone : lead === 1 ? s.leadInfoOne : s.leadInfo;
-      $('[data-hmo-info]').textContent = fill(template, { address: config.rules.address, days: lead });
+      $('[data-hmo-info]').textContent = fill(template, { address: config.rules.address, days: lead, full: config.rules.useCaps ? s.fullNote : '' });
     }
 
     function renderCalendar() {

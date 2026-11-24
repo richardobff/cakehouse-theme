@@ -186,7 +186,7 @@
       {
         "type": "range",
         "id": "lead_time_days",
-        "label": "Lead time for whole pies (to confirm)",
+        "label": "Lead time for whole pies",
         "info": "Business days between ordering and pick up.",
         "min": 0,
         "max": 10,
@@ -208,8 +208,9 @@
       {
         "type": "text",
         "id": "cutoff_time",
-        "label": "Daily cut-off (to confirm)",
-        "info": "24-hour time, e.g. 14:00. Orders after this lose the next available day. Leave empty for no cut-off."
+        "label": "Daily cut-off",
+        "info": "24-hour time, Australia/Sydney. Orders before the cut-off count the lead time from that day; after it, from the next day. Leave empty for no cut-off.",
+        "default": "12:00"
       },
       {
         "type": "range",
@@ -282,6 +283,13 @@
       {
         "type": "header",
         "content": "Daily caps"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_daily_caps",
+        "label": "Use daily caps",
+        "info": "When on, each order adds the hidden pick up line for its date and sold-out days show as full. Off for now.",
+        "default": false
       },
       {
         "type": "product",

@@ -266,6 +266,7 @@
     },
     "rules": {
       "timezone": "Australia/Sydney",
+      "useCaps": {{ settings.use_daily_caps | json }},
       "leadDays": {{ settings.lead_time_days | default: 0 }},
       "sliceLeadDays": {{ settings.slice_lead_days | default: 0 }},
       "cutoff": {{ settings.cutoff_time | strip | json }},
@@ -296,6 +297,7 @@
       "leadInfoOne": {{ 'help_me_order.lead_info_one' | t | json }},
       "leadInfoNone": {{ 'help_me_order.lead_info_none' | t | json }},
       "sliceInfo": {{ 'help_me_order.slice_info' | t | json }},
+      "fullNote": {{ 'help_me_order.full_note' | t | json }},
       "dayAvailable": {{ 'help_me_order.day_available' | t | json }},
       "dayFull": {{ 'help_me_order.day_full' | t | json }},
       "dayUnavailable": {{ 'help_me_order.day_unavailable' | t | json }},

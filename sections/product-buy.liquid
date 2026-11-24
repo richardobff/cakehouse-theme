@@ -1,9 +1,12 @@
 {%- comment -%}
-  Product buy block (white): title and add to cart on the top line; then the
-  description and pick up line on the left, and the options on the right:
-  format (whole pie or by the slice), pick up date, handwritten message (whole
-  pies only) and the help me order prompt. Sold out shows instead of add to
-  cart. assets/product.js runs it, sharing the date rules and the cart logic
+  Product main block (white). Desktop: the photo on the left (from the screen
+  edge to the end of column 7, 4:5, sticky while the right column scrolls);
+  the right column has the title, price and add to cart, the description and
+  pick up line, then the options: format (whole pie or by the slice), pick up
+  date, handwritten message (whole pies only) and the help me order prompt.
+  Mobile: photo, then title and add to cart, description and rows, with a
+  slim add to cart bar at the bottom while the main button is out of view.
+  Sold out shows instead of add to cart. assets/product.js runs it, sharing the date rules and the cart logic
   with help me order (assets/order.js).
 {%- endcomment -%}
 {%- liquid
@@ -27,8 +30,21 @@
   assign choose_label = 'product.choose_date' | t
   assign note_label = 'product.add_note' | t
   assign hmo_label = 'product.help_me_order' | t
+  assign photo_alt = product.featured_media.alt | default: product.title
 -%}
-<section class="product-buy page-width" data-product-buy data-format="{{ start_format }}">
+<section class="product-buy" data-product-buy data-format="{{ start_format }}">
+  <div class="product-buy__media">
+    {% render 'media',
+      image: product.featured_media.preview_image,
+      ratio: '4 / 5',
+      sizes: '(min-width: 750px) 58vw, 100vw',
+      colour: section.settings.colour,
+      alt: photo_alt,
+      priority: true
+    %}
+  </div>
+
+  <div class="product-buy__main">
   <div class="product-buy__head">
     <h1 class="product-buy__title type-d3">{{ product.title | escape }}</h1>
     <button
@@ -132,6 +148,15 @@
     </div>
   </div>
   <p class="product-buy__status" role="status" data-product-status></p>
+  </div>
+
+  {%- comment -%} Mobile: slim add to cart bar while the main button is out of view. {%- endcomment -%}
+  <div class="product-bar" data-product-bar aria-hidden="true" inert>
+    <button type="button" class="button button--large product-bar__add" data-product-bar-add>
+      <span>{{ add_label }}</span>
+      <span data-product-price>{{ start_variant.price | money }}</span>
+    </button>
+  </div>
 
   {%- comment -%} Pick up date panel: the same calendar and rules as help me order. {%- endcomment -%}
   <dialog class="date-panel" aria-labelledby="ProductDateTitle" data-product-date-panel scroll-lock>
@@ -182,9 +207,21 @@
 
 {% schema %}
 {
-  "name": "Product buy",
+  "name": "Product main",
   "class": "section-product-buy block block--white",
   "settings": [
+    {
+      "type": "select",
+      "id": "colour",
+      "label": "Colour behind the photo while it loads",
+      "options": [
+        { "value": "clementine", "label": "Clementine" },
+        { "value": "birthday-pink", "label": "Birthday pink" },
+        { "value": "blue-sky", "label": "Blue sky" },
+        { "value": "strawberry", "label": "Strawberry" }
+      ],
+      "default": "clementine"
+    },
     {
       "type": "text",
       "id": "prompt",

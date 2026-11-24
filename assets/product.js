@@ -59,7 +59,8 @@
     const available = Boolean(v && v.available);
     $('[data-product-add]').hidden = !available;
     $('[data-product-sold-out]').hidden = available;
-    if (v) $('[data-product-price]').textContent = v.price;
+    if (v) $$('[data-product-price]').forEach((el) => (el.textContent = v.price));
+    updateBar();
 
     // Pick up line under the description.
     const lead = config.rules.leadDays;
@@ -79,6 +80,27 @@
     $$('[data-help-me-order-open]').forEach((b) => (b.dataset.format = state.format));
   }
 
+  /* ---- Mobile: slim add to cart bar while the main button is out of view ---- */
+  const bar = $('[data-product-bar]');
+  const mainAdd = $('[data-product-add]');
+  const mobile = window.matchMedia('(max-width: 749px)');
+  let mainInView = true;
+  function updateBar() {
+    if (!bar) return;
+    const v = variant();
+    const show = mobile.matches && !mainInView && Boolean(v && v.available);
+    bar.classList.toggle('is-visible', show);
+    bar.inert = !show;
+    bar.setAttribute('aria-hidden', String(!show));
+  }
+  if (bar && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      mainInView = entry.isIntersecting;
+      updateBar();
+    }).observe(mainAdd);
+    mobile.addEventListener('change', updateBar);
+  }
+
   /* ---- Date panel ---- */
   const panel = $('[data-product-date-panel]');
   shared.wireDialog(panel);
@@ -89,7 +111,7 @@
     const lead = config.rules.leadDays;
     const info =
       state.format === 'slice' ? st.sliceInfo : lead === 0 ? st.leadInfoNone : lead === 1 ? st.leadInfoOne : st.leadInfo;
-    $('[data-product-date-info]').textContent = shared.fill(info, { address: config.rules.address, days: lead });
+    $('[data-product-date-info]').textContent = shared.fill(info, { address: config.rules.address, days: lead, full: config.rules.useCaps ? st.fullNote : '' });
     shared.renderMonth({
       grid: $('[data-product-grid]'),
       nameEl: $('[data-product-month]'),
@@ -198,7 +220,7 @@
       if (open) noteField.focus();
       return;
     }
-    if (event.target.closest('[data-product-add]')) add();
+    if (event.target.closest('[data-product-add], [data-product-bar-add]')) add();
   });
 
   noteField.addEventListener('input', () => {

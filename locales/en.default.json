@@ -115,10 +115,10 @@
       "note": "Note",
       "total": "Total"
     },
-    "lead_info": "[address]. Order [days] business days ahead. Greyed out days are full.",
-    "lead_info_one": "[address]. Order one business day ahead. Greyed out days are full.",
-    "lead_info_none": "[address]. Greyed out days are full.",
-    "slice_info": "[address]. Slices come from the counter, pick up only. Greyed out days are full.",
+    "lead_info": "[address]. Order [days] business days ahead.[full]",
+    "lead_info_one": "[address]. Order one business day ahead.[full]",
+    "lead_info_none": "[address].[full]",
+    "slice_info": "[address]. Slices come from the counter, pick up only.",
     "day_available": "available",
     "day_full": "full",
     "day_unavailable": "not available",
@@ -132,7 +132,8 @@
     "conflict_keep": "keep that date",
     "conflict_use": "use this date",
     "pie_size": "[pie], [size]",
-    "day_names": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+    "day_names": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+    "full_note": " Greyed out days are full."
   },
   "visit": {
     "hours": "{{ open }} to {{ close }}",
