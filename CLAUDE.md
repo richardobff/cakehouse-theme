@@ -247,10 +247,10 @@ Update this after every branch: move items between lists and add new ones as the
 - cart (stacked on product-page): built and pushed, waiting on review. Drawer on every page (pink, 566 on the right; full-screen sheet on mobile), cart page with the same contents, remove per line, empty state, live count, Section Rendering API refresh, newest line highlights. Moving an order to a new date updates the pies already in the cart. No quantity stepper (not in Figma): a pie added twice shows as 2, remove takes the line out.
 - pages (stacked on cart): built and pushed, waiting on review. Menu and today's counter from the menu_item metaobject, about, pre order (soon, open and closed states from the theme setting windows; pre order pies get window dates only and a "pre order" button), wholesale and contact (Shopify contact form; not test-submitted), ordering and pick up plus ingredients and allergens (both on the info template, each list limited to its page), policy styling, 404, opening soon password page, gift card. Not previewable yet: the password page (store not password protected) and the gift card (gift cards off).
 - meta (stacked on pages): favicon and link previews built and pushed, waiting on review. Favicon legibility at 16 and 32 is for Rich to judge.
-- motion (stacked on meta): next.
+- motion (stacked on meta): built and pushed, waiting on review. Nav colour underline (option B) with aria-current, order active on product pages and while the panel is open, button and cart hover fills, focus rings, cross-document view transitions, prefetch on hover, cart count bump. Panels, help me order steps, progress bar, image fades, status pulse, sticky bar and the drawer highlight were already in place.
 
 ### Next, in order
-1. Motion polish, plus hover and active states (nav colour underline, button colour fill, focus ring): view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
+1. Review and merge, in order: product-page, cart, pages, meta, motion.
 2. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
 3. Launch: load follow us posts (follow_us_post entries by hand), real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
 
