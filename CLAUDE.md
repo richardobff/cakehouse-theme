@@ -243,10 +243,10 @@ Update this after every branch: move items between lists and add new ones as the
 - Store: pick up address, timezone Australia/Sydney, header and footer menus, follow_us_post metaobject, test data (4 test pies tagged test, Pies collection, hidden Pick up product with dates 2026-11-20 to 2026-12-10, cap 20, 21 and 28 Nov sold out).
 
 ### In progress
-- product-page: started.
+- product-page: built and pushed, waiting on Rich's review. Hero, buy block (format, pick up date panel, note for whole pies, help me order prompt, sold out), pre order split, More pies. Shares the calendar and cart routine with help me order. Also fixes the mobile cart icon on compact-header pages.
 
 ### Next, in order
-1. Links check: pre order, about, get an invite (#sign-up), Instagram. TikTok empty.
+1. Links check: pre order, about, get an invite (#sign-up), Instagram, TikTok, Substack.
 2. Cart drawer and cart page: lines, pick up date, empty state, date conflict prompt, live count.
 3. Pages: menu (metaobject, pies and drinks), about, pre order, wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
 4. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
