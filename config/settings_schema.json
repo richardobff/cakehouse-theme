@@ -8,6 +8,23 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Brand and sharing",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Square, at least 512 x 512. Leave empty to use the blue brand mark."
+      },
+      {
+        "type": "image_picker",
+        "id": "social_sharing_image",
+        "label": "Social sharing image",
+        "info": "Shown when a link is shared. 1200 x 630 works best. Leave empty to use the lemon meringue on the glass stand. Product pages use the product photo."
+      }
+    ]
+  },
+  {
     "name": "Opening hours",
     "settings": [
       {

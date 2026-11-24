@@ -261,6 +261,8 @@ Buttons:
 - Favicon: the footer brand mark (blue square, diagonal wordmark, from the footer component on 05 design playground), exported square at 512 and 180 (apple touch icon). A "Favicon" image setting in theme settings overrides the files.
 - Social sharing image: a theme setting, defaulting to the lemon meringue on the glass stand (preview-pre-order.jpg) cropped to 1200 x 630 with the pie centred.
 - Every page outputs og:image, og:title, og:description and twitter:card summary_large_image. Product pages use the featured image when there is one; pages use their own image setting if set; otherwise the default.
+- Built: Theme settings > Brand and sharing (Favicon, Social sharing image). Files: assets/favicon-512.png, favicon-32.png, apple-touch-icon.png (180), social-share.jpg (1200 x 630). A page's own image is the page metafield custom.share_image (file); the definition does not exist in the store yet.
+- Legibility: the diagonal wordmark reads at 48px, is borderline at 32 and becomes a stroke at 16. Rich to judge; a simpler mark for 16 and 32 is an option.
 
 ## Performance and quality
 

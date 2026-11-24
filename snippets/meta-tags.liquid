@@ -38,23 +38,49 @@
   content="{{ og_description | escape }}"
 >
 
-{%- if page_image -%}
-  <meta
-    property="og:image"
-    content="http:{{ page_image | image_url }}"
-  >
-  <meta
-    property="og:image:secure_url"
-    content="https:{{ page_image | image_url }}"
-  >
-  <meta
-    property="og:image:width"
-    content="{{ page_image.width }}"
-  >
-  <meta
-    property="og:image:height"
-    content="{{ page_image.height }}"
-  >
+{%- comment -%}
+  Sharing image: the product's featured image on product pages, a page's
+  own image (page metafield custom.share_image) on pages, otherwise the
+  "Social sharing image" theme setting, otherwise assets/social-share.jpg.
+{%- endcomment -%}
+{%- liquid
+  assign share_image = nil
+  if request.page_type == 'product' and product.featured_image
+    assign share_image = product.featured_image
+  elsif request.page_type == 'page' and page.metafields.custom.share_image != blank
+    assign share_image = page.metafields.custom.share_image.value
+  elsif request.page_type == 'article' and article.image
+    assign share_image = article.image
+  elsif request.page_type == 'collection' and collection.image
+    assign share_image = collection.image
+  endif
+  if share_image == nil and settings.social_sharing_image != blank
+    assign share_image = settings.social_sharing_image
+  endif
+-%}
+{%- if share_image -%}
+  <meta property="og:image" content="https:{{ share_image | image_url: width: 1200 }}">
+  <meta property="og:image:secure_url" content="https:{{ share_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="{{ 1200 | divided_by: share_image.aspect_ratio | round }}">
+  <meta name="twitter:image" content="https:{{ share_image | image_url: width: 1200 }}">
+{%- else -%}
+  <meta property="og:image" content="https:{{ 'social-share.jpg' | asset_url }}">
+  <meta property="og:image:secure_url" content="https:{{ 'social-share.jpg' | asset_url }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https:{{ 'social-share.jpg' | asset_url }}">
+{%- endif -%}
+
+{%- comment -%} Favicon: the theme setting, otherwise the blue brand mark. {%- endcomment -%}
+{%- if settings.favicon != blank -%}
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ settings.favicon | image_url: width: 32, height: 32, crop: 'center' }}">
+  <link rel="icon" type="image/png" sizes="512x512" href="{{ settings.favicon | image_url: width: 512, height: 512, crop: 'center' }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | image_url: width: 180, height: 180, crop: 'center' }}">
+{%- else -%}
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ 'favicon-32.png' | asset_url }}">
+  <link rel="icon" type="image/png" sizes="512x512" href="{{ 'favicon-512.png' | asset_url }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ 'apple-touch-icon.png' | asset_url }}">
 {%- endif -%}
 
 {%- if request.page_type == 'product' -%}
