@@ -1,0 +1,89 @@
+{%- comment -%}
+  Pre order (a white block), driven by the pre order windows in theme
+  settings (Ordering):
+  - before a window opens: "Pre orders for Christmas open soon" with sign up
+  - inside a window: the pre order collection, each pie going to its page,
+    where the date picker offers only the window's pick up dates
+  - after the last window: the closed text with sign up
+  The pre order collection is set in theme settings (Ordering).
+{%- endcomment -%}
+{%- liquid
+  capture preorder_state
+    render 'preorder-state'
+  endcapture
+  assign preorder_state = preorder_state | strip
+  assign preorder_collection = settings.preorder_collection | default: collections['pre-order']
+  assign form_id = 'PreOrderSignUp-' | append: section.id
+  assign field_id = 'PreOrderEmail-' | append: section.id
+  assign email_label = 'footer.email' | t
+  assign button_label = 'products.pre_order' | t
+-%}
+<section class="pre-order page-width" data-preorder-state="{{ preorder_state }}">
+  {%- if preorder_state == 'open' and preorder_collection != blank and preorder_collection.products_count > 0 -%}
+    <ul class="product-grid__list pre-order__grid" role="list">
+      {%- for product in preorder_collection.products limit: section.settings.limit -%}
+        {%- if settings.pickup_product != blank and product.id == settings.pickup_product.id -%}{%- continue -%}{%- endif -%}
+        {% render 'product-card', product: product, index: forloop.index0, button_label: button_label %}
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
+    {%- liquid
+      if preorder_state == 'closed'
+        assign message_title = section.settings.closed_title
+        assign message_copy = section.settings.closed_copy
+      elsif preorder_state == 'open'
+        assign message_title = section.settings.empty_title
+        assign message_copy = section.settings.soon_copy
+      else
+        comment
+          soon, or none: with no window set yet the page still says pre orders open soon.
+        endcomment
+        assign message_title = section.settings.soon_title
+        assign message_copy = section.settings.soon_copy
+      endif
+    -%}
+    <div class="pre-order__message">
+      <h2 class="pre-order__title type-d4">{{ message_title | escape }}</h2>
+      <div class="pre-order__body">
+        {%- if message_copy != blank -%}
+          <div class="pre-order__copy type-body-l">{{ message_copy }}</div>
+        {%- endif -%}
+        {%- form 'customer', id: form_id, class: 'sign-up__fields pre-order__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter,pre-order">
+          {% render 'field', id: field_id, name: 'contact[email]', type: 'email', label: email_label, autocomplete: 'email', required: true %}
+          {% render 'button', label: section.settings.button_label, type: 'submit' %}
+          {%- if form.posted_successfully? -%}
+            <p class="type-meta" role="status">{{ 'footer.sign_up_success' | t }}</p>
+          {%- elsif form.errors -%}
+            <p class="type-meta" role="alert">{{ form.errors | default_errors }}</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Pre order",
+  "class": "section-pre-order block block--white",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows the pre order collection while a pre order window is open. Windows and the collection are in Theme settings > Ordering."
+    },
+    { "type": "range", "id": "limit", "label": "Pies to show", "min": 4, "max": 24, "step": 4, "default": 12 },
+    { "type": "header", "content": "Before the window opens" },
+    { "type": "text", "id": "soon_title", "label": "Title", "default": "Pre orders for Christmas open soon" },
+    { "type": "richtext", "id": "soon_copy", "label": "Copy", "default": "<p>Sign up and we'll let you know when they open.</p>" },
+    { "type": "header", "content": "After the window closes" },
+    { "type": "text", "id": "closed_title", "label": "Title", "default": "Pre orders are closed" },
+    { "type": "richtext", "id": "closed_copy", "label": "Copy" },
+    { "type": "header", "content": "Open, but no pies in the collection yet" },
+    { "type": "text", "id": "empty_title", "label": "Title", "default": "Pre order pies to come" },
+    { "type": "header", "content": "Sign up" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "sign up" }
+  ],
+  "presets": [{ "name": "Pre order" }]
+}
+{% endschema %}

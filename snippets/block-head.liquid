@@ -10,6 +10,7 @@
   @param {string} [button_link] - Button link.
   @param {string} [button_style] - 'solid' (default) or 'outline'.
   @param {boolean} [button_mobile] - false hides the button below 750px. Default true.
+  @param {boolean} [heading_h1] - true renders the title as the page's h1.
 
   @example
   {% render 'block-head', title: section.settings.title, copy: section.settings.copy %}
@@ -22,7 +23,11 @@
 -%}
 <div class="block-head">
   {%- if title != blank -%}
-    <h2 class="block-head__title type-d3">{{ title | escape }}</h2>
+    {%- if heading_h1 -%}
+      <h1 class="block-head__title type-d3">{{ title | escape }}</h1>
+    {%- else -%}
+      <h2 class="block-head__title type-d3">{{ title | escape }}</h2>
+    {%- endif -%}
   {%- endif -%}
   <div class="block-head__body">
     {%- if copy != blank -%}

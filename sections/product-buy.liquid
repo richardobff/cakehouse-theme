@@ -1,0 +1,323 @@
+{%- comment -%}
+  Product main block (white).
+  Desktop: gallery on the left (columns 1 to 7, edge to edge from the left),
+  photos stacked with a 4px gap and scrolling with the page; the first photo
+  is capped at the window height minus the header so it shows whole on load.
+  Later photos are 4:5. The buy column on the right (columns 8 to 12) is
+  sticky: title, price, description, ruled rows (size, pick up, message),
+  quantity and add to cart, the pick up line, the help me order prompt, then
+  info rows from product metafields (ingredients, allergens, serves, storage
+  and serving), each shown only when it has content.
+  Mobile: the first photo at 4:5, then the buy column; a full-width add to
+  cart bar shows at the bottom while the main button is out of view.
+  assets/product.js runs it, sharing the date rules and the cart logic with
+  help me order (assets/order.js). ?variant= picks the starting format (the
+  menu's "by the slice" links use it).
+{%- endcomment -%}
+{%- liquid
+  assign whole_variant = nil
+  assign slice_variant = nil
+  for variant in product.variants
+    assign fmt = variant.option1 | downcase
+    if fmt contains 'slice'
+      assign slice_variant = variant
+    elsif fmt contains 'whole' or product.variants.size == 1
+      assign whole_variant = variant
+    endif
+  endfor
+  assign start_variant = whole_variant | default: slice_variant | default: product.selected_or_first_available_variant
+  assign start_format = 'whole'
+  if whole_variant == nil
+    assign start_format = 'slice'
+  endif
+  if product.selected_variant and slice_variant and product.selected_variant.id == slice_variant.id
+    assign start_variant = slice_variant
+    assign start_format = 'slice'
+  endif
+
+  assign preorder_collection = settings.preorder_collection | default: collections['pre-order']
+  assign is_preorder = false
+  if preorder_collection != blank
+    for c in product.collections
+      if c.id == preorder_collection.id
+        assign is_preorder = true
+        break
+      endif
+    endfor
+  endif
+  if is_preorder
+    assign add_label = 'products.pre_order' | t
+  else
+    assign add_label = 'product.add_to_cart' | t
+  endif
+  assign sold_out_label = 'products.sold_out' | t
+  assign choose_label = 'product.choose_date' | t
+  assign note_label = 'product.add_note' | t
+  assign hmo_label = 'product.help_me_order' | t
+  assign photo_alt = product.title
+
+  assign photos = product.media | where: 'media_type', 'image'
+  assign preview_list = section.settings.preview_images | split: ','
+-%}
+<section class="product-buy" data-product-buy data-format="{{ start_format }}">
+  <div class="product-buy__gallery">
+    {%- if photos.size > 0 -%}
+      {%- for photo in photos -%}
+        {%- assign this_alt = photo.alt | default: photo_alt -%}
+        <div class="product-buy__photo{% if forloop.first %} product-buy__photo--first{% endif %}">
+          {% render 'media',
+            image: photo.preview_image,
+            ratio: '4 / 5',
+            sizes: '(min-width: 750px) 58vw, 100vw',
+            colour: section.settings.colour,
+            alt: this_alt,
+            priority: forloop.first
+          %}
+        </div>
+      {%- endfor -%}
+    {%- elsif section.settings.preview_images != blank -%}
+      {%- for file in preview_list -%}
+        <div class="product-buy__photo{% if forloop.first %} product-buy__photo--first{% endif %}">
+          {%- assign file_name = file | strip -%}
+          {% render 'media', preview: file_name, ratio: '4 / 5', colour: section.settings.colour, alt: photo_alt, priority: forloop.first %}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      <div class="product-buy__photo product-buy__photo--first">
+        {% render 'media', ratio: '4 / 5', colour: section.settings.colour %}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="product-buy__main">
+    <h1 class="product-buy__title type-d4">{{ product.title | escape }}</h1>
+    <p class="product-buy__price type-body-l" data-product-unit-price>{{ start_variant.price | money }}</p>
+    {%- if product.description != blank -%}
+      <div class="product-buy__description type-body">{{ product.description }}</div>
+    {%- endif -%}
+
+    <div class="product-buy__rows">
+      {%- if whole_variant and slice_variant -%}
+        <div class="product-buy__row product-buy__row--size">
+          <p class="product-buy__label" id="ProductFormatLabel">{{ 'product.size' | t }}</p>
+          <div class="product-buy__chips" role="group" aria-labelledby="ProductFormatLabel">
+            <button type="button" class="button{% if start_format != 'whole' %} button--outline{% endif %}" data-product-format="whole" aria-pressed="{% if start_format == 'whole' %}true{% else %}false{% endif %}">
+              <span>{{ 'product.whole_pie' | t }}</span>
+              <span data-format-price>{{ whole_variant.price | money }}</span>
+            </button>
+            <button type="button" class="button{% if start_format != 'slice' %} button--outline{% endif %}" data-product-format="slice" aria-pressed="{% if start_format == 'slice' %}true{% else %}false{% endif %}">
+              <span>{{ 'product.by_the_slice' | t }}</span>
+              <span data-format-price>{{ slice_variant.price | money }}</span>
+            </button>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="product-buy__row">
+        <p class="product-buy__label" id="ProductDateLabel">{{ 'product.pick_up' | t }}</p>
+        <button
+          type="button"
+          class="button button--outline product-buy__control"
+          aria-describedby="ProductDateLabel"
+          aria-haspopup="dialog"
+          data-product-date-open
+        >
+          {{- choose_label -}}
+        </button>
+      </div>
+
+      <div class="product-buy__row product-buy__row--note" data-product-note-row {% if start_format == 'slice' %}hidden{% endif %}>
+        <p class="product-buy__label">{{ 'product.message' | t }}</p>
+        <button
+          type="button"
+          class="button button--outline product-buy__control"
+          aria-expanded="false"
+          aria-controls="ProductNote"
+          data-product-note-toggle
+        >
+          {{- note_label -}}
+        </button>
+        <div class="product-buy__note" id="ProductNote" hidden>
+          <label class="visually-hidden" for="ProductNoteField">{{ 'help_me_order.note_label' | t }}</label>
+          <textarea class="product-buy__note-field" id="ProductNoteField" rows="3" data-product-note></textarea>
+          <p class="product-buy__note-meta">
+            <span>{{ 'help_me_order.note_hint' | t }}</span>
+            <span><span data-product-note-count>0</span> / <span data-product-note-max>60</span></span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-buy__add-row">
+      <div class="quantity" role="group" aria-label="{{ 'product.quantity' | t | escape }}" data-product-qty>
+        <button type="button" class="quantity__step" data-qty-step="-1" aria-label="{{ 'product.quantity_less' | t | escape }}">&minus;</button>
+        <output class="quantity__value" data-qty-value aria-live="polite">1</output>
+        <button type="button" class="quantity__step" data-qty-step="1" aria-label="{{ 'product.quantity_more' | t | escape }}">+</button>
+      </div>
+      <button
+        type="button"
+        class="button product-buy__add"
+        data-product-add
+        {% unless start_variant.available %}hidden{% endunless %}
+      >
+        <span data-product-add-label>{{ add_label }}</span>
+        <span data-product-price>{{ start_variant.price | money }}</span>
+      </button>
+      <span class="button button--outline product-buy__sold-out" data-product-sold-out {% if start_variant.available %}hidden{% endif %}>
+        {{- sold_out_label -}}
+      </span>
+    </div>
+
+    <p class="product-buy__info">
+      <span class="product-buy__pin" aria-hidden="true">{{ 'icon-pin.svg' | inline_asset_content }}</span>
+      <span data-product-info></span>
+    </p>
+
+    <div class="product-buy__help">
+      <p class="product-buy__prompt">{{ section.settings.prompt | escape }}</p>
+      <button type="button" class="button button--outline" data-help-me-order-open data-product-id="{{ product.id }}">
+        {{- hmo_label -}}
+      </button>
+    </div>
+
+    <div class="hmo-conflict product-buy__conflict" data-product-conflict hidden>
+      <p class="hmo-conflict__text" data-product-conflict-text></p>
+      <div class="hmo-conflict__actions">
+        {%- assign keep_label = 'help_me_order.conflict_keep' | t -%}
+        {%- assign use_label = 'help_me_order.conflict_use' | t -%}
+        {% render 'button', label: keep_label, style: 'outline', attributes: 'data-product-conflict-choice="keep"' %}
+        {% render 'button', label: use_label, attributes: 'data-product-conflict-choice="use"' %}
+      </div>
+    </div>
+    <p class="product-buy__status" role="status" data-product-status></p>
+
+    {%- liquid
+      assign info_ingredients = product.metafields.custom.ingredients.value
+      assign info_allergens = product.metafields.custom.allergens.value
+      assign info_serves = product.metafields.custom.serves.value
+      assign info_storage = product.metafields.custom.storage.value
+    -%}
+    {%- if info_ingredients != blank or info_allergens != blank or info_serves != blank or info_storage != blank -%}
+      <div class="product-buy__info-rows">
+        {%- if info_ingredients != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.ingredients' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_ingredients | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+        {%- if info_allergens != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.allergens' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_allergens | escape }}</div>
+          </details>
+        {%- endif -%}
+        {%- if info_serves != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.serves' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_serves | escape }}</div>
+          </details>
+        {%- endif -%}
+        {%- if info_storage != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.storage' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_storage | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Mobile: full-width add to cart bar while the main button is out of view. {%- endcomment -%}
+  <div class="product-bar" data-product-bar aria-hidden="true" inert>
+    <button type="button" class="button product-bar__add" data-product-bar-add>
+      <span data-product-add-label>{{ add_label }}</span>
+      <span data-product-price>{{ start_variant.price | money }}</span>
+    </button>
+  </div>
+
+  {%- comment -%} Pick up date panel: the same calendar and rules as help me order. {%- endcomment -%}
+  <dialog class="date-panel" aria-labelledby="ProductDateTitle" data-product-date-panel scroll-lock>
+    <div class="date-panel__top">
+      <h2 class="date-panel__title type-d4" id="ProductDateTitle">{{ 'product.pick_up_date' | t }}</h2>
+      {%- assign close_label = 'general.close' | t -%}
+      {% render 'button', label: close_label, style: 'outline', attributes: 'data-dialog-close' %}
+    </div>
+    <p class="date-panel__info" data-product-date-info></p>
+    <div class="hmo-cal">
+      <div class="hmo-cal__month">
+        <p class="hmo-cal__name" aria-live="polite" data-product-month></p>
+        <div class="hmo-cal__arrows">
+          <button type="button" class="button button--outline" data-product-prev></button>
+          <button type="button" class="button button--outline" data-product-next></button>
+        </div>
+      </div>
+      {% render 'rule' %}
+      <div class="hmo-cal__days" aria-hidden="true">
+        {%- assign weekdays = 'help_me_order.weekdays' | t | split: ',' -%}
+        {%- for d in weekdays -%}<span>{{ d }}</span>{%- endfor -%}
+      </div>
+      <div class="hmo-cal__grid" role="group" aria-labelledby="ProductDateTitle" data-product-grid></div>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-product-json>
+    {
+      "id": {{ product.id }},
+      "title": {{ product.title | json }},
+      "preorder": {{ is_preorder | json }},
+      "moneyFormat": {{ shop.money_format | json }},
+      "variants": {
+        "whole": {% if whole_variant %}{ "id": {{ whole_variant.id }}, "price": {{ whole_variant.price | money | json }}, "cents": {{ whole_variant.price }}, "available": {{ whole_variant.available | json }} }{% else %}null{% endif %},
+        "slice": {% if slice_variant %}{ "id": {{ slice_variant.id }}, "price": {{ slice_variant.price | money | json }}, "cents": {{ slice_variant.price }}, "available": {{ slice_variant.available | json }} }{% else %}null{% endif %}
+      },
+      "strings": {
+        "infoWhole": {{ 'product.info_whole' | t | json }},
+        "infoWholeOne": {{ 'product.info_whole_one' | t | json }},
+        "infoWholeNone": {{ 'product.info_whole_none' | t | json }},
+        "infoSlice": {{ 'product.info_slice' | t | json }},
+        "infoPreorder": {{ 'product.info_preorder' | t | json }},
+        "infoPreorderSoon": {{ 'product.info_preorder_soon' | t | json }},
+        "before": {{ 'product.before' | t | json }},
+        "midday": {{ 'product.midday' | t | json }},
+        "midnight": {{ 'product.midnight' | t | json }},
+        "choose": {{ choose_label | json }},
+        "addNote": {{ note_label | json }},
+        "editNote": {{ 'product.edit_note' | t | json }},
+        "needDate": {{ 'product.need_date' | t | json }}
+      }
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Product main",
+  "class": "section-product-buy block block--white",
+  "settings": [
+    {
+      "type": "select",
+      "id": "colour",
+      "label": "Colour behind the photos while they load",
+      "options": [
+        { "value": "clementine", "label": "Clementine" },
+        { "value": "birthday-pink", "label": "Birthday pink" },
+        { "value": "blue-sky", "label": "Blue sky" },
+        { "value": "strawberry", "label": "Strawberry" }
+      ],
+      "default": "clementine"
+    },
+    {
+      "type": "text",
+      "id": "prompt",
+      "label": "Help me order prompt",
+      "default": "Ordering for an occasion?"
+    },
+    {
+      "type": "text",
+      "id": "preview_images",
+      "label": "Temporary preview photos",
+      "info": "Theme assets from Figma, comma separated, shown when a pie has no photos. Clear before launch."
+    }
+  ]
+}
+{% endschema %}

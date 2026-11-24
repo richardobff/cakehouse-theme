@@ -45,7 +45,37 @@
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+}
+
+/* Hover and keyboard focus: fill with the hover colour (clementine; white
+ * inside a clementine block), black text. Outline buttons keep their black
+ * stroke. Selected chips and disabled buttons keep their own look. */
+.button:not(:disabled, [aria-disabled='true'], [aria-pressed='true']):is(:hover, :focus-visible) {
+  --button-bg: var(--button-hover, var(--colour-clementine));
+  --button-fg: var(--colour-black);
+}
+
+.button:not(.button--outline, :disabled, [aria-disabled='true'], [aria-pressed='true']):is(:hover, :focus-visible) {
+  border-color: var(--button-hover, var(--colour-clementine));
+}
+
+.button:focus-visible,
+.cart-button:focus-visible,
+.header__link:focus-visible {
+  outline: 2px solid var(--colour-black);
+  outline-offset: 2px;
+}
+
+.surface--clementine {
+  --button-hover: var(--colour-white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .cart-button {
+    transition: none;
+  }
 }
 
 .button--outline {
@@ -53,7 +83,6 @@
   --button-fg: var(--colour-black);
 }
 
-.button--outline:hover,
 .button--outline[aria-pressed='true'],
 .button--outline[aria-current] {
   --button-bg: var(--colour-black);
@@ -142,6 +171,12 @@
   height: auto;
 }
 
+.header__wordmark-heading {
+  margin: 0;
+  font-size: inherit;
+  line-height: 0;
+}
+
 .header__info {
   grid-area: info;
 }
@@ -165,11 +200,49 @@
   white-space: nowrap;
 }
 
-.header__link:hover,
-.header__link[aria-current='page'] {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.12em;
+/* Nav underline in the page's colour, 2px under the text, full word width.
+ * The current page shows it; hover grows it from the left (150ms). Touch
+ * screens get the current page only. */
+.header__link {
+  --nav-underline: 4px;
+  position: relative;
+}
+
+.header__link::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 100%;
+  height: var(--nav-underline);
+  background-color: var(--nav-colour, var(--colour-black));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 150ms var(--ease-out);
+}
+
+.header__link[aria-current='page']::after,
+.header__link.is-active::after,
+.header__link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) {
+  .header__link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 749px) {
+  .header__link {
+    --nav-underline: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header__link::after {
+    transition: none;
+  }
 }
 
 /* Cart button: black pill with icon and count. */
@@ -187,9 +260,34 @@
   line-height: var(--type-product-line);
   letter-spacing: var(--type-product-tracking);
   text-decoration: none;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
+}
+
+.cart-button:hover,
+.cart-button:focus-visible {
+  background-color: var(--colour-clementine);
+  color: var(--colour-black);
+}
+
+/* Add to cart: the count bumps once. */
+.cart-button.is-bumped {
+  animation: cart-bump 360ms var(--ease-out);
+}
+
+@keyframes cart-bump {
+  40% {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-button.is-bumped {
+    animation: none;
+  }
 }
 
 .cart-button svg {
+  flex: none;
   width: calc(20 * var(--u));
   height: calc(20 * var(--u));
 }
@@ -469,7 +567,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0;
     padding: 10px 0 12px;
+  }
+
+  .header__nav-cart {
+    flex: none;
   }
 
   .header--masthead .header__links,
@@ -546,6 +649,77 @@
   text-underline-offset: 0.12em;
 }
 
+/* Bottom line: copyright, policies and credits at Meta size, in black. */
+.footer__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: calc(24 * var(--u));
+  row-gap: 4px;
+  width: 100%;
+}
+
+.footer__base p {
+  margin: 0;
+}
+
+.footer__policies ul {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: calc(16 * var(--u));
+  row-gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__base a,
+.footer__credit-toggle {
+  color: var(--colour-black);
+  text-decoration: none;
+}
+
+.footer__base a:hover,
+.footer__base a:focus-visible,
+.footer__credit-toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.footer__credit-toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+/* The credit stays hidden until "credits" is hovered, focused or tapped. */
+.footer__credit-link {
+  visibility: hidden;
+  margin-left: 0.6em;
+  opacity: 0;
+  transition: opacity 150ms var(--ease-out), visibility 0s linear 150ms;
+}
+
+.footer__credit:hover .footer__credit-link,
+.footer__credit:focus-within .footer__credit-link,
+.footer__credit.is-open .footer__credit-link {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 150ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__credit-link,
+  .footer__credit:hover .footer__credit-link,
+  .footer__credit:focus-within .footer__credit-link,
+  .footer__credit.is-open .footer__credit-link {
+    transition: none;
+  }
+}
+
 @media (max-width: 749px) {
   .footer {
     flex-direction: column-reverse;
@@ -566,8 +740,21 @@
   }
 
   /* Social links sit in the follow us section on mobile. */
-  .footer__item--social,
-  .footer__copyright {
+  .footer__item--social {
+    display: none;
+  }
+
+  .footer__base {
+    flex-direction: column;
+    row-gap: 6px;
+  }
+
+  .footer__credit-link {
+    display: block;
+    margin: 4px 0 0;
+  }
+
+  .footer__credit:not(.is-open, :focus-within) .footer__credit-link {
     display: none;
   }
 }

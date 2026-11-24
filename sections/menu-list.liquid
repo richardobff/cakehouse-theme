@@ -1,0 +1,74 @@
+{%- comment -%}
+  Menu (a white block): one column per group (pies, drinks), each a list of
+  name and price rows. Items come from Content > Metaobjects > Menu item
+  (name, price, group), so Suzie can edit them without touching products.
+  Each group block shows the items whose group matches its key.
+{%- endcomment -%}
+{%- assign items = shop.metaobjects.menu_item.values -%}
+<section class="menu-list-section page-width">
+  {%- if section.settings.show_head and request.page_type == 'page' -%}
+    {% render 'block-head', title: page.title, copy: section.settings.intro, heading_h1: true %}
+  {%- endif -%}
+  <div class="menu-list">
+  {%- for block in section.blocks -%}
+    {%- liquid
+      assign key = block.settings.group | default: block.settings.title | downcase | strip
+      assign count = 0
+    -%}
+    <div class="menu-list__group" {{ block.shopify_attributes }}>
+      <h2 class="menu-list__title type-d4">{{ block.settings.title | escape }}</h2>
+      <ul class="menu-list__items" role="list">
+        {%- for item in items -%}
+          {%- assign item_group = item.group.value | downcase | strip -%}
+          {%- if item_group != key -%}{%- continue -%}{%- endif -%}
+          {%- assign count = count | plus: 1 -%}
+          <li class="menu-list__item">
+            <span>{{ item.name.value | escape }}</span>
+            <span>{{ item.price.value | escape }}</span>
+          </li>
+        {%- endfor -%}
+        {%- if count == 0 -%}
+          <li class="menu-list__item menu-list__item--empty">
+            <span>{{ block.settings.empty_text | escape }}</span>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+  {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Menu",
+  "class": "section-menu-list block block--white",
+  "settings": [
+    { "type": "checkbox", "id": "show_head", "label": "Page title on the top line", "default": true },
+    { "type": "richtext", "id": "intro", "label": "Intro", "info": "Beside the page title. Optional." },
+    {
+      "type": "paragraph",
+      "content": "Items come from Content > Metaobjects > Menu item. Each group shows the items whose Group matches its key, e.g. pies or drinks."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "group",
+      "name": "Group",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Pies" },
+        { "type": "text", "id": "group", "label": "Group key", "info": "Matches the Group field on menu items. Defaults to the title.", "default": "pies" },
+        { "type": "text", "id": "empty_text", "label": "Text with no items", "default": "To come." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu",
+      "blocks": [
+        { "type": "group", "settings": { "title": "Pies", "group": "pies" } },
+        { "type": "group", "settings": { "title": "Drinks", "group": "drinks" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

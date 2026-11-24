@@ -36,12 +36,34 @@
   assign directions_url = section.settings.directions_url | default: 'https://www.google.com/maps/dir/?api=1&destination=' | append: maps_destination
 -%}
 
+{%- comment -%}
+  Each page has a colour for its underline: order clementine, menu pink,
+  visit blue, about strawberry. "order" has no page of its own; it shows its
+  underline on product pages and while the order panel is open.
+{%- endcomment -%}
 {%- capture nav_links -%}
-  <a class="header__link" href="{{ order_url }}" data-order-trigger aria-haspopup="dialog">
+  <a class="header__link{% if request.page_type == 'product' %} is-active{% endif %}" href="{{ order_url }}" style="--nav-colour: var(--colour-clementine);" data-order-trigger aria-haspopup="dialog" aria-expanded="false">
     {{- 'header.order' | t -}}
   </a>
   {%- for link in section.settings.menu.links -%}
-    <a class="header__link" href="{{ link.url }}" {% if link.current %}aria-current="page"{% endif %}>
+    {%- liquid
+      assign link_handle = link.url | split: '/' | last | split: '?' | first
+      case link_handle
+        when 'menu'
+          assign nav_colour = 'birthday-pink'
+        when 'visit'
+          assign nav_colour = 'blue-sky'
+        when 'about'
+          assign nav_colour = 'strawberry'
+        else
+          assign nav_colour = 'clementine'
+      endcase
+      assign link_current = link.current
+      if link.url == request.path
+        assign link_current = true
+      endif
+    -%}
+    <a class="header__link" href="{{ link.url }}" style="--nav-colour: var(--colour-{{ nav_colour }});" {% if link_current %}aria-current="page"{% endif %}>
       {{- link.title | downcase -}}
     </a>
   {%- endfor -%}
@@ -59,8 +81,16 @@
   <a class="visually-hidden skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
 
   <a class="header__wordmark" href="{{ routes.root_url }}">
-    <span class="visually-hidden">{{ shop.name }}</span>
-    {{ 'logo-wordmark.svg' | inline_asset_content }}
+    {%- comment -%} On home the wordmark is the page's h1; it looks the same. {%- endcomment -%}
+    {%- if template.name == 'index' -%}
+      <h1 class="header__wordmark-heading">
+        <span class="visually-hidden">{{ shop.name }}</span>
+        {{ 'logo-wordmark.svg' | inline_asset_content }}
+      </h1>
+    {%- else -%}
+      <span class="visually-hidden">{{ shop.name }}</span>
+      {{ 'logo-wordmark.svg' | inline_asset_content }}
+    {%- endif -%}
   </a>
 
   <div class="header__info">

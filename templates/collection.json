@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "main": {
+      "type": "product-grid",
+      "settings": {
+        "title": "Order pies",
+        "copy": "<p>Pies baked in Fitzroy and picked up from the counter.</p>",
+        "prompt": "Not sure what to get?",
+        "cta_label": "help me order",
+        "cta_link": "/pages/order",
+        "cta_mobile": false,
+        "collection": "pies",
+        "limit": 24,
+        "button_label": "add to cart",
+        "empty_text": "Pies are on their way.",
+        "use_current": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

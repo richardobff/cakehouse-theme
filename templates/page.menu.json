@@ -1,0 +1,36 @@
+{
+  "sections": {
+    "menu": {
+      "type": "menu-list",
+      "settings": {
+        "show_head": true,
+        "intro": ""
+      },
+      "blocks": {
+        "pies": {
+          "type": "group",
+          "settings": {
+            "title": "Pies",
+            "group": "pies",
+            "empty_text": "To come."
+          }
+        },
+        "drinks": {
+          "type": "group",
+          "settings": {
+            "title": "Drinks",
+            "group": "drinks",
+            "empty_text": "To come."
+          }
+        }
+      },
+      "block_order": [
+        "pies",
+        "drinks"
+      ]
+    }
+  },
+  "order": [
+    "menu"
+  ]
+}

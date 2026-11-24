@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "about": {
+      "type": "about",
+      "settings": {
+        "page_title": true,
+        "title": "About",
+        "intro": "<p>Timeless treats. Flaky pastry, tasty fillings and smells that take you back to your childhood.</p>",
+        "copy": "<p>Copy about Suzie and the bakery to come.</p>",
+        "button_label": "",
+        "preview_image": "preview-portrait.jpg"
+      }
+    },
+    "columns": {
+      "type": "text-columns",
+      "settings": {
+        "left": "<p>Holding copy. A short paragraph on how Suzie started baking and where the recipes come from.</p>",
+        "right": "<p>Holding copy. A short paragraph on the shop at 336 Brunswick St and what goes on the counter each day.</p>"
+      }
+    },
+    "image": {
+      "type": "full-bleed",
+      "settings": {
+        "ratio": "16 / 9",
+        "ratio_mobile": "4 / 5",
+        "colour": "clementine",
+        "preview_image": "preview-photo-pair-1.jpg",
+        "fill_window": false
+      }
+    }
+  },
+  "order": [
+    "about",
+    "columns",
+    "image"
+  ]
+}

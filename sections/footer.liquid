@@ -1,6 +1,9 @@
 {%- comment -%}
-  Site footer: brand mark, links and copyright. Sign up and follow us sit
-  above it in the footer group.
+  Site footer: brand mark, links, then one line at Meta size: copyright,
+  policy links (each only when that policy exists in Settings > Policies)
+  and "credits", which reveals "design and development by Office BFF" on
+  hover, focus or tap (Theme settings > Footer credit). Stacked on mobile.
+  Sign up and follow us sit above it in the footer group.
 {%- endcomment -%}
 <footer class="footer">
   <div class="footer__mark" style="--brand-mark-fill: var(--colour-{{ section.settings.mark_colour }});">
@@ -25,7 +28,34 @@
       </ul>
     </nav>
 
-    <p class="footer__copyright type-body">&copy; {{ 'now' | date: '%Y' }} {{ shop.name | downcase }}</p>
+    <div class="footer__base type-meta">
+      <p class="footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name | downcase }}</p>
+      {%- liquid
+        assign policy_handles = 'refund-policy,privacy-policy,terms-of-service,shipping-policy,contact-information' | split: ','
+        assign policy_links = ''
+        for handle in policy_handles
+          assign wanted = '/policies/' | append: handle
+          for policy in shop.policies
+            if policy.url contains wanted and policy.body != blank
+              assign policy_label = policy.title | downcase | escape
+              assign one = '<li><a href="' | append: policy.url | append: '">' | append: policy_label | append: '</a></li>'
+              assign policy_links = policy_links | append: one
+            endif
+          endfor
+        endfor
+      -%}
+      {%- if policy_links != blank -%}
+        <nav class="footer__policies" aria-label="{{ 'policies.nav_label' | t | escape }}">
+          <ul role="list">{{ policy_links }}</ul>
+        </nav>
+      {%- endif -%}
+      {%- if settings.show_credit and settings.credit_link != blank -%}
+        <p class="footer__credit" data-credit>
+          <button type="button" class="footer__credit-toggle" aria-expanded="false" aria-controls="FooterCredit" data-credit-toggle>{{ 'footer.credits' | t }}</button>
+          <a class="footer__credit-link" id="FooterCredit" href="{{ settings.credit_link }}" target="_blank" rel="noopener">{{ 'footer.credit' | t }}</a>
+        </p>
+      {%- endif -%}
+    </div>
   </div>
 </footer>
 
@@ -68,9 +98,8 @@
       "label": "TikTok"
     },
     {
-      "type": "url",
-      "id": "policies_url",
-      "label": "Policies page"
+      "type": "paragraph",
+      "content": "Policy links show at the foot once each policy is filled in under Settings > Policies."
     }
   ]
 }

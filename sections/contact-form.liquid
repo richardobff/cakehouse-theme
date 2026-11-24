@@ -1,0 +1,130 @@
+{%- comment -%}
+  Contact details and form (a white block). Left: detail rows (label, value
+  and an optional button), 1px rules between. Right: form title, optional
+  topic chips, fields and send. Uses the Shopify contact form, which emails
+  the store's sender address. Used on contact and wholesale.
+{%- endcomment -%}
+{%- liquid
+  assign form_id = 'ContactForm-' | append: section.id
+  assign topics = section.settings.topics | split: ','
+  assign first_label = section.settings.first_field | default: 'name'
+  assign first_name = 'contact[' | append: first_label | append: ']'
+  assign email_label = 'contact.email' | t
+  assign phone_label = 'contact.phone' | t
+  assign message_label = 'contact.message' | t
+-%}
+<section class="contact-section page-width">
+  {%- if section.settings.show_head and request.page_type == 'page' -%}
+    {% render 'block-head', title: page.title, copy: section.settings.intro, heading_h1: true %}
+  {%- endif -%}
+<div class="contact contact--{{ section.settings.details_style }}">
+  {%- if section.blocks.size > 0 -%}
+    <ul class="contact__details" role="list">
+      {%- for block in section.blocks -%}
+        <li class="contact__detail" {{ block.shopify_attributes }}>
+          <div class="contact__detail-text">
+            <span class="contact__label type-meta">{{ block.settings.label | escape }}</span>
+            <span class="contact__value">{{ block.settings.value | escape }}</span>
+          </div>
+          {%- if block.settings.button_label != blank and block.settings.link != blank -%}
+            {%- liquid
+              assign link_attributes = ''
+              if block.settings.link contains 'http'
+                assign link_attributes = 'target="_blank" rel="noopener"'
+              endif
+            -%}
+            {% render 'button', label: block.settings.button_label, url: block.settings.link, style: 'outline', attributes: link_attributes %}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  <div class="contact__form-wrap">
+    {%- if section.settings.form_title != blank -%}
+      <h2 class="contact__title type-d4" id="{{ form_id }}-title">{{ section.settings.form_title | escape }}</h2>
+    {%- else -%}
+      {%- comment -%} No visible heading: a hidden one keeps the form named for screen readers. {%- endcomment -%}
+      <h2 class="visually-hidden" id="{{ form_id }}-title">{{ section.settings.button_label | escape }}</h2>
+    {%- endif -%}
+    {%- assign form_class = 'contact__form' -%}
+    {%- if section.settings.button_full -%}{%- assign form_class = 'contact__form contact__form--full' -%}{%- endif -%}
+    {%- form 'contact', id: form_id, class: form_class -%}
+      {%- if form.posted_successfully? -%}
+        <p class="contact__notice type-product" role="status" tabindex="-1">{{ section.settings.success_text | escape }}</p>
+      {%- elsif form.errors -%}
+        <p class="contact__notice type-meta" role="alert">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+      {%- if section.settings.page_label != blank -%}
+        <input type="hidden" name="contact[page]" value="{{ section.settings.page_label | escape }}">
+      {%- endif -%}
+
+      {%- if topics.size > 0 and section.settings.topics != blank -%}
+        <fieldset class="contact__topics">
+          <legend class="visually-hidden">{{ 'contact.topic' | t }}</legend>
+          {%- for topic in topics -%}
+            {%- assign topic_value = topic | strip -%}
+            {%- assign topic_id = form_id | append: '-topic-' | append: forloop.index -%}
+            <input class="contact__topic-input visually-hidden" type="radio" name="contact[topic]" id="{{ topic_id }}" value="{{ topic_value | escape }}" {% if forloop.first %}checked{% endif %}>
+            <label class="contact__topic button button--outline" for="{{ topic_id }}">{{ topic_value | escape }}</label>
+          {%- endfor -%}
+        </fieldset>
+      {%- endif -%}
+
+      {%- assign first_id = form_id | append: '-first' -%}
+      {% render 'field', id: first_id, name: first_name, label: first_label, autocomplete: 'name', required: true, value: form[first_label] %}
+      {%- assign email_id = form_id | append: '-email' -%}
+      {% render 'field', id: email_id, name: 'contact[email]', type: 'email', label: email_label, autocomplete: 'email', required: true, value: form.email %}
+      {%- if section.settings.show_phone -%}
+        {%- assign phone_id = form_id | append: '-phone' -%}
+        {% render 'field', id: phone_id, name: 'contact[phone]', type: 'tel', label: phone_label, autocomplete: 'tel', value: form.phone %}
+      {%- endif -%}
+      {%- assign message_id = form_id | append: '-message' -%}
+      {% render 'field', id: message_id, name: 'contact[body]', label: message_label, message: true, required: true, value: form.body %}
+      {% render 'button', label: section.settings.button_label, type: 'submit', class: 'contact__send' %}
+    {%- endform -%}
+  </div>
+</div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "class": "section-contact-form block block--white",
+  "settings": [
+    {
+      "type": "select",
+      "id": "details_style",
+      "label": "Details",
+      "options": [
+        { "value": "stacked", "label": "Label over value, with a button" },
+        { "value": "rows", "label": "Ruled rows, label left and value right" }
+      ],
+      "default": "stacked"
+    },
+    { "type": "checkbox", "id": "button_full", "label": "Full-width send button", "default": false },
+    { "type": "checkbox", "id": "show_head", "label": "Page title on the top line", "default": true },
+    { "type": "richtext", "id": "intro", "label": "Intro", "info": "Beside the page title. Optional." },
+    { "type": "text", "id": "form_title", "label": "Form title", "default": "Send a message", "info": "Leave blank for no heading over the form." },
+    { "type": "text", "id": "topics", "label": "Topics", "info": "Comma separated, shown as chips. Leave blank for none.", "default": "general, orders, wholesale, events" },
+    { "type": "text", "id": "first_field", "label": "First field", "info": "e.g. name or business.", "default": "name" },
+    { "type": "checkbox", "id": "show_phone", "label": "Phone field", "default": true },
+    { "type": "text", "id": "page_label", "label": "Sent from", "info": "Added to the email so it is clear which page the message came from, e.g. Wholesale." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "send" },
+    { "type": "text", "id": "success_text", "label": "Message after sending", "default": "Thanks, we'll be in touch." }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Detail",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "email" },
+        { "type": "text", "id": "value", "label": "Value", "default": "to come" },
+        { "type": "text", "id": "button_label", "label": "Button label" },
+        { "type": "url", "id": "link", "label": "Button link", "info": "For email use mailto:, for phone tel:." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

@@ -8,6 +8,8 @@
 {%- liquid
   assign pie_collection = section.settings.collection
   assign pickup_product = settings.pickup_product
+  assign preorder_collection = settings.preorder_collection | default: collections['pre-order']
+  assign preorder_handle = preorder_collection.handle
   assign total_steps = 5
 -%}
 <dialog
@@ -41,6 +43,7 @@
         {%- if pie_collection != blank -%}
           {%- for product in pie_collection.products -%}
             {%- if pickup_product != blank and product.id == pickup_product.id -%}{%- continue -%}{%- endif -%}
+          {%- if product.tags contains 'hidden' or product.tags contains 'pick-up' -%}{%- continue -%}{%- endif -%}
             {%- assign tile_count = tile_count | plus: 1 -%}
             <li>
               <button type="button" class="hmo-tile" data-product-id="{{ product.id }}" aria-pressed="false">
@@ -236,6 +239,13 @@
           {
             "id": {{ product.id }},
             "title": {{ product.title | json }},
+            {%- assign is_preorder = false -%}
+            {%- if preorder_handle != blank -%}
+              {%- for c in product.collections -%}
+                {%- if c.handle == preorder_handle -%}{%- assign is_preorder = true -%}{%- break -%}{%- endif -%}
+              {%- endfor -%}
+            {%- endif %}
+            "preorder": {{ is_preorder | json }},
             "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 1100 | json }}{% else %}null{% endif %},
             "variants": [
               {%- for variant in product.variants -%}
@@ -266,6 +276,7 @@
     },
     "rules": {
       "timezone": "Australia/Sydney",
+      "useCaps": {{ settings.use_daily_caps | json }},
       "leadDays": {{ settings.lead_time_days | default: 0 }},
       "sliceLeadDays": {{ settings.slice_lead_days | default: 0 }},
       "cutoff": {{ settings.cutoff_time | strip | json }},
@@ -296,6 +307,7 @@
       "leadInfoOne": {{ 'help_me_order.lead_info_one' | t | json }},
       "leadInfoNone": {{ 'help_me_order.lead_info_none' | t | json }},
       "sliceInfo": {{ 'help_me_order.slice_info' | t | json }},
+      "fullNote": {{ 'help_me_order.full_note' | t | json }},
       "dayAvailable": {{ 'help_me_order.day_available' | t | json }},
       "dayFull": {{ 'help_me_order.day_full' | t | json }},
       "dayUnavailable": {{ 'help_me_order.day_unavailable' | t | json }},
@@ -305,6 +317,8 @@
       "added": {{ 'help_me_order.added' | t | json }},
       "addedAnother": {{ 'help_me_order.added_another' | t | json }},
       "error": {{ 'help_me_order.error' | t | json }},
+      "cartRemoved": {{ 'cart.removed' | t | json }},
+      "cartUpdated": {{ 'cart.updated' | t | json }},
       "conflict": {{ 'help_me_order.conflict' | t | json }},
       "pieSize": {{ 'help_me_order.pie_size' | t | json }}
     }

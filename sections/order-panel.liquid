@@ -1,9 +1,22 @@
 {%- comment -%}
   Order panel. Opened by "order" in the header. A centred panel six columns
   wide under the header on desktop, a full-screen sheet on mobile.
-  Each option is a block: a title and a button that links somewhere or
-  opens the help me order flow.
+  Each row is a channel; its button says where it goes. A row can link
+  somewhere, open help me order, be the delivery row (label and link from
+  Theme settings > Ordering > Delivery, opens in a new tab, shown only once
+  the link is set) or the pre order row (label from the pre order window's
+  name, shown only while a window is set, open soon or open).
 {%- endcomment -%}
+{%- liquid
+  capture preorder_state
+    render 'preorder-state'
+  endcapture
+  assign preorder_state = preorder_state | strip
+  capture preorder_name
+    render 'preorder-state', output: 'name'
+  endcapture
+  assign preorder_name = preorder_name | strip | downcase
+-%}
 <dialog
   class="order-panel"
   id="OrderPanel"
@@ -19,10 +32,28 @@
 
   <ul class="order-panel__list" role="list">
     {%- for block in section.blocks -%}
+      {%- liquid
+        assign is_preorder_row = false
+        if block.settings.action == 'preorder' or block.settings.show_when == 'preorder'
+          assign is_preorder_row = true
+        endif
+        if is_preorder_row and preorder_state != 'open' and preorder_state != 'soon'
+          continue
+        endif
+        if block.settings.action == 'delivery' and settings.delivery_link == blank
+          continue
+        endif
+      -%}
       <li class="order-panel__option" {{ block.shopify_attributes }}>
         <h3 class="order-panel__title type-d4">{{ block.settings.title | escape }}</h3>
         {%- if block.settings.action == 'help_me_order' -%}
           {% render 'button', label: block.settings.button_label, attributes: 'data-help-me-order-open' %}
+        {%- elsif block.settings.action == 'delivery' -%}
+          {%- assign delivery_label = settings.delivery_label | default: block.settings.button_label -%}
+          {% render 'button', label: delivery_label, url: settings.delivery_link, attributes: 'target="_blank" rel="noopener"' %}
+        {%- elsif block.settings.action == 'preorder' -%}
+          {%- assign preorder_label = preorder_name | default: block.settings.button_label -%}
+          {% render 'button', label: preorder_label, url: block.settings.link %}
         {%- else -%}
           {% render 'button', label: block.settings.button_label, url: block.settings.link %}
         {%- endif -%}
@@ -49,11 +80,23 @@
           "label": "Button",
           "options": [
             { "value": "link", "label": "Goes to a link" },
-            { "value": "help_me_order", "label": "Opens help me order" }
+            { "value": "help_me_order", "label": "Opens help me order" },
+            { "value": "delivery", "label": "Delivery (label and link from theme settings)" },
+            { "value": "preorder", "label": "Pre order (label from the window name)" }
           ],
           "default": "link"
         },
-        { "type": "url", "id": "link", "label": "Link" }
+        { "type": "url", "id": "link", "label": "Link" },
+        {
+          "type": "select",
+          "id": "show_when",
+          "label": "Show",
+          "options": [
+            { "value": "always", "label": "Always" },
+            { "value": "preorder", "label": "Only while pre orders are set" }
+          ],
+          "default": "always"
+        }
       ]
     }
   ]

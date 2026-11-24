@@ -8,7 +8,7 @@
   assign field_id = 'SignUpEmail-' | append: section.id
 -%}
 <section
-  class="sign-up"
+  class="sign-up surface--{{ section.settings.colour }}"
   {% if section.settings.anchor != blank %}id="{{ section.settings.anchor | handle }}"{% endif %}
   style="--sign-up-colour: var(--colour-{{ section.settings.colour }});">
   <h2 class="sign-up__title type-d3">{{ section.settings.title | escape }}</h2>

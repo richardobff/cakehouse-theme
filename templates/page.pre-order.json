@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "head": {
+      "type": "colour-split",
+      "settings": {
+        "colour": "birthday-pink",
+        "title": "Pre order",
+        "copy": "<p>Pre order for Christmas. Order window and pick up dates to come.</p>",
+        "button_label": "",
+        "image_side": "right",
+        "ratio": "4 / 5",
+        "preview_image": "preview-pre-order.jpg",
+        "page_title": true
+      }
+    },
+    "pre-order": {
+      "type": "pre-order",
+      "settings": {
+        "limit": 12,
+        "soon_title": "Pre orders for Christmas open soon",
+        "soon_copy": "<p>Sign up and we'll let you know when they open.</p>",
+        "closed_title": "Pre orders are closed",
+        "empty_title": "Pre order pies to come",
+        "button_label": "sign up"
+      }
+    }
+  },
+  "order": [
+    "head",
+    "pre-order"
+  ]
+}

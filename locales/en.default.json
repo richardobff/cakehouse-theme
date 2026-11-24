@@ -1,8 +1,8 @@
 {
   "404": {
-    "title": "404",
-    "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
+    "title": "Not found",
+    "copy": "This page has moved or never existed.",
+    "home": "home"
   },
   "blog": {
     "article_comments": "Comments",
@@ -14,10 +14,25 @@
     "comment_form_title": "Add a comment"
   },
   "cart": {
-    "checkout": "Checkout",
     "title": "Cart",
-    "update": "Update",
-    "remove": "Remove"
+    "close": "close",
+    "pick_up": "pick up",
+    "whole": "whole",
+    "slice": "slice",
+    "note": "note: [note]",
+    "remove": "remove",
+    "remove_label": "Remove [item] from your cart",
+    "total": "total",
+    "checkout": "checkout",
+    "keep_shopping": "keep shopping",
+    "shop": "shop",
+    "empty": "Your cart is empty.",
+    "removed": "Removed from your cart.",
+    "updated": "Cart updated.",
+    "error": "Something went wrong. Please try again.",
+    "label": "Cart",
+    "quantity_less": "One fewer [item]",
+    "quantity_more": "One more [item]"
   },
   "customers": {
     "login": {
@@ -31,16 +46,22 @@
     "title": "Collections"
   },
   "gift_card": {
-    "add_to_apple_wallet": "Add to Apple Wallet",
-    "card": "Gift card",
-    "expired": "This gift card has expired",
-    "expires_on": "Expires on {{ expires_on }}",
-    "use_at_checkout": "Use this gift card at checkout"
+    "title": "Gift card",
+    "print": "print",
+    "shop": "shop now",
+    "code_label": "Gift card code",
+    "expired": "This gift card has expired or is no longer active.",
+    "expires_on": "Use by {{ expires_on }}",
+    "copy": "copy code",
+    "copied": "Copied."
   },
   "password": {
-    "title": "This shop is private",
-    "password": "Password",
-    "enter": "Enter"
+    "title": "Opening soon",
+    "password": "password",
+    "password_label": "Store password",
+    "enter": "enter",
+    "close": "close",
+    "sign_up": "sign up"
   },
   "search": {
     "title": "Search",
@@ -74,11 +95,14 @@
     "instagram": "instagram",
     "tiktok": "tiktok",
     "policies": "policies",
-    "substack": "substack"
+    "substack": "substack",
+    "credits": "credits",
+    "credit": "design and development by Office BFF"
   },
   "products": {
     "from_price": "from {{ price }}",
-    "sold_out": "sold out"
+    "sold_out": "sold out",
+    "pre_order": "pre order"
   },
   "general": {
     "close": "close"
@@ -115,10 +139,10 @@
       "note": "Note",
       "total": "Total"
     },
-    "lead_info": "[address]. Order [days] business days ahead. Greyed out days are full.",
-    "lead_info_one": "[address]. Order one business day ahead. Greyed out days are full.",
-    "lead_info_none": "[address]. Greyed out days are full.",
-    "slice_info": "[address]. Slices come from the counter, pick up only. Greyed out days are full.",
+    "lead_info": "[address]. Order [days] business days ahead.[full]",
+    "lead_info_one": "[address]. Order one business day ahead.[full]",
+    "lead_info_none": "[address].[full]",
+    "slice_info": "[address]. Slices come from the counter, pick up only.",
     "day_available": "available",
     "day_full": "full",
     "day_unavailable": "not available",
@@ -132,7 +156,8 @@
     "conflict_keep": "keep that date",
     "conflict_use": "use this date",
     "pie_size": "[pie], [size]",
-    "day_names": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+    "day_names": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+    "full_note": " Greyed out days are full."
   },
   "visit": {
     "hours": "{{ open }} to {{ close }}",
@@ -141,5 +166,45 @@
   },
   "follow_us": {
     "strip_label": "Follow us posts. Scroll or drag sideways."
+  },
+  "product": {
+    "add_to_cart": "add to cart",
+    "size": "size",
+    "whole_pie": "whole pie",
+    "by_the_slice": "by the slice",
+    "pick_up_date": "pick up date",
+    "choose_date": "choose a date",
+    "handwritten_message": "handwritten message",
+    "add_note": "add a note",
+    "edit_note": "edit note",
+    "help_me_order": "help me order",
+    "info_whole": "Pick up from [address]. Order [days] days ahead[before].",
+    "info_whole_one": "Pick up from [address]. Order a day ahead[before].",
+    "info_whole_none": "Pick up from [address]. Order[before] for the same day.",
+    "info_slice": "Pick up from [address]. Slices come from the counter, pick up only.",
+    "need_date": "Choose a pick up date first.",
+    "info_preorder": "Pre order. Pick up from [address] on the dates shown.",
+    "info_preorder_soon": "Pre orders open soon.",
+    "pick_up": "pick up",
+    "message": "message",
+    "quantity": "Quantity",
+    "quantity_less": "One fewer",
+    "quantity_more": "One more",
+    "ingredients": "ingredients",
+    "allergens": "allergens",
+    "serves": "serves",
+    "storage": "storage and serving",
+    "before": ", before [time]",
+    "midday": "midday",
+    "midnight": "midnight"
+  },
+  "contact": {
+    "email": "email",
+    "phone": "phone",
+    "message": "message",
+    "topic": "Topic"
+  },
+  "policies": {
+    "nav_label": "Policies"
   }
 }

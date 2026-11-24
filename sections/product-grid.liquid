@@ -7,7 +7,15 @@
 {%- endcomment -%}
 {%- liquid
   assign grid_collection = section.settings.collection
-  assign colours = 'birthday-pink,clementine,blue-sky,strawberry' | split: ','
+  if request.page_type == 'collection' and section.settings.use_current
+    assign grid_collection = collection
+  endif
+  assign heading_h1 = false
+  if request.page_type == 'collection'
+    assign heading_h1 = true
+  endif
+  assign current_product_id = product.id
+  assign shown = 0
 -%}
 <section class="product-grid page-width">
   {% render 'block-head',
@@ -17,39 +25,19 @@
     button_label: section.settings.cta_label,
     button_link: section.settings.cta_link,
     button_style: 'outline',
-    button_mobile: section.settings.cta_mobile
+    button_mobile: section.settings.cta_mobile,
+    heading_h1: heading_h1
   %}
   {%- if grid_collection != blank and grid_collection.products_count > 0 -%}
     <ul class="product-grid__list" role="list">
-      {%- for product in grid_collection.products limit: section.settings.limit -%}
+      {%- for product in grid_collection.products -%}
+        {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
         {%- if settings.pickup_product != blank and product.id == settings.pickup_product.id -%}{%- continue -%}{%- endif -%}
-        {%- assign colour_index = forloop.index0 | modulo: 4 -%}
-        <li class="card">
-          <a class="card__link" href="{{ product.url }}">
-            {% render 'media',
-              image: product.featured_image,
-              ratio: '4 / 5',
-              sizes: '(min-width: 750px) 25vw, 50vw',
-              colour: colours[colour_index],
-              alt: product.title,
-              class: 'card__media'
-            %}
-            <span class="card__name">{{ product.title | escape }}</span>
-          </a>
-          <p class="card__price type-product">
-            {%- if product.price_varies -%}
-              {{ 'products.from_price' | t: price: product.price_min | money }}
-            {%- else -%}
-              {{ product.price | money }}
-            {%- endif -%}
-          </p>
-          {%- if product.available -%}
-            {% render 'button', label: section.settings.button_label, url: product.url, style: 'outline' %}
-          {%- else -%}
-            {%- assign sold_out = 'products.sold_out' | t -%}
-            {% render 'button', label: sold_out, style: 'outline', attributes: 'disabled' %}
-          {%- endif -%}
-        </li>
+        {%- if product.tags contains 'hidden' or product.tags contains 'pick-up' -%}{%- continue -%}{%- endif -%}
+        {%- comment -%} On a product page, leave out the pie being viewed ("more pies"). {%- endcomment -%}
+        {%- if current_product_id and product.id == current_product_id -%}{%- continue -%}{%- endif -%}
+        {%- assign shown = shown | plus: 1 -%}
+        {% render 'product-card', product: product, index: forloop.index0, button_label: section.settings.button_label %}
       {%- endfor -%}
     </ul>
   {%- else -%}
@@ -72,6 +60,7 @@
     { "type": "checkbox", "id": "cta_mobile", "label": "Show lead-in on mobile", "default": false },
     { "type": "header", "content": "Products" },
     { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "checkbox", "id": "use_current", "label": "Use the page's collection", "info": "On the collection template: shows the collection being viewed (all pies, /collections/all).", "default": false },
     {
       "type": "range",
       "id": "limit",

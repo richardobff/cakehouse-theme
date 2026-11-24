@@ -1,0 +1,39 @@
+{% doc %}
+  Product card: 4:5 photo on a brand colour, name, price and an outline
+  button to the product page (sold out when nothing is available).
+
+  @param {object} product - The product.
+  @param {number} [index] - Position in the grid; picks the placeholder colour.
+  @param {string} [button_label] - Button label. Default "add to cart".
+{% enddoc %}
+{%- liquid
+  assign colours = 'birthday-pink,clementine,blue-sky,strawberry' | split: ','
+  assign colour_index = index | default: 0 | modulo: 4
+  assign label = button_label | default: 'add to cart'
+-%}
+<li class="card">
+  <a class="card__link" href="{{ product.url }}">
+    {% render 'media',
+      image: product.featured_image,
+      ratio: '4 / 5',
+      sizes: '(min-width: 750px) 25vw, 50vw',
+      colour: colours[colour_index],
+      alt: product.title,
+      class: 'card__media'
+    %}
+    <span class="card__name">{{ product.title | escape }}</span>
+  </a>
+  <p class="card__price type-product">
+    {%- if product.price_varies -%}
+      {{ 'products.from_price' | t: price: product.price_min | money }}
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+  </p>
+  {%- if product.available -%}
+    {% render 'button', label: label, url: product.url, style: 'outline' %}
+  {%- else -%}
+    {%- assign sold_out = 'products.sold_out' | t -%}
+    {% render 'button', label: sold_out, style: 'outline', attributes: 'disabled' %}
+  {%- endif -%}
+</li>

@@ -1,0 +1,663 @@
+/**
+ * Page sections: menu, today's counter, two-column text, questions, contact
+ * and wholesale form, pre order, page, policy, password and gift card.
+ * Desktop sizes use calc(N * var(--u)) from the 1440 frame; mobile below 750.
+ */
+
+/* Shared: the left and right halves of the 12-column grid. */
+.menu-list,
+.counter__body,
+.text-columns,
+.contact,
+.main-page,
+.policy {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+}
+
+.menu-list-section,
+.counter,
+.text-columns,
+.questions,
+.contact-section,
+.pre-order,
+.main-page,
+.policy {
+  padding-top: var(--block-top);
+  padding-bottom: var(--block-bottom);
+}
+
+/* A list of rows with 1px rules: menu, counter, questions, contact details. */
+.menu-list__items,
+.counter__list,
+.contact__details {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--rule-width) solid var(--colour-black);
+}
+
+/* Page title on the top line of a section, then its content. */
+.menu-list-section > .block-head,
+.contact-section > .block-head {
+  margin-bottom: calc(40 * var(--u));
+}
+
+/* ---------------------------------------------------------------------------
+ * Menu
+ * ------------------------------------------------------------------------- */
+.menu-list__title {
+  margin: 0 0 calc(24 * var(--u));
+}
+
+.menu-list__item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  padding-block: calc(16 * var(--u));
+  border-bottom: var(--rule-width) solid var(--colour-black);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.menu-list__item > :last-child {
+  flex: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Today's counter
+ * ------------------------------------------------------------------------- */
+.counter__body {
+  margin-top: calc(40 * var(--u));
+  align-items: start;
+}
+
+.counter__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  padding-block: calc(10 * var(--u));
+  border-bottom: var(--rule-width) solid var(--colour-black);
+}
+
+.counter__name {
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+}
+
+.counter__tag {
+  flex: none;
+  min-height: calc(32 * var(--u));
+  padding-block: 0;
+  font-size: var(--type-meta-size);
+}
+
+.counter__tag--sold-out {
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------------------
+ * Two-column text
+ * ------------------------------------------------------------------------- */
+.text-columns__col p {
+  margin: 0;
+}
+
+.text-columns__col p + p {
+  margin-top: 1em;
+}
+
+/* ---------------------------------------------------------------------------
+ * Questions
+ * ------------------------------------------------------------------------- */
+.questions .block-head {
+  margin-bottom: calc(40 * var(--u));
+}
+
+.questions__list {
+  margin: 0;
+  border-top: var(--rule-width) solid var(--colour-black);
+}
+
+.questions__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  padding-block: calc(16 * var(--u)) calc(20 * var(--u));
+  border-bottom: var(--rule-width) solid var(--colour-black);
+}
+
+.questions__question {
+  margin: 0;
+}
+
+.questions__answer {
+  margin: 0;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.questions__answer p {
+  margin: 0;
+}
+
+.questions__question a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.questions__question a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.questions__answer p + p {
+  margin-top: 0.75em;
+}
+
+/* ---------------------------------------------------------------------------
+ * Contact and wholesale
+ * ------------------------------------------------------------------------- */
+.contact {
+  align-items: start;
+}
+
+.contact__detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  padding-block: calc(12 * var(--u)) calc(14 * var(--u));
+  border-bottom: var(--rule-width) solid var(--colour-black);
+}
+
+.contact__detail-text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 * var(--u));
+  min-width: 0;
+}
+
+.contact__value {
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+  overflow-wrap: anywhere;
+}
+
+.contact__detail .button {
+  flex: none;
+}
+
+.contact__form-wrap {
+  grid-column: 2;
+}
+
+/* Wholesale: details as ruled rows (label left, value right, Body L), the
+ * form level with the first row, a full-width send button. */
+.contact-section:has(.contact--rows) > .block-head {
+  margin-bottom: var(--block-bottom);
+}
+
+.contact--rows .contact__detail {
+  align-items: baseline;
+  padding-block: calc(12 * var(--u));
+}
+
+.contact--rows .contact__detail-text {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  width: 100%;
+}
+
+.contact--rows .contact__label {
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+}
+
+.contact--rows .contact__value {
+  text-align: right;
+}
+
+.contact__form--full {
+  align-items: stretch;
+}
+
+.contact__form--full .contact__send {
+  width: 100%;
+}
+
+.contact__title {
+  margin: 0 0 calc(16 * var(--u));
+}
+
+.contact__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(10 * var(--u));
+}
+
+.contact__form .field {
+  width: 100%;
+}
+
+.contact__topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(8 * var(--u));
+  margin: 0 0 calc(6 * var(--u));
+  padding: 0;
+  border: 0;
+}
+
+.contact__topic {
+  min-height: calc(32 * var(--u));
+  padding-block: 0;
+  font-size: var(--type-meta-size);
+}
+
+.contact__topic-input:checked + .contact__topic {
+  --button-bg: var(--colour-black);
+  --button-fg: var(--colour-white);
+}
+
+.contact__topic-input:focus-visible + .contact__topic {
+  outline: 2px solid var(--colour-black);
+  outline-offset: 2px;
+}
+
+.contact__send {
+  margin-top: calc(6 * var(--u));
+}
+
+.contact__notice {
+  margin: 0 0 calc(8 * var(--u));
+}
+
+/* ---------------------------------------------------------------------------
+ * Pre order
+ * ------------------------------------------------------------------------- */
+.pre-order__grid {
+  margin-top: 0;
+}
+
+.pre-order__message {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+}
+
+.pre-order__title {
+  margin: 0;
+}
+
+.pre-order__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+}
+
+.pre-order__copy p {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * Page and policy
+ * ------------------------------------------------------------------------- */
+.main-page__title {
+  margin: 0;
+}
+
+.main-page__content,
+.policy .shopify-policy__body {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.main-page__content > :first-child,
+.policy .shopify-policy__body .rte > :first-child {
+  margin-top: 0;
+}
+
+.main-page__content :is(h2, h3, h4),
+.policy .shopify-policy__body :is(h2, h3, h4) {
+  margin: 1.4em 0 0.4em;
+  font-family: var(--font-text);
+  font-size: var(--type-product-size);
+  line-height: var(--type-product-line);
+  font-weight: 500;
+  text-transform: none;
+}
+
+.main-page__content a,
+.policy .shopify-policy__body a {
+  color: inherit;
+}
+
+/* Shopify wraps the policy in its own container; let its parts sit on our grid. */
+.policy .shopify-policy__container {
+  display: contents;
+}
+
+.policy .shopify-policy__title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-bottom: calc(40 * var(--u));
+  text-align: left;
+}
+
+.policy .shopify-policy__title h1 {
+  margin: 0;
+  max-width: calc(684 * var(--u));
+  font-family: var(--font-display);
+  font-size: var(--type-d3-size);
+  line-height: var(--type-d3-line);
+  letter-spacing: var(--type-d3-tracking);
+  text-transform: uppercase;
+}
+
+.policy__nav {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.policy__nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.policy__nav a {
+  color: inherit;
+  font-size: var(--type-product-size);
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.policy__nav a[aria-current],
+.policy__nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.policy .shopify-policy__body {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+/* ---------------------------------------------------------------------------
+ * Password: opening soon
+ * ------------------------------------------------------------------------- */
+.password-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: 100svh;
+}
+
+.password-split__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(40 * var(--u));
+  padding: var(--block-top) var(--page-margin) var(--page-margin);
+  background-color: var(--split-colour);
+}
+
+.password-split__title {
+  margin: 0;
+}
+
+.password-split__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+  max-width: calc(560 * var(--u));
+}
+
+.password-split__copy {
+  font-size: var(--type-medium-40-size);
+  line-height: var(--type-medium-40-line);
+  letter-spacing: var(--type-medium-40-tracking);
+}
+
+.password-split__copy p {
+  margin: 0;
+}
+
+.password-split__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(24 * var(--u));
+}
+
+.password-split__form .field {
+  width: 100%;
+}
+
+.password-split__image {
+  position: relative;
+}
+
+.password-split__media {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.password-split__open {
+  position: absolute;
+  top: var(--page-margin);
+  right: var(--page-margin);
+  background-color: transparent;
+}
+
+.password-panel {
+  width: min(calc(560 * var(--u)), calc(100% - 32px));
+  padding: calc(24 * var(--u));
+  border: 0;
+  background-color: var(--colour-birthday-pink);
+  color: var(--colour-black);
+}
+
+.password-panel::backdrop {
+  background-color: rgb(0 0 0 / 0.2);
+}
+
+.password-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  margin-bottom: calc(24 * var(--u));
+}
+
+.password-panel__title {
+  margin: 0;
+}
+
+.password-panel__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(16 * var(--u));
+}
+
+/* ---------------------------------------------------------------------------
+ * Gift card
+ * ------------------------------------------------------------------------- */
+.gift-card__header {
+  padding-block: calc(16 * var(--u));
+  border-bottom: var(--rule-width) solid var(--colour-black);
+  margin-inline: var(--page-margin);
+  padding-inline: 0;
+}
+
+.gift-card__wordmark {
+  color: inherit;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.gift-card {
+  display: flex;
+  justify-content: center;
+  padding-block: calc(72 * var(--u));
+}
+
+.gift-card__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(16 * var(--u));
+  width: calc(684 * var(--u));
+  padding: calc(32 * var(--u));
+  background-color: var(--colour-birthday-pink);
+}
+
+.gift-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.gift-card__title,
+.gift-card__balance,
+.gift-card__note {
+  margin: 0;
+}
+
+.gift-card__code-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  width: 100%;
+  padding-top: calc(16 * var(--u));
+  border-top: var(--rule-width) solid var(--colour-black);
+}
+
+.gift-card__code {
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+@media print {
+  .gift-card__print,
+  .gift-card__copy,
+  .gift-card .button {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Mobile
+ * ------------------------------------------------------------------------- */
+@media (max-width: 749px) {
+  .menu-list,
+  .counter__body,
+  .text-columns,
+  .contact,
+  .main-page,
+  .policy,
+  .questions__row,
+  .pre-order__message,
+  .password-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .menu-list,
+  .counter__body,
+  .text-columns,
+  .contact,
+  .main-page,
+  .policy {
+    row-gap: 40px;
+  }
+
+  .text-columns {
+    row-gap: 16px;
+  }
+
+  .questions__row {
+    row-gap: 6px;
+  }
+
+  .questions .block-head,
+  .menu-list-section > .block-head,
+  .contact-section > .block-head {
+    margin-bottom: 24px;
+  }
+
+  .counter__body {
+    margin-top: 24px;
+  }
+
+  .contact__form-wrap,
+  .policy .shopify-policy__body {
+    grid-column: 1;
+  }
+
+  .contact-section:has(.contact--rows) > .block-head {
+    margin-bottom: 24px;
+  }
+
+  .policy__nav {
+    grid-row: 3;
+  }
+
+  .policy .shopify-policy__body {
+    grid-row: 2;
+  }
+
+  .policy .shopify-policy__title h1,
+  .main-page__title {
+    font-size: var(--type-d4-size);
+    line-height: var(--type-d4-line);
+    letter-spacing: var(--type-d4-tracking);
+  }
+
+  .pre-order__message {
+    row-gap: 16px;
+  }
+
+  .password-split {
+    min-height: 0;
+  }
+
+  .password-split__text {
+    min-height: 70svh;
+    padding: 16px 16px 24px;
+  }
+
+  .password-split__copy {
+    font-size: var(--type-body-l-size);
+    line-height: var(--type-body-l-line);
+  }
+
+  .password-split__media {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+
+  .gift-card {
+    padding: 24px 16px;
+  }
+
+  .gift-card__panel {
+    width: 100%;
+    padding: 16px;
+  }
+}
+
+.main-page__content p,
+.policy .shopify-policy__body p {
+  margin: 0 0 0.8em;
+}

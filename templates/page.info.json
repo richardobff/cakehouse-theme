@@ -1,0 +1,114 @@
+{
+  "sections": {
+    "ordering": {
+      "type": "questions",
+      "settings": {
+        "show_head": true,
+        "intro": "",
+        "only_page": "ordering-and-pick-up"
+      },
+      "blocks": {
+        "q-1": {
+          "type": "question",
+          "settings": {
+            "question": "How far ahead do I order?",
+            "answer": "<p>Order whole pies two days ahead. Slices come from the counter on the day.</p>"
+          }
+        },
+        "q-2": {
+          "type": "question",
+          "settings": {
+            "question": "When is the cut-off?",
+            "answer": "<p>Midday. Orders before midday count from that day; orders after midday count from the next day.</p>"
+          }
+        },
+        "q-3": {
+          "type": "question",
+          "settings": {
+            "question": "Where do I pick up?",
+            "answer": "<p>336 Brunswick St, Fitzroy. Hours to come.</p>"
+          }
+        },
+        "q-4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I order by the slice?",
+            "answer": "<p>Yes, for pick up only.</p>"
+          }
+        },
+        "q-5": {
+          "type": "question",
+          "settings": {
+            "question": "Can I change or cancel an order?",
+            "answer": "<p>To come.</p>"
+          }
+        },
+        "q-6": {
+          "type": "question",
+          "settings": {
+            "question": "Do you deliver?",
+            "answer": "<p>To come.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q-1",
+        "q-2",
+        "q-3",
+        "q-4",
+        "q-5",
+        "q-6"
+      ]
+    },
+    "allergens": {
+      "type": "questions",
+      "settings": {
+        "show_head": true,
+        "intro": "",
+        "only_page": "ingredients-and-allergens",
+        "pie_collection": "pies",
+        "pie_empty_text": "Ingredients and allergens to come."
+      },
+      "blocks": {
+        "q-1": {
+          "type": "question",
+          "settings": {
+            "question": "Lemon meringue pie",
+            "answer": "<p>Ingredients and allergens to come.</p>"
+          }
+        },
+        "q-2": {
+          "type": "question",
+          "settings": {
+            "question": "Maple pecan pie",
+            "answer": "<p>Ingredients and allergens to come.</p>"
+          }
+        },
+        "q-3": {
+          "type": "question",
+          "settings": {
+            "question": "Key lime pie",
+            "answer": "<p>Ingredients and allergens to come.</p>"
+          }
+        },
+        "q-4": {
+          "type": "question",
+          "settings": {
+            "question": "Chocolate fudge pie",
+            "answer": "<p>Ingredients and allergens to come.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q-1",
+        "q-2",
+        "q-3",
+        "q-4"
+      ]
+    }
+  },
+  "order": [
+    "ordering",
+    "allergens"
+  ]
+}

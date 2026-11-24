@@ -116,13 +116,15 @@ Applies to every section on every page.
 
 ## Navigation
 
-- Desktop home header (masthead): wordmark on columns 1 to 8; the details block (status line, address with a pin that links to Google Maps directions) starts on column 9 and is 3 columns wide; the cart sits alone, right-aligned in column 12, top aligned with the status line; nav row below at Medium 40.
+- Desktop home header (masthead): wordmark on columns 1 to 8 (on home the wordmark is the page's h1, visually unchanged); the details block (status line, address with a pin that links to Google Maps directions) starts on column 9 and is 3 columns wide; the cart sits alone, right-aligned in column 12, top aligned with the status line; nav row below at Medium 40.
 - Desktop other pages: compact header, wordmark left, nav and cart right. On every desktop page a compact bar slides in once the header scrolls away.
 - Mobile header, every page: wordmark, status line, address with pin, then order, menu, visit, about and the cart button.
 - Status line: from Opening hours in theme settings, Australia/Sydney time, rechecked every minute. Open: green dot, "now baking, open now" (Now baking on in the header settings) or "open now". Closed: orange dot, "closed, opens tomorrow at 8am" and so on. Hidden until hours are set.
 - "order" opens the order panel. The panel lists help me order, pick up, pre order and wholesale as large blocks, each with a button. On desktop it is a centred panel, 6 columns wide, under the header. On mobile it is a full-screen sheet. Delivery is not shown.
 - Pre order is reached through the order panel; it is not in the header.
-- Footer group, every page: sign up band directly on top of follow us (no gap, no rule), then the footer with links to ordering and pick up, allergens, wholesale, contact, instagram, tiktok and policies. The footer has no email field.
+- Order panel rows (desktop panel and mobile sheet, same rules) are channels; each button says where it goes: Help me order / start (opens the flow), Pick up / order with us (/collections/pies, the all pies page), Delivery (label and link from Theme settings > Ordering > Delivery, default label "uber eats", opens in a new tab, shown only once the link is set), Pre order (label from the pre order window's name, e.g. "christmas: order from ..." gives "christmas"; /pages/pre-order; shown only while a window is set, open soon or open), Wholesale / stock cakehouse. Pre order means a seasonal window with its own pies and pick up dates; everyday orders are already for a future date.
+- Delivery goes through a third-party service linked from the order panel; there is no delivery logic in the theme for now. If Suzie delivers herself later, use Shopify local delivery.
+- Footer group, every page: sign up band directly on top of follow us (no gap, no rule), then the footer with links to ordering and pick up, allergens, wholesale, contact, instagram and tiktok. The footer has no email field. At the foot, one line at Meta size in black (stacked on mobile): copyright, policy links (refund, privacy, terms of service, shipping, contact information; each only shows once that policy exists in Settings > Policies), then "credits", which reveals "design and development by Office BFF" inline on hover, focus or tap, linking to the Credit link theme setting (default https://officebff.com.au, new tab). "Show credit" turns it off.
 
 ## Sections
 
@@ -141,8 +143,10 @@ Build each as an Online Store 2.0 section with settings so Suzie can edit conten
 - Sign up: a pink band in the footer group on every page, directly on top of follow us: title, copy, email field and button on one line (Shopify customer form at launch; Klaviyo can replace it later).
 - Visit: a colour split (blue on home). Title on the top line; address, hours (from Opening hours in theme settings, consecutive days grouped) and a solid "directions" button (Google Maps) at the foot of the colour side; photo on the other side.
 - Follow us: curated posts from a metaobject (image, link, platform). No feed app at launch. Title left, instagram, tiktok and substack buttons right (each shows once its link is set in the section); then a horizontal strip of rounded tiles (24 radius desktop, 16 mobile), top aligned, mixed heights cycling 4:5, 2:3, 1:1, 3:4, 250 wide desktop (scaled) and 160 mobile, gap 24 and 12, starting at the left margin and running off the right edge. Each tile links to its post. The strip drifts left on a loop (about 30 seconds per cycle), pauses on hover, touch or focus, can be scrolled or dragged by hand, has no visible scrollbar and stays still with reduced motion.
-- Menu list: groups (pies, drinks) driven by a metaobject so Suzie can edit items and prices without touching products.
-- Question and answer list: used for ordering and pick up, and for ingredients and allergens.
+- Menu list: groups (pies, drinks) driven by the menu_item metaobject (name, price, group, on the counter today, product) so Suzie can edit items and prices without touching products. No intro line on the menu page. The visit page's "today's counter" reads the same entries: an item linked to a product shows "by the slice" and opens that product with by the slice chosen; an item not on the counter today shows sold out; no product link, no button.
+- Question and answer list: used for ordering and pick up, and for ingredients and allergens. The ingredients and allergens list reads each pie's custom.ingredients and custom.allergens (entered once, on the product); until any pie has them filled in, it shows the holding rows. Both pages use the info template, so the template holds two lists and each is limited to its page by handle (Only on page).
+- Wholesale: title block (Wholesale, intro right), then both columns on the same top line: details as ruled rows (label left, value right, both Body L) and the form (business, email, phone, message) with a full-width solid "send enquiry"; no "Enquire" heading. Mobile: rows first, then the form.
+- Contact form (contact and wholesale): detail rows on the left, Shopify contact form on the right with optional topic chips. Page titles sit inside the first section so no rule is drawn under them.
 - Footer.
 
 ## Home order
@@ -155,10 +159,17 @@ index, product, collection (pies), cart, page.menu, page.about, page.pre-order, 
 
 ## Products
 
+- All pies page: the collection template (/collections/pies and /collections/all) is the home "Order pies" block (title, intro, "Not sure what to get? help me order", the same cards), showing the collection being viewed. Products tagged hidden or pick-up never show in a collection grid, search results, More pies or help me order (the Pick up product is also hidden from search with seo.hidden).
+
 - One product per pie.
 - Option "Format" with values "Whole pie" and "By the slice".
 - By the slice is pick up only and has no handwritten note.
-- The product page shows format as two buttons (whole pie, by the slice), then pick up date, handwritten message (whole pie only), and a help me order prompt.
+- The product page (templates/product.json), redesigned (Figma "Product redesign" on 06 DESIGN PREVIEW). Desktop: gallery on the left, columns 1 to 7, edge to edge from the left; photos stacked 4px apart, scrolling with the page. The first photo's height is capped at the window minus the header (object-fit cover, using the image's focal point), so it shows whole on load; later photos are 4:5. Buy column on the right, columns 8 to 12, sticky while the gallery scrolls (when it is taller than the window it pins by its foot so every row stays reachable): title (D4), price (Body L), short description (Body), then ruled rows: size (whole pie / by the slice, each showing its price), pick up (choose a date, opens the date panel), message (add a note, whole pie only, hidden for slices). Then a quantity stepper and a full-width solid "add to cart $price" (price times quantity). Then the pick up line with the pin, built from the ordering settings ("Pick up from 336 Brunswick St, Fitzroy. Order 2 days ahead, before midday."). Then "Ordering for an occasion?" with an outline "help me order". Then info rows that open on tap: ingredients, allergens, serves, storage and serving, from product metafields custom.ingredients, custom.allergens, custom.serves, custom.storage; a row only shows when its field has content.
+- Mobile: the first photo at 4:5, then the buy column in the same order (the size label sits on its own line, the two size buttons half and half below, prices kept). While the main add to cart button is out of view, a full-width bar at the bottom shows "add to cart $price".
+- Below: "More pies" (the product grid, leaving out the pie being viewed), then the footer. No pre order split on product pages.
+- ?variant= picks the starting format, so links can open a pie with by the slice chosen.
+- Sold out: when the chosen format is unavailable, "sold out" replaces add to cart.
+- Add to cart on the product page and in help me order share one cart routine (assets/order.js): pick up line per whole pie, one pick up date per order with the conflict prompt.
 
 ## Ordering rules
 
@@ -172,7 +183,13 @@ Store these as theme settings with defaults marked "to confirm". Suzie fills the
 - Pre order windows, each with its own pick up dates.
 - Slices: available from the counter's stock, pick up only.
 
-Starting defaults (confirmed as defaults; Suzie can change them): whole pie lead time 2 business days, slice lead time 0 (same day), no cut-off, orders up to 63 days ahead, note up to 60 characters.
+Values from Suzie (set as the theme setting defaults; she can change them):
+
+- Lead time for whole pies: 2 business days.
+- Cut-off: 12:00 midday, Australia/Sydney. Orders before midday count the lead time from that day; orders after midday count from the next day. The cut-off applies to slices too (after midday, the first slice day is tomorrow).
+- Daily caps: off for now ("Use daily caps" in theme settings, default off). When off, the pick up product is not added to the cart and no day shows as full. The code path stays for when caps are switched on.
+- Open every day in December (no closed weekdays). Opening times still to come.
+- Other defaults: slice lead time 0 (same day), orders up to 63 days ahead, note up to 60 characters.
 
 The date picker only offers valid dates: it applies the lead time, cut-off, closed days, blackout dates and pre order windows, and greys out days that are sold out.
 
@@ -190,6 +207,16 @@ Cart rules:
 - Lead times, cut-offs, closed days and blackout dates are enforced in the theme (date picker and cart). Caps are enforced by Shopify inventory at checkout.
 - The store timezone is Australia/Sydney (AEDT, the same as Melbourne). Check Settings › General before writing any date logic.
 
+## Pre order
+
+- A "pre-order" collection holds the pre order pies (Theme settings > Ordering > Pre order collection, set to pre-order; it falls back to that handle). It exists and is empty.
+- Pre order windows in theme settings, one per line: "order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24". Ordering opens and closes on the first two dates.
+- The page state (snippets/preorder-state) is worked out in store time: soon (before a window or none set), open, closed (after the last window).
+- Outside a window, pre order pies show "pre orders open soon" in place of the button.
+- Before the window opens, the pre order page shows "Pre orders for Christmas open soon" with the sign up form.
+- Inside the window, the page shows the pre-order collection, and the date picker offers only the window's pick up dates.
+- Product pages for pre order pies say "pre order" on the button instead of "add to cart".
+
 ## Help me order
 
 A pop out flow with 5 steps: which pie, size, pick up and date, note, your order.
@@ -203,7 +230,7 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 ## Cart
 
 - Desktop: a drawer 5 columns wide (566) on the right, under the header. Mobile: a full-screen sheet.
-- Content: "Cart" title, close, then pick up date, items with format and note, and total, as rows with 1px rules. Then keep shopping and checkout.
+- Content: "Cart" title, close, then pick up date, items with format and note, a quantity stepper (− 1 +) and remove on each line, and total, as rows with 1px rules. Then keep shopping and checkout. Changing a whole pie's quantity keeps the pick up line count right when caps are on (createCart().changeLine).
 - Empty state: "Your cart is empty." with a shop button.
 - Update with the Section Rendering API, no page reloads.
 
@@ -219,6 +246,32 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 - Follow us: the strip drifts slowly to the left and pauses on hover, touch or focus.
 - Respect `prefers-reduced-motion`: no pulse, no slides, no strip drift, fades only.
 
+### Hover and active states (Figma: "Hover and active states" on 06 DESIGN PREVIEW)
+
+Nav, colour underline (option B):
+- Each page has a colour: order clementine, menu pink, visit blue, about strawberry.
+- The current page's link shows a 4px underline in its colour, 2px under the text, the full width of the word. On hover a link shows its own colour underline, growing from the left over 150ms.
+- Applies to the masthead nav, the sticky compact header and the mobile nav (3px on mobile). Touch screens have no hover state, only the active underline.
+- The active link gets aria-current="page".
+- "order" has no page of its own: it shows the clementine underline while the order panel is open, and on product pages.
+
+Buttons:
+- On hover, fill with a brand colour with black text, 150ms fade. Default hover colour clementine; inside a clementine block, white.
+- Solid and outline buttons both use this. Outline buttons keep their black stroke.
+- Cart button: clementine fill on hover, black icon and count.
+- Keyboard focus matches hover, plus a 2px black focus ring offset 2px. The ring shows for keyboard use only, never after a mouse click or a tap (layout/theme.liquid tracks the last input as html[data-input]).
+- Reduced motion: swap instantly, no fade.
+
+Built (motion branch): nav colours are set per link in sections/header.liquid by the link's handle (menu, visit, about; anything else clementine). Colour blocks carry a surface--{colour} class; surface--clementine switches the button hover to white. Page changes use cross-document view transitions (header held, 180ms crossfade); prefetch uses speculation rules on hover, with assets/motion.js as the fallback for other browsers. The cart button bumps when its count changes.
+
+## Favicon and link previews
+
+- Favicon: the footer brand mark (blue square, diagonal wordmark, from the footer component on 05 design playground), exported square at 512 and 180 (apple touch icon). A "Favicon" image setting in theme settings overrides the files.
+- Social sharing image: a theme setting, defaulting to the lemon meringue on the glass stand (preview-pre-order.jpg) cropped to 1200 x 630 with the pie centred.
+- Every page outputs og:image, og:title, og:description and twitter:card summary_large_image. Product pages use the featured image when there is one; pages use their own image setting if set; otherwise the default.
+- Built: Theme settings > Brand and sharing (Favicon, Social sharing image). Files: assets/favicon-512.png, favicon-32.png, apple-touch-icon.png (180), social-share.jpg (1200 x 630). A page's own image is the page metafield custom.social_image (file).
+- Favicon approved as is (the diagonal wordmark reads at 48px, is borderline at 32 and becomes a stroke at 16).
+
 ## Performance and quality
 
 - Keep apps to a minimum. Each app needs Rich's sign-off.
@@ -227,6 +280,8 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 - Test on desktop 1440 and mobile 390 before merging.
 
 ## Copy
+
+- Every page template ships with the Figma holding copy (section 238:1507 and home v2) as template JSON values, never hard-coded in Liquid. Known values are written in: lead time two days, cut-off midday.
 
 - Content comes from Suzie. Use the holding copy in Figma until it is supplied.
 - Do not invent prices, lead times, hours, ingredients or allergen information.

@@ -6,7 +6,7 @@
 {%- endcomment -%}
 <section class="about">
   <div class="about__head page-width">
-    {% render 'block-head', title: section.settings.title, copy: section.settings.intro %}
+    {% render 'block-head', title: section.settings.title, copy: section.settings.intro, heading_h1: section.settings.page_title %}
   </div>
   <div class="about__body">
     {% render 'media',
@@ -35,6 +35,7 @@
   "settings": [
     { "type": "text", "id": "title", "label": "Title", "default": "Suzie" },
     { "type": "richtext", "id": "intro", "label": "Intro", "info": "Beside the title on the top line." },
+    { "type": "checkbox", "id": "page_title", "label": "Page title", "info": "On when this is the first section of a page.", "default": false },
     { "type": "image_picker", "id": "portrait", "label": "Portrait" },
     { "type": "richtext", "id": "copy", "label": "Copy", "info": "At the foot of the right column." },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "about" },

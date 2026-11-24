@@ -8,7 +8,8 @@
  * Shared dialog frame: under the header on desktop, full screen on mobile.
  * ------------------------------------------------------------------------- */
 .order-panel,
-.hmo {
+.hmo,
+.date-panel {
   position: fixed;
   inset: auto;
   top: var(--panel-top, calc(var(--header-bottom, 0px) + 34 * var(--u)));
@@ -25,17 +26,20 @@
 }
 
 .order-panel::backdrop,
-.hmo::backdrop {
+.hmo::backdrop,
+.date-panel::backdrop {
   background-color: rgb(0 0 0 / 0.2);
 }
 
 .order-panel[open],
-.hmo[open] {
+.hmo[open],
+.date-panel[open] {
   animation: panel-in var(--duration-panel) var(--ease-out);
 }
 
 .order-panel[open]::backdrop,
-.hmo[open]::backdrop {
+.hmo[open]::backdrop,
+.date-panel[open]::backdrop {
   animation: backdrop-in var(--duration-panel) var(--ease-out);
 }
 
@@ -54,7 +58,8 @@
 
 @media (max-width: 749px) {
   .order-panel,
-  .hmo {
+  .hmo,
+  .date-panel {
     top: 0;
     left: 0;
     width: 100%;
@@ -73,7 +78,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .order-panel[open],
-  .hmo[open] {
+  .hmo[open],
+  .date-panel[open] {
     animation-name: fade-in;
   }
 
@@ -881,5 +887,307 @@
   .hmo__bar-fill,
   .hmo {
     transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Pick up date panel (product page): the help me order calendar in a
+ * clementine panel, six columns wide under the header; a sheet on mobile.
+ * ------------------------------------------------------------------------- */
+.date-panel {
+  width: calc(684 * var(--u));
+  padding: calc(24 * var(--u)) calc(32 * var(--u)) calc(32 * var(--u));
+  background-color: var(--colour-clementine);
+}
+
+.date-panel__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  padding-bottom: calc(12 * var(--u));
+}
+
+.date-panel__title {
+  margin: 0;
+}
+
+.date-panel__info {
+  margin: 0 0 calc(20 * var(--u));
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+@media (max-width: 749px) {
+  .date-panel {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .date-panel__info {
+    margin-bottom: 16px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Cart drawer: five columns (566), birthday pink, on the right under the
+ * header. Mobile: a full-screen sheet with stacked buttons.
+ * ------------------------------------------------------------------------- */
+.cart-drawer {
+  position: fixed;
+  inset: auto;
+  top: var(--panel-top, calc(var(--header-bottom, 0px) + 34 * var(--u)));
+  right: var(--page-margin);
+  width: calc(566 * var(--u));
+  height: min(calc(780 * var(--u)), calc(100dvh - var(--panel-top, 0px) - 24 * var(--u)));
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  background-color: var(--colour-birthday-pink);
+  color: var(--colour-black);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.cart-drawer::backdrop {
+  background-color: rgb(0 0 0 / 0.2);
+}
+
+.cart-drawer[open] {
+  animation: drawer-in var(--duration-panel) var(--ease-out);
+}
+
+.cart-drawer[open]::backdrop {
+  animation: backdrop-in var(--duration-panel) var(--ease-out);
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(24 * var(--u)));
+  }
+}
+
+.cart--drawer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  height: 100%;
+  padding: calc(24 * var(--u));
+}
+
+.cart--drawer .cart__top {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cart__top {
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--u));
+}
+
+.cart__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+}
+
+.cart__title {
+  margin: 0;
+}
+
+.cart__lines {
+  display: flex;
+  flex-direction: column;
+  gap: calc(14 * var(--u));
+  border-top: var(--rule-width) solid var(--colour-black);
+  padding-top: calc(14 * var(--u));
+}
+
+.cart__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  margin: 0;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.cart__row > :last-child {
+  flex: none;
+}
+
+.cart__row--pick-up {
+  padding-bottom: calc(14 * var(--u));
+  border-bottom: var(--rule-width) solid var(--colour-black);
+}
+
+.cart__items {
+  display: flex;
+  flex-direction: column;
+  gap: calc(14 * var(--u));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cart__item {
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 * var(--u));
+  border-radius: calc(8 * var(--u));
+}
+
+.cart__item.is-new {
+  animation: line-new 1.6s var(--ease-out);
+}
+
+@keyframes line-new {
+  0%,
+  40% {
+    background-color: rgb(255 255 255 / 0.55);
+    box-shadow: 0 0 0 calc(6 * var(--u)) rgb(255 255 255 / 0.55);
+  }
+}
+
+.cart__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  margin: 0;
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line);
+}
+
+.cart__controls {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: calc(14 * var(--u));
+  margin-left: auto;
+}
+
+.quantity--small {
+  font-size: var(--type-body-size);
+}
+
+.quantity--small .quantity__step {
+  width: calc(30 * var(--u));
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.cart__remove {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.cart__row--total {
+  padding-top: calc(14 * var(--u));
+  border-top: var(--rule-width) solid var(--colour-black);
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+}
+
+.cart__empty {
+  margin: 0;
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+}
+
+.cart__foot {
+  padding-top: calc(16 * var(--u));
+  border-top: var(--rule-width) solid var(--colour-black);
+}
+
+.cart__nav {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  margin: 0;
+}
+
+.cart[aria-busy='true'] {
+  cursor: progress;
+}
+
+.cart[aria-busy='true'] .cart__items,
+.cart[aria-busy='true'] .cart__row--total {
+  opacity: 0.5;
+}
+
+/* Cart page: the same contents on a white block, six columns wide. */
+.main-cart {
+  padding: var(--block-top) var(--page-margin) var(--block-bottom);
+}
+
+.cart--page {
+  display: flex;
+  flex-direction: column;
+  gap: calc(40 * var(--u));
+  max-width: calc(684 * var(--u));
+}
+
+@media (max-width: 749px) {
+  .cart-drawer {
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100dvh;
+  }
+
+  @keyframes drawer-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+
+  .cart--drawer {
+    padding: 16px;
+  }
+
+  .cart__foot {
+    padding-top: 10px;
+  }
+
+  .cart__nav {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .cart--page {
+    gap: 24px;
+    max-width: none;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-drawer[open] {
+    animation-name: fade-in;
+  }
+
+  .cart__item.is-new {
+    animation-name: line-new-fade;
+  }
+
+  @keyframes line-new-fade {
+    0%,
+    60% {
+      background-color: rgb(255 255 255 / 0.55);
+    }
   }
 }

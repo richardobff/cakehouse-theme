@@ -20,6 +20,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--media-position, center);
 }
 
 .js .media__img {
@@ -78,6 +79,17 @@
   left: var(--page-margin);
   height: var(--rule-width);
   background-color: var(--colour-black);
+}
+
+/* A section that has nothing to show on this page (e.g. a question list
+ * meant for another page sharing the template) takes no space and draws no
+ * rule for the block after it. */
+.block:has(> [data-block-skip]) {
+  display: none;
+}
+
+.block:has(> [data-block-skip]) + .block--white::before {
+  content: none;
 }
 
 .spacer,
@@ -473,6 +485,9 @@
 
 .follow-us__strip {
   grid-area: strip;
+  /* Positioned so absolutely placed children (the visually hidden platform
+   * label) are clipped by the strip instead of widening the page. */
+  position: relative;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -503,6 +518,7 @@
 }
 
 .follow-us__tile {
+  position: relative;
   flex: none;
   width: calc(250 * var(--u));
 }
@@ -561,4 +577,432 @@
 .full-bleed--fill .media {
   aspect-ratio: auto;
   height: max(480px, calc(100svh - var(--header-height, 263px)));
+}
+
+/* ---------------------------------------------------------------------------
+ * Product main (white block). Desktop: gallery from the screen edge to the
+ * end of column 7, photos stacked 4px apart and scrolling with the page, the
+ * first capped at the window height under the header. Buy column on columns
+ * 8 to 12, sticky (assets/product.js keeps a column taller than the window
+ * pinned by its foot). Mobile: first photo at 4:5, then the buy column, plus
+ * a full-width add to cart bar while the main button is out of view.
+ * ------------------------------------------------------------------------- */
+.product-buy {
+  --product-col: calc((100vw - var(--page-margin) * 2 - var(--grid-gutter) * 11) / 12);
+  --gallery-width: calc(var(--page-margin) + var(--product-col) * 7 + var(--grid-gutter) * 6);
+  display: grid;
+  grid-template-columns: var(--gallery-width) minmax(0, 1fr);
+  column-gap: var(--grid-gutter);
+  align-items: start;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.product-buy__gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.product-buy__photo--first .media {
+  width: 100%;
+  height: min(calc(var(--gallery-width) * 1.25), calc(100svh - var(--header-height, calc(86 * var(--u)))));
+  aspect-ratio: auto;
+}
+
+.product-buy__main {
+  position: sticky;
+  top: var(--buy-top, var(--header-height, calc(78 * var(--u))));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--block-top) var(--page-margin) var(--block-bottom) 0;
+}
+
+.product-buy__title {
+  margin: 0;
+}
+
+.product-buy__price {
+  margin: calc(12 * var(--u)) 0 0;
+}
+
+.product-buy__description {
+  margin-top: calc(20 * var(--u));
+}
+
+.product-buy__description p {
+  margin: 0;
+}
+
+.product-buy__rows {
+  margin-top: calc(24 * var(--u));
+  border-top: var(--rule-width) solid var(--colour-black);
+}
+
+.product-buy__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(12 * var(--u));
+  padding-block: calc(12 * var(--u));
+  border-bottom: var(--rule-width) solid var(--colour-black);
+}
+
+.product-buy__row[hidden] {
+  display: none;
+}
+
+.product-buy__label {
+  margin: 0;
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+}
+
+.product-buy__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: calc(8 * var(--u));
+}
+
+.product-buy__chips .button {
+  gap: calc(8 * var(--u));
+}
+
+.product-buy__note {
+  flex-basis: 100%;
+}
+
+.product-buy__note[hidden] {
+  display: none;
+}
+
+.product-buy__note-field {
+  display: block;
+  width: 100%;
+  min-height: calc(110 * var(--u));
+  padding: calc(16 * var(--u)) calc(20 * var(--u));
+  border: var(--stroke-width) solid var(--colour-black);
+  border-radius: var(--radius-message);
+  background: transparent;
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  resize: vertical;
+}
+
+.product-buy__note-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  margin: 0;
+  padding: calc(8 * var(--u)) calc(8 * var(--u)) 0;
+}
+
+/* Quantity stepper and add to cart. */
+.product-buy__add-row {
+  display: flex;
+  gap: calc(8 * var(--u));
+  margin-top: calc(20 * var(--u));
+}
+
+.product-buy__add,
+.product-buy__sold-out {
+  flex: 1 1 auto;
+  justify-content: center;
+  gap: calc(10 * var(--u));
+}
+
+.product-buy__add[hidden],
+.product-buy__sold-out[hidden] {
+  display: none;
+}
+
+.quantity {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  border: var(--stroke-width) solid var(--colour-black);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-body-l-size);
+  line-height: 1;
+  letter-spacing: var(--type-body-l-tracking);
+}
+
+.quantity__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(42 * var(--u));
+  min-width: 32px;
+  align-self: stretch;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out);
+}
+
+.quantity__step:hover:not(:disabled),
+.quantity__step:focus-visible {
+  background-color: var(--colour-clementine);
+}
+
+.quantity__step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.quantity__value {
+  min-width: 1.4ch;
+  text-align: center;
+}
+
+/* Pick up line, help me order prompt. */
+.product-buy__info {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(10 * var(--u));
+  margin: calc(16 * var(--u)) 0 0;
+}
+
+.product-buy__pin {
+  display: inline-flex;
+  flex: none;
+  padding-top: 0.2em;
+}
+
+.product-buy__pin svg {
+  width: calc(14 * var(--u));
+  min-width: 12px;
+  height: auto;
+}
+
+.product-buy__help {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(12 * var(--u));
+  margin-top: calc(12 * var(--u));
+}
+
+.product-buy__prompt {
+  margin: 0;
+}
+
+.product-buy__conflict {
+  margin-top: calc(16 * var(--u));
+}
+
+.product-buy__status {
+  margin: calc(12 * var(--u)) 0 0;
+}
+
+.product-buy__status:empty {
+  display: none;
+}
+
+/* Info rows: ingredients, allergens, serves, storage and serving. */
+.product-buy__info-rows {
+  margin-top: calc(40 * var(--u));
+  border-top: var(--rule-width) solid var(--colour-black);
+}
+
+.product-info {
+  border-bottom: var(--rule-width) solid var(--colour-black);
+}
+
+.product-info__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  padding-block: calc(14 * var(--u));
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+  list-style: none;
+  cursor: pointer;
+}
+
+.product-info__summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Plus that turns into a minus when open. */
+.product-info__icon {
+  position: relative;
+  flex: none;
+  width: calc(14 * var(--u));
+  min-width: 12px;
+  aspect-ratio: 1;
+}
+
+.product-info__icon::before,
+.product-info__icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: currentColor;
+  translate: 0 -50%;
+  transition: transform 150ms var(--ease-out);
+}
+
+.product-info__icon::after {
+  transform: rotate(90deg);
+}
+
+.product-info[open] .product-info__icon::after {
+  transform: rotate(0deg);
+}
+
+.product-info__body {
+  padding-bottom: calc(16 * var(--u));
+}
+
+/* Add to cart bar (mobile only). */
+.product-bar {
+  display: none;
+}
+
+@media (max-width: 749px) {
+  .product-buy {
+    display: block;
+  }
+
+  /* Mobile shows the first photo only. */
+  .product-buy__photo:not(.product-buy__photo--first) {
+    display: none;
+  }
+
+  .product-buy__photo--first .media {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+
+  .product-buy__main {
+    position: static;
+    padding: 16px var(--page-margin) var(--block-bottom);
+  }
+
+  .product-buy__price {
+    margin-top: 12px;
+  }
+
+  .product-buy__description {
+    margin-top: 20px;
+  }
+
+  .product-buy__rows {
+    margin-top: 24px;
+  }
+
+  .product-buy__row {
+    padding-block: 12px;
+  }
+
+  .product-buy__label,
+  .product-info__summary {
+    font-size: var(--type-product-size);
+    line-height: var(--type-product-line);
+  }
+
+  /* Size: the label on its own line, the two buttons half and half below. */
+  .product-buy__row--size {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .product-buy__row--size .product-buy__chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-buy__chips .button {
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .product-buy__add-row {
+    margin-top: 20px;
+  }
+
+  .quantity__step {
+    width: 40px;
+  }
+
+  .product-buy__info {
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .product-buy__help {
+    margin-top: 12px;
+  }
+
+  .product-buy__info-rows {
+    margin-top: 32px;
+  }
+
+  .product-info__summary {
+    padding-block: 14px;
+  }
+
+  .product-bar {
+    display: block;
+    position: fixed;
+    z-index: 40;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 15px 16px calc(14px + env(safe-area-inset-bottom));
+    background-color: var(--colour-white);
+    border-top: var(--rule-width) solid var(--colour-black);
+    transform: translateY(100%);
+    visibility: hidden;
+    transition: transform 200ms var(--ease-out), visibility 0s linear 200ms;
+  }
+
+  .product-bar.is-visible {
+    transform: none;
+    visibility: visible;
+    transition: transform 200ms var(--ease-out);
+  }
+
+  .product-bar__add {
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 749px) and (prefers-reduced-motion: reduce) {
+  .product-bar {
+    transform: none;
+    opacity: 0;
+    transition: opacity 200ms linear, visibility 0s linear 200ms;
+  }
+
+  .product-bar.is-visible {
+    opacity: 1;
+    transition: opacity 200ms linear;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quantity__step,
+  .product-info__icon::before,
+  .product-info__icon::after {
+    transition: none;
+  }
 }
