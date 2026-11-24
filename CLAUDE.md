@@ -136,7 +136,8 @@ Build each as an Online Store 2.0 section with settings so Suzie can edit conten
 
 - Now baking: an on/off switch in the header settings that sets the open status wording. The ticker bar was removed in header-info (in git history if it comes back).
 - Header: masthead variant for home, compact variant for other pages.
-- Full-bleed image, with an option to fill the window under the header (home hero: 100svh minus the header, at least 480).
+- Full-bleed image, with an option to fill the window under the header.
+- Page hero rule: a full-bleed image that opens a page (home, visit, any page whose first section is one) always fills the window under the header: 100svh minus the header height, at least 480, object-fit cover on the image's focal point (centred without one). Same rule on mobile. The header height is set before first paint (inline script after the header in sections/header.liquid), so the hero never jumps when assets/header.js loads. Full-bleed images further down a page keep their shape setting.
 - Section spacer: title and copy on the top line, optional button under the copy.
 - Help me order entry block: colour, image, title, copy, button.
 - Product grid: title, copy and an optional prompt with a button on the top line, then the products from a collection picker, all one section.

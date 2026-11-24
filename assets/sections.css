@@ -572,7 +572,9 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Full-bleed image that fills the window under the header (home hero).
+ * Page hero rule: a full-bleed image that opens a page fills the window
+ * under the header (home, visit, any page that starts with one).
+ * --header-height is set before first paint (sections/header.liquid).
  * ------------------------------------------------------------------------- */
 .full-bleed--fill .media {
   aspect-ratio: auto;
