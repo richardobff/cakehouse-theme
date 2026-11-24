@@ -73,7 +73,8 @@
     "sign_up_success": "Thanks, you are signed up.",
     "instagram": "instagram",
     "tiktok": "tiktok",
-    "policies": "policies"
+    "policies": "policies",
+    "substack": "substack"
   },
   "products": {
     "from_price": "from {{ price }}",

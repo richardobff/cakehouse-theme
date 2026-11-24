@@ -16,10 +16,11 @@
       "type": "follow-us",
       "settings": {
         "title": "Follow us",
-        "instagram_url": "https://www.instagram.com/cake_house_collective/",
-        "tiktok_url": "",
+        "instagram_url": "https://www.instagram.com/cakehousepies/",
+        "tiktok_url": "https://www.tiktok.com/@cakehousecollective",
         "preview_posts": true,
-        "limit": 8
+        "limit": 8,
+        "substack_url": "https://substack.com/@suziethepielady"
       }
     },
     "footer": {
@@ -27,8 +28,8 @@
       "settings": {
         "mark_colour": "blue-sky",
         "menu": "footer",
-        "instagram_url": "https://www.instagram.com/cake_house_collective/",
-        "tiktok_url": "",
+        "instagram_url": "https://www.instagram.com/cakehousepies/",
+        "tiktok_url": "https://www.tiktok.com/@cakehousecollective",
         "policies_url": ""
       }
     }

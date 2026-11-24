@@ -26,7 +26,7 @@
 <section class="follow-us" data-follow-us>
   <h2 class="follow-us__title type-d3">{{ section.settings.title | escape }}</h2>
 
-  {%- if section.settings.instagram_url != blank or section.settings.tiktok_url != blank -%}
+  {%- if section.settings.instagram_url != blank or section.settings.tiktok_url != blank or section.settings.substack_url != blank -%}
     <div class="follow-us__buttons">
       {%- if section.settings.instagram_url != blank -%}
         {%- assign label = 'footer.instagram' | t -%}
@@ -35,6 +35,10 @@
       {%- if section.settings.tiktok_url != blank -%}
         {%- assign label = 'footer.tiktok' | t -%}
         {% render 'button', label: label, url: section.settings.tiktok_url, style: 'outline', attributes: 'target="_blank" rel="noopener"' %}
+      {%- endif -%}
+      {%- if section.settings.substack_url != blank -%}
+        {%- assign label = 'footer.substack' | t -%}
+        {% render 'button', label: label, url: section.settings.substack_url, style: 'outline', attributes: 'target="_blank" rel="noopener"' %}
       {%- endif -%}
     </div>
   {%- endif -%}
@@ -101,6 +105,7 @@
     },
     { "type": "url", "id": "instagram_url", "label": "Instagram" },
     { "type": "url", "id": "tiktok_url", "label": "TikTok" },
+    { "type": "url", "id": "substack_url", "label": "Substack" },
     {
       "type": "paragraph",
       "content": "Posts come from Content > Metaobjects > Follow us post (image, link, platform)."
