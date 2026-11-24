@@ -243,15 +243,15 @@ Update this after every branch: move items between lists and add new ones as the
 - Store: pick up address, timezone Australia/Sydney, header and footer menus, follow_us_post metaobject, test data (4 test pies tagged test, Pies collection, hidden Pick up product with dates 2026-11-20 to 2026-12-10, cap 20, 21 and 28 Nov sold out).
 
 ### In progress
-- product-page: built and pushed, waiting on Rich's review. Hero, buy block (format, pick up date panel, note for whole pies, help me order prompt, sold out), pre order split, More pies. Shares the calendar and cart routine with help me order. Also fixes the mobile cart icon on compact-header pages.
+- product-page: rebuilt and pushed, waiting on Rich's review. Desktop two columns (4:5 photo to column 7, buy column sticky on the right, everything to buy in view on load from 1280), mobile add to cart bar, pre order split, More pies. Suzie's ordering values set as defaults (lead 2, cut-off 12:00, caps off via "Use daily caps"). To confirm with Rich: the buy column is sticky rather than the photo, because a 4:5 photo at 7 columns is taller than the window.
+- cart, pages, motion: stacked on product-page, in that order.
 
 ### Next, in order
-1. Links check: pre order, about, get an invite (#sign-up), Instagram, TikTok, Substack.
-2. Cart drawer and cart page: lines, pick up date, empty state, date conflict prompt, live count.
-3. Pages: menu (metaobject, pies and drinks), about, pre order, wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
-4. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
-5. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
-6. Launch: real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
+1. Cart drawer and cart page: lines, pick up date, empty state, date conflict prompt, live count.
+2. Pages (with the links check: pre order, about, get an invite, socials): menu (metaobject, pies and drinks), about, pre order (pre-order collection, window in theme settings, "open soon" state with sign up, window-only dates, "pre order" button), wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
+3. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
+4. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
+5. Launch: real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
 
 ### Backlog (not scheduled)
 - How pick up date variants are created and topped up over time, so Suzie doesn't do it by hand.
@@ -261,5 +261,5 @@ Update this after every branch: move items between lists and add new ones as the
 
 ### Waiting on Suzie
 - Pie list, prices and photos.
-- Ordering rule values: lead time, cut-off, daily cap, closed days.
+- Opening times for December (open every day). Daily cap numbers, if caps are switched on.
 - Opening hours, about copy, policy wording, wholesale details, drinks for the menu.
