@@ -56,9 +56,9 @@
           "type": "option",
           "settings": {
             "title": "Delivery",
-            "button_label": "uber eats",
+            "button_label": "order for delivery",
             "action": "delivery",
-            "link": ""
+            "link": "/collections/pies?method=delivery"
           }
         }
       },

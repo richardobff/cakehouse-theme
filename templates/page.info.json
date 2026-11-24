@@ -47,7 +47,9 @@
           "type": "question",
           "settings": {
             "question": "Do you deliver?",
-            "answer": "<p>To come.</p>"
+            "answer": "<p>To come.</p>",
+            "answer_source": "delivery_note",
+            "anchor": "delivery"
           }
         }
       },

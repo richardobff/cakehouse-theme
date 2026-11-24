@@ -784,6 +784,24 @@
   height: auto;
 }
 
+/* Pick up or delivery: the toggle, then the date. */
+.product-buy__when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: calc(8 * var(--u));
+}
+
+.product-buy__methods .button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.product-buy__delivery-note {
+  margin: calc(6 * var(--u)) 0 0 calc(24 * var(--u));
+}
+
 .product-buy__help {
   display: flex;
   flex-wrap: wrap;
@@ -916,16 +934,34 @@
     line-height: var(--type-product-line);
   }
 
-  /* Size: the label on its own line, the two buttons half and half below. */
+  /* Size, and pick up or delivery: the label on its own line, the two
+   * buttons half and half below (then the date, full width). */
+  .product-buy__row--when:has(.product-buy__when),
   .product-buy__row--size {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
   }
 
-  .product-buy__row--size .product-buy__chips {
+  .product-buy__row--size .product-buy__chips,
+  .product-buy__methods {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-buy__when {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .product-buy__when .product-buy__control {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .product-buy__delivery-note {
+    margin-left: 24px;
   }
 
   .product-buy__chips .button {

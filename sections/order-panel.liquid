@@ -2,9 +2,9 @@
   Order panel. Opened by "order" in the header. A centred panel six columns
   wide under the header on desktop, a full-screen sheet on mobile.
   Each row is a channel; its button says where it goes. A row can link
-  somewhere, open help me order, be the delivery row (label and link from
-  Theme settings > Ordering > Delivery, opens in a new tab, shown only once
-  the link is set) or the pre order row (label from the pre order window's
+  somewhere, open help me order, be the delivery row (its link, normally
+  /collections/pies?method=delivery; shown only while Theme settings >
+  Ordering > Delivery is on) or the pre order row (label from the pre order window's
   name, shown only while a window is set, open soon or open).
 {%- endcomment -%}
 {%- liquid
@@ -40,7 +40,7 @@
         if is_preorder_row and preorder_state != 'open' and preorder_state != 'soon'
           continue
         endif
-        if block.settings.action == 'delivery' and settings.delivery_link == blank
+        if block.settings.action == 'delivery' and settings.delivery_enabled == false
           continue
         endif
       -%}
@@ -49,13 +49,18 @@
         {%- if block.settings.action == 'help_me_order' -%}
           {% render 'button', label: block.settings.button_label, attributes: 'data-help-me-order-open' %}
         {%- elsif block.settings.action == 'delivery' -%}
-          {%- assign delivery_label = settings.delivery_label | default: block.settings.button_label -%}
-          {% render 'button', label: delivery_label, url: settings.delivery_link, attributes: 'target="_blank" rel="noopener"' %}
+          {% render 'button', label: block.settings.button_label, url: block.settings.link, attributes: 'data-method-link="delivery"' %}
         {%- elsif block.settings.action == 'preorder' -%}
           {%- assign preorder_label = preorder_name | default: block.settings.button_label -%}
           {% render 'button', label: preorder_label, url: block.settings.link %}
         {%- else -%}
-          {% render 'button', label: block.settings.button_label, url: block.settings.link %}
+          {%- liquid
+            assign link_attr = ''
+            if block.settings.link contains '/collections/'
+              assign link_attr = 'data-method-link="pickup"'
+            endif
+          -%}
+          {% render 'button', label: block.settings.button_label, url: block.settings.link, attributes: link_attr %}
         {%- endif -%}
       </li>
     {%- endfor -%}
@@ -81,7 +86,7 @@
           "options": [
             { "value": "link", "label": "Goes to a link" },
             { "value": "help_me_order", "label": "Opens help me order" },
-            { "value": "delivery", "label": "Delivery (label and link from theme settings)" },
+            { "value": "delivery", "label": "Delivery (shown while delivery is on)" },
             { "value": "preorder", "label": "Pre order (label from the window name)" }
           ],
           "default": "link"

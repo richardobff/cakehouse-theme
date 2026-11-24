@@ -110,7 +110,7 @@
       event.preventDefault();
       closeDialog(orderPanel);
       const productId = Number(hmoTrigger.dataset.productId) || null;
-      flow.open({ productId, format: hmoTrigger.dataset.format });
+      flow.open({ productId, format: hmoTrigger.dataset.format, method: hmoTrigger.dataset.method });
     }
   });
 
@@ -148,6 +148,9 @@
   const monthName = new Intl.DateTimeFormat('en-AU', { month: 'long', timeZone: 'UTC' });
   const monthShort = new Intl.DateTimeFormat('en-AU', { month: 'short', timeZone: 'UTC' });
   const formatLong = (iso) => longDate.format(toDate(iso)).replace(',', '');
+  const shortDate = new Intl.DateTimeFormat('en-AU', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+  /** "Fri 27 Nov", as the cart shows it. */
+  const formatShort = (iso) => shortDate.format(toDate(iso)).replace(',', '');
 
   /** Parse "order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24". */
   function parseWindows(text) {
@@ -173,6 +176,8 @@
     const hasCaps = Boolean(raw.useCaps) && pickup && pickup.productId && Object.keys(pickup.variants || {}).length > 0;
 
     const isOpenDay = (iso) => !closed.has(weekday(iso)) && !blackout.has(iso);
+    const delivery = raw.delivery || {};
+    const deliveryDays = new Set(delivery.days || []);
 
     function windowDates(today) {
       const open = new Set();
@@ -209,10 +214,13 @@
 
     /**
      * 'available' | 'full' | 'unavailable'. Pre order pies (options.preorder)
-     * can only be picked up on the open windows' dates.
+     * can only be picked up on the open windows' dates. Delivery
+     * (options.method === 'delivery', whole pies only) is only on the
+     * delivery days; lead time and cut-off are the same as pick up.
      */
     function status(iso, format, options = {}) {
       const now = nowIn(raw.timezone);
+      if (options.method === 'delivery' && format !== 'slice' && !deliveryDays.has(weekday(iso))) return 'unavailable';
       const last = addDays(now.date, raw.horizonDays);
       const preorder = windowDates(now.date);
       const inWindow = preorder.has(iso);
@@ -238,8 +246,76 @@
   /* -------------------------------------------------------------------------
    * Shared by help me order and the product page
    * ----------------------------------------------------------------------- */
+  /**
+   * Pick up or delivery. Delivery is whole pies only and only while the
+   * Delivery theme setting is on. The choice comes from ?method=delivery (or
+   * pickup) on the URL, or from an earlier choice this visit, and card links
+   * to pies carry it so the product page and help me order open with it.
+   */
+  const METHOD_KEY = 'cakehouse-method';
+  const method = {
+    enabled() {
+      return Boolean(sharedConfigEarly() && sharedConfigEarly().rules.delivery && sharedConfigEarly().rules.delivery.enabled);
+    },
+    get() {
+      if (!method.enabled()) return 'pickup';
+      try {
+        return sessionStorage.getItem(METHOD_KEY) === 'delivery' ? 'delivery' : 'pickup';
+      } catch (error) {
+        return 'pickup';
+      }
+    },
+    set(value) {
+      const next = value === 'delivery' && method.enabled() ? 'delivery' : 'pickup';
+      try {
+        sessionStorage.setItem(METHOD_KEY, next);
+      } catch (error) {
+        /* private mode: the choice lasts for this page only */
+      }
+      decorateLinks();
+      document.dispatchEvent(new CustomEvent('method:change', { detail: { method: next } }));
+      return next;
+    },
+    /** The method a format can use: slices are pick up only. */
+    forFormat(value, format) {
+      return format === 'slice' ? 'pickup' : value;
+    },
+    label(value) {
+      const st = (sharedConfigEarly() && sharedConfigEarly().strings) || {};
+      return value === 'delivery' ? st.methodDelivery || 'delivery' : st.methodPickup || 'pick up';
+    },
+  };
+
+  /** Pie card links keep ?method=delivery while delivery is chosen. */
+  function decorateLinks() {
+    const delivery = method.get() === 'delivery';
+    document.querySelectorAll('.card a[href*="/products/"]').forEach((a) => {
+      const url = new URL(a.getAttribute('href'), location.href);
+      if (delivery) url.searchParams.set('method', 'delivery');
+      else url.searchParams.delete('method');
+      a.setAttribute('href', url.pathname + url.search + url.hash);
+    });
+  }
+
+  function sharedConfigEarly() {
+    const el = document.querySelector('[data-hmo-config]');
+    if (!el) return null;
+    if (!sharedConfigEarly.cache) sharedConfigEarly.cache = JSON.parse(el.textContent);
+    return sharedConfigEarly.cache;
+  }
+
+  (() => {
+    const fromUrl = new URLSearchParams(location.search).get('method');
+    if (fromUrl === 'delivery' || fromUrl === 'pickup') method.set(fromUrl);
+    else decorateLinks();
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('[data-method-link]');
+      if (link) method.set(link.dataset.methodLink);
+    });
+  })();
+
   const configEl = document.querySelector('[data-hmo-config]');
-  const sharedConfig = configEl ? JSON.parse(configEl.textContent) : null;
+  const sharedConfig = configEl ? sharedConfigEarly() : null;
   const fill = (template, values) => template.replace(/\[(\w+)\]/g, (_, k) => (k in values ? values[k] : ''));
   const firstOfMonth = (iso) => iso.slice(0, 8) + '01';
 
@@ -248,7 +324,7 @@
    * name and the previous/next month buttons. Days follow the rules: only
    * available days can be chosen; full days are greyed and labelled full.
    */
-  function renderMonth({ grid, nameEl, prevBtn, nextBtn, month, rules, format, preorder = false, selected, strings: st, dayClass = 'hmo-day' }) {
+  function renderMonth({ grid, nameEl, prevBtn, nextBtn, month, rules, format, preorder = false, method = 'pickup', selected, strings: st, dayClass = 'hmo-day' }) {
     const prevMonth = firstOfMonth(addDays(month, -1));
     const following = firstOfMonth(addDays(month, 31));
     nameEl.textContent = monthName.format(toDate(month));
@@ -265,7 +341,7 @@
     for (let i = 0; i < offset; i += 1) grid.append(document.createElement('span'));
     let day = month;
     while (day.slice(0, 7) === month.slice(0, 7)) {
-      const status = rules.status(day, format, { preorder });
+      const status = rules.status(day, format, { preorder, method });
       const button = document.createElement('button');
       button.type = 'button';
       button.className = `${dayClass} ${dayClass}--${status}`;
@@ -311,22 +387,57 @@
     };
     const visibleCount = (cart) => cart.items.reduce((n, item) => (isPickupLine(item) ? n : n + item.quantity), 0);
 
-    async function addPie({ variantId, format, date, note, quantity = 1, resolveConflict }) {
+    const isSliceLine = (item) => !isPickupLine(item) && !isWholePie(item);
+    const deliveryOn = () => Boolean(config.rules.delivery && config.rules.delivery.enabled);
+    /** Line property that holds the date: "Pick up" or "Delivery". */
+    const dateKey = (how) => (how === 'delivery' ? 'Delivery' : 'Pick up');
+
+    /**
+     * One method per order. Slices are pick up only, so a cart holding any
+     * slice is pick up; if delivery had been chosen, _delivery_wanted keeps
+     * that so the cart can say why, and delivery comes back once the slices
+     * are gone. wanted is undefined when only quantities changed.
+     */
+    function resolveMethod(cart, wanted, addingSlice) {
+      const attrs = cart.attributes || {};
+      const hasSlice = addingSlice || cart.items.some(isSliceLine);
+      const earlier = attrs.Method === 'delivery' || attrs._delivery_wanted === 'yes';
+      let wantsDelivery = wanted === undefined || addingSlice ? earlier : wanted === 'delivery';
+      wantsDelivery = wantsDelivery && deliveryOn();
+      return { how: wantsDelivery && !hasSlice ? 'delivery' : 'pickup', wantedFlag: wantsDelivery && hasSlice ? 'yes' : '' };
+    }
+
+    /** Brings every pie line's date property in line with the order's method and date. */
+    async function syncLines(cart, how, date) {
+      if (!date) return cart;
+      const want = formatLong(date);
+      const key = dateKey(how);
+      const other = dateKey(how === 'delivery' ? 'pickup' : 'delivery');
+      let changed = false;
+      for (const item of cart.items) {
+        if (isPickupLine(item)) continue;
+        const props = { ...(item.properties || {}) };
+        if (props[key] === want && !(other in props)) continue;
+        delete props[other];
+        props[key] = want;
+        await json(config.routes.change, { id: item.key, quantity: item.quantity, properties: props });
+        changed = true;
+      }
+      return changed ? json(config.routes.cartJs) : cart;
+    }
+
+    function methodAttributes(m) {
+      return { Method: m.how === 'delivery' ? 'delivery' : 'pick up', _delivery_wanted: m.wantedFlag };
+    }
+
+    async function addPie({ variantId, format, date, note, quantity = 1, method: wanted = 'pickup', resolveConflict }) {
       let cart = await json(config.routes.cartJs);
       const existing = cart.attributes && cart.attributes['Pick up date'];
       const hasPies = cart.items.some((item) => !isPickupLine(item));
       if (hasPies && existing && existing !== date && resolveConflict) {
         if ((await resolveConflict(existing)) === 'keep') date = existing;
       }
-      // Moving the order to a new date: the pies already in the cart follow it.
-      if (hasPies && existing && existing !== date) {
-        for (const item of cart.items) {
-          if (isPickupLine(item) || !item.properties || !item.properties['Pick up']) continue;
-          const properties = { ...item.properties, 'Pick up': formatLong(date) };
-          await json(config.routes.change, { id: item.key, quantity: item.quantity, properties });
-        }
-        cart = await json(config.routes.cartJs);
-      }
+      const m = resolveMethod(cart, wanted, format === 'slice');
 
       // With daily caps off, the pick up line is left out entirely.
       const useCaps = Boolean(config.rules.useCaps);
@@ -348,23 +459,25 @@
         }
       }
 
-      const properties = {
-        Format: format === 'slice' ? config.formats.slice : config.formats.whole,
-        'Pick up': formatLong(date),
-      };
+      const properties = { Format: format === 'slice' ? config.formats.slice : config.formats.whole };
+      properties[dateKey(m.how)] = formatLong(date);
       if (format !== 'slice' && note && note.trim()) properties.Note = note.trim();
       await json(config.routes.add, { items: [{ id: variantId, quantity: qty, properties }] });
-      cart = await json(config.routes.update, { attributes: { 'Pick up date': date } });
+      cart = await json(config.routes.update, { attributes: { 'Pick up date': date, ...methodAttributes(m) } });
+      // Moving the order to a new date or method: the pies already in the cart follow it.
+      cart = await syncLines(cart, m.how, date);
 
       document.querySelectorAll('[data-cart-count]').forEach((el) => (el.textContent = String(visibleCount(cart))));
       document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
-      return { cart, date };
+      return { cart, date, method: m.how };
     }
 
     /**
      * Sets a pie line's quantity (0 removes it), then keeps the rest of the
      * cart in step: the pick up line follows the number of whole pies (caps
-     * on), and an order with no pies left loses its pick up date.
+     * on), the method follows the slices (delivery returns once they are
+     * gone, if it was chosen), and an order with no pies left loses its date
+     * and method.
      */
     async function changeLine(key, quantity) {
       await json(config.routes.change, { id: key, quantity: Math.max(0, quantity) });
@@ -375,8 +488,18 @@
         if (!isPickupLine(item) || item.quantity === wholePies) continue;
         await json(config.routes.change, { id: item.key, quantity: wholePies });
       }
-      if (!pies.length && cart.attributes && cart.attributes['Pick up date']) {
-        await json(config.routes.update, { attributes: { 'Pick up date': '' } });
+      const attrs = cart.attributes || {};
+      if (!pies.length) {
+        if (attrs['Pick up date'] || attrs.Method || attrs._delivery_wanted) {
+          await json(config.routes.update, { attributes: { 'Pick up date': '', Method: '', _delivery_wanted: '' } });
+        }
+      } else {
+        const m = resolveMethod(cart, undefined, false);
+        const next = methodAttributes(m);
+        if ((attrs.Method || '') !== next.Method || (attrs._delivery_wanted || '') !== next._delivery_wanted) {
+          cart = await json(config.routes.update, { attributes: next });
+        }
+        cart = await syncLines(await json(config.routes.cartJs), m.how, attrs['Pick up date']);
       }
       cart = await json(config.routes.cartJs);
       document.querySelectorAll('[data-cart-count]').forEach((el) => (el.textContent = String(visibleCount(cart))));
@@ -409,7 +532,9 @@
     const $ = (sel) => dialog.querySelector(sel);
     const $$ = (sel) => [...dialog.querySelectorAll(sel)];
 
-    const state = { step: 1, productId: null, format: null, date: null, note: '', month: null, busy: false };
+    const state = { step: 1, productId: null, format: null, method: method.get(), date: null, note: '', month: null, busy: false };
+    /** The method in effect: slices are pick up only. */
+    const how = () => method.forFormat(state.method, state.format);
 
     const product = () => config.products.find((p) => p.id === state.productId);
     const variantFor = (p, format) => {
@@ -488,9 +613,18 @@
 
     function renderInfo() {
       const lead = config.rules.leadDays;
-      const template =
+      let template =
         state.format === 'slice' ? s.sliceInfo : lead === 0 ? s.leadInfoNone : lead === 1 ? s.leadInfoOne : s.leadInfo;
-      $('[data-hmo-info]').textContent = fill(template, { address: config.rules.address, days: lead, full: config.rules.useCaps ? s.fullNote : '' });
+      if (how() === 'delivery') template = s.deliveryInfo;
+      const note = (config.rules.delivery && config.rules.delivery.note) || '';
+      $('[data-hmo-info]').textContent = fill(template, { address: config.rules.address, days: lead, note, full: config.rules.useCaps ? s.fullNote : '' });
+      // Pick up or delivery; slices lock to pick up.
+      $$('[data-hmo-method]').forEach((b) => {
+        const on = b.dataset.hmoMethod === how();
+        b.setAttribute('aria-pressed', String(on));
+        b.classList.toggle('button--outline', !on);
+        b.disabled = b.dataset.hmoMethod === 'delivery' && state.format === 'slice';
+      });
     }
 
     function renderCalendar() {
@@ -505,6 +639,7 @@
         rules,
         format: state.format,
         preorder: pre,
+        method: how(),
         selected: state.date,
         strings: s,
       });
@@ -522,14 +657,16 @@
       if (!p || !v) return;
       const sizeLabel = state.format === 'slice' ? config.formats.slice : config.formats.whole;
       $('[data-hmo-review="pie"]').textContent = fill(s.pieSize, { pie: p.title, size: sizeLabel.toLowerCase() });
+      // The method with the date, e.g. "delivery, Fri 27 Nov"; delivery adds the note and the fee line.
       const dateCell = $('[data-hmo-review="date"]');
-      dateCell.textContent = state.date ? formatLong(state.date) : '';
-      if (state.date) {
+      dateCell.textContent = state.date ? `${method.label(how())}, ${formatShort(state.date)}` : '';
+      if (state.date && how() === 'pickup') {
         const where = document.createElement('span');
         where.className = 'hmo-review__where';
         where.textContent = `, ${config.rules.address.split(',')[0]}`;
         dateCell.append(where);
       }
+      $('[data-hmo-review="delivery"]').hidden = how() !== 'delivery';
       $('[data-hmo-review="note"]').textContent = state.note || s.noNote;
       $$('[data-hmo-review="total"]').forEach((el) => (el.textContent = v.price));
       const image = $('[data-hmo-review-image]');
@@ -612,6 +749,7 @@
           format: state.format,
           date: state.date,
           note: state.note,
+          method: how(),
           resolveConflict: askConflict,
         });
         state.date = result.date;
@@ -653,7 +791,14 @@
       if (size) {
         state.format = size.dataset.format;
         state.month = null;
-        if (state.date && rules.status(state.date, state.format) !== 'available') state.date = null;
+        if (state.date && rules.status(state.date, state.format, { method: how() }) !== 'available') state.date = null;
+        render();
+        return;
+      }
+      const methodButton = event.target.closest('[data-hmo-method]');
+      if (methodButton && !methodButton.disabled) {
+        state.method = method.set(methodButton.dataset.hmoMethod);
+        if (state.date && rules.status(state.date, state.format, { method: how() }) !== 'available') state.date = null;
         render();
         return;
       }
@@ -695,6 +840,8 @@
     return {
       open(options = {}) {
         if (state.step === 5) state.step = 1;
+        state.method = options.method || method.get();
+        if (state.date && rules.status(state.date, state.format, { method: how() }) !== 'available') state.date = null;
         if (options.productId && config.products.some((p) => p.id === options.productId)) {
           state.productId = options.productId;
           state.format = options.format && variantFor(product(), options.format) ? options.format : variantFor(product(), 'whole') ? 'whole' : 'slice';
@@ -716,7 +863,7 @@
   window.Cakehouse = Object.assign(window.Cakehouse || {}, {
     helpMeOrder: flow,
     order: sharedConfig
-      ? { config: sharedConfig, makeRules, renderMonth, createCart, formatLong, firstOfMonth, addDays, fill, openDialog, closeDialog, wireDialog }
+      ? { config: sharedConfig, makeRules, renderMonth, createCart, formatLong, firstOfMonth, addDays, fill, openDialog, closeDialog, wireDialog, method }
       : null,
   });
 })();

@@ -83,8 +83,11 @@
     <section class="hmo__step" data-hmo-step="3" hidden>
       <div class="hmo-when">
         <div class="hmo-when__how">
-          <div class="hmo-when__toggle">
-            <span class="button button--large hmo-when__mode" aria-current="true">{{ 'help_me_order.pick_up' | t }}</span>
+          <div class="hmo-when__toggle" role="group" aria-label="{{ 'help_me_order.method_label' | t | escape }}">
+            <button type="button" class="button button--large hmo-when__mode" data-hmo-method="pickup" aria-pressed="true">{{ 'help_me_order.pick_up' | t }}</button>
+            {%- if settings.delivery_enabled -%}
+              <button type="button" class="button button--large button--outline hmo-when__mode" data-hmo-method="delivery" aria-pressed="false">{{ 'help_me_order.delivery' | t }}</button>
+            {%- endif -%}
           </div>
           <p class="hmo-when__info" data-hmo-info></p>
         </div>
@@ -146,8 +149,14 @@
           </div>
           {% render 'rule' %}
           <div class="hmo-review__row">
-            <p class="hmo-review__label">{{ 'help_me_order.rows.pick_up' | t }}</p>
-            <p class="hmo-review__value" data-hmo-review="date"></p>
+            <p class="hmo-review__label">{{ 'help_me_order.rows.when' | t }}</p>
+            <div class="hmo-review__value">
+              <p class="hmo-review__when" data-hmo-review="date"></p>
+              <div class="hmo-review__delivery type-meta" data-hmo-review="delivery" hidden>
+                {%- if settings.delivery_note != blank -%}<p>{{ settings.delivery_note | escape }}</p>{%- endif -%}
+                <p>{{ 'cart.delivery_checkout' | t }}</p>
+              </div>
+            </div>
             {% render 'button', label: change_label, style: 'outline', attributes: 'data-hmo-goto="3"' %}
           </div>
           {% render 'rule' %}
@@ -284,7 +293,36 @@
       "closed": [{{ closed_days | split: ',' | join: ',' }}],
       "blackout": {{ settings.blackout_dates | json }},
       "windows": {{ settings.preorder_windows | json }},
-      "address": {{ settings.pickup_address | json }}
+      "address": {{ settings.pickup_address | json }},
+      "delivery": {
+        "enabled": {{ settings.delivery_enabled | json }},
+        "note": {{ settings.delivery_note | json }},
+        {%- liquid
+          assign delivery_days = ''
+          if settings.delivery_sun
+            assign delivery_days = delivery_days | append: '0,'
+          endif
+          if settings.delivery_mon
+            assign delivery_days = delivery_days | append: '1,'
+          endif
+          if settings.delivery_tue
+            assign delivery_days = delivery_days | append: '2,'
+          endif
+          if settings.delivery_wed
+            assign delivery_days = delivery_days | append: '3,'
+          endif
+          if settings.delivery_thu
+            assign delivery_days = delivery_days | append: '4,'
+          endif
+          if settings.delivery_fri
+            assign delivery_days = delivery_days | append: '5,'
+          endif
+          if settings.delivery_sat
+            assign delivery_days = delivery_days | append: '6,'
+          endif
+        -%}
+        "days": [{{ delivery_days | split: ',' | join: ',' }}]
+      }
     },
     "formats": {
       "whole": {{ section.settings.whole_label | json }},
@@ -307,6 +345,11 @@
       "leadInfoOne": {{ 'help_me_order.lead_info_one' | t | json }},
       "leadInfoNone": {{ 'help_me_order.lead_info_none' | t | json }},
       "sliceInfo": {{ 'help_me_order.slice_info' | t | json }},
+      "deliveryInfo": {{ 'help_me_order.delivery_info' | t | json }},
+      "methodPickup": {{ 'help_me_order.pick_up' | t | json }},
+      "methodDelivery": {{ 'help_me_order.delivery' | t | json }},
+      "rowPickup": {{ 'help_me_order.rows.pick_up' | t | json }},
+      "rowDelivery": {{ 'help_me_order.rows.delivery' | t | json }},
       "fullNote": {{ 'help_me_order.full_note' | t | json }},
       "dayAvailable": {{ 'help_me_order.day_available' | t | json }},
       "dayFull": {{ 'help_me_order.day_full' | t | json }},
