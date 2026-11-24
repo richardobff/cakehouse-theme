@@ -141,8 +141,9 @@ Build each as an Online Store 2.0 section with settings so Suzie can edit conten
 - Sign up: a pink band in the footer group on every page, directly on top of follow us: title, copy, email field and button on one line (Shopify customer form at launch; Klaviyo can replace it later).
 - Visit: a colour split (blue on home). Title on the top line; address, hours (from Opening hours in theme settings, consecutive days grouped) and a solid "directions" button (Google Maps) at the foot of the colour side; photo on the other side.
 - Follow us: curated posts from a metaobject (image, link, platform). No feed app at launch. Title left, instagram, tiktok and substack buttons right (each shows once its link is set in the section); then a horizontal strip of rounded tiles (24 radius desktop, 16 mobile), top aligned, mixed heights cycling 4:5, 2:3, 1:1, 3:4, 250 wide desktop (scaled) and 160 mobile, gap 24 and 12, starting at the left margin and running off the right edge. Each tile links to its post. The strip drifts left on a loop (about 30 seconds per cycle), pauses on hover, touch or focus, can be scrolled or dragged by hand, has no visible scrollbar and stays still with reduced motion.
-- Menu list: groups (pies, drinks) driven by a metaobject so Suzie can edit items and prices without touching products.
-- Question and answer list: used for ordering and pick up, and for ingredients and allergens.
+- Menu list: groups (pies, drinks) driven by the menu_item metaobject (name, price, group, on the counter today) so Suzie can edit items and prices without touching products. The visit page's "today's counter" reads the same entries: on the counter shows "by the slice", otherwise sold out.
+- Question and answer list: used for ordering and pick up, and for ingredients and allergens. Both pages use the info template, so the template holds two lists and each is limited to its page by handle (Only on page).
+- Contact form (contact and wholesale): detail rows on the left, Shopify contact form on the right with optional topic chips. Page titles sit inside the first section so no rule is drawn under them.
 - Footer.
 
 ## Home order
@@ -200,10 +201,12 @@ Cart rules:
 - Lead times, cut-offs, closed days and blackout dates are enforced in the theme (date picker and cart). Caps are enforced by Shopify inventory at checkout.
 - The store timezone is Australia/Sydney (AEDT, the same as Melbourne). Check Settings › General before writing any date logic.
 
-## Pre order (planned for the pages step)
+## Pre order
 
-- A "pre-order" collection holds the pre order pies.
-- A pre order window in theme settings: ordering opens, ordering closes, and the allowed pick up dates.
+- A "pre-order" collection holds the pre order pies (Theme settings > Ordering > Pre order collection; falls back to the handle pre-order). The collection does not exist in the store yet.
+- Pre order windows in theme settings, one per line: "order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24". Ordering opens and closes on the first two dates.
+- The page state (snippets/preorder-state) is worked out in store time: soon (before a window or none set), open, closed (after the last window).
+- Outside a window, pre order pies show "pre orders open soon" in place of the button.
 - Before the window opens, the pre order page shows "Pre orders for Christmas open soon" with the sign up form.
 - Inside the window, the page shows the pre-order collection, and the date picker offers only the window's pick up dates.
 - Product pages for pre order pies say "pre order" on the button instead of "add to cart".
@@ -236,6 +239,28 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 - Status: the green open dot pulses slowly. The compact header bar slides in over about 200ms.
 - Follow us: the strip drifts slowly to the left and pauses on hover, touch or focus.
 - Respect `prefers-reduced-motion`: no pulse, no slides, no strip drift, fades only.
+
+### Hover and active states (Figma: "Hover and active states" on 06 DESIGN PREVIEW)
+
+Nav, colour underline (option B):
+- Each page has a colour: order clementine, menu pink, visit blue, about strawberry.
+- The current page's link shows a 4px underline in its colour, 2px under the text, the full width of the word. On hover a link shows its own colour underline, growing from the left over 150ms.
+- Applies to the masthead nav, the sticky compact header and the mobile nav (3px on mobile). Touch screens have no hover state, only the active underline.
+- The active link gets aria-current="page".
+- "order" has no page of its own: it shows the clementine underline while the order panel is open, and on product pages.
+
+Buttons:
+- On hover, fill with a brand colour with black text, 150ms fade. Default hover colour clementine; inside a clementine block, white.
+- Solid and outline buttons both use this. Outline buttons keep their black stroke.
+- Cart button: clementine fill on hover, black icon and count.
+- Keyboard focus matches hover, plus a 2px black focus ring offset 2px.
+- Reduced motion: swap instantly, no fade.
+
+## Favicon and link previews
+
+- Favicon: the footer brand mark (blue square, diagonal wordmark, from the footer component on 05 design playground), exported square at 512 and 180 (apple touch icon). A "Favicon" image setting in theme settings overrides the files.
+- Social sharing image: a theme setting, defaulting to the lemon meringue on the glass stand (preview-pre-order.jpg) cropped to 1200 x 630 with the pie centred.
+- Every page outputs og:image, og:title, og:description and twitter:card summary_large_image. Product pages use the featured image when there is one; pages use their own image setting if set; otherwise the default.
 
 ## Performance and quality
 

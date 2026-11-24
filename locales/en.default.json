@@ -1,8 +1,8 @@
 {
   "404": {
-    "title": "404",
-    "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
+    "title": "Not found",
+    "copy": "This page has moved or never existed.",
+    "home": "home"
   },
   "blog": {
     "article_comments": "Comments",
@@ -44,16 +44,22 @@
     "title": "Collections"
   },
   "gift_card": {
-    "add_to_apple_wallet": "Add to Apple Wallet",
-    "card": "Gift card",
-    "expired": "This gift card has expired",
-    "expires_on": "Expires on {{ expires_on }}",
-    "use_at_checkout": "Use this gift card at checkout"
+    "title": "Gift card",
+    "print": "print",
+    "shop": "shop now",
+    "code_label": "Gift card code",
+    "expired": "This gift card has expired or is no longer active.",
+    "expires_on": "Use by {{ expires_on }}",
+    "copy": "copy code",
+    "copied": "Copied."
   },
   "password": {
-    "title": "This shop is private",
-    "password": "Password",
-    "enter": "Enter"
+    "title": "Opening soon",
+    "password": "password",
+    "password_label": "Store password",
+    "enter": "enter",
+    "close": "close",
+    "sign_up": "sign up"
   },
   "search": {
     "title": "Search",
@@ -91,7 +97,8 @@
   },
   "products": {
     "from_price": "from {{ price }}",
-    "sold_out": "sold out"
+    "sold_out": "sold out",
+    "pre_order": "pre order"
   },
   "general": {
     "close": "close"
@@ -171,6 +178,17 @@
     "info_whole_one": "Local pick up only. Order one business day ahead. Pick up from [address].",
     "info_whole_none": "Local pick up only. Pick up from [address].",
     "info_slice": "Slices come from the counter, pick up only. Pick up from [address].",
-    "need_date": "Choose a pick up date first."
+    "need_date": "Choose a pick up date first.",
+    "info_preorder": "Pre order. Pick up from [address] on the dates shown.",
+    "info_preorder_soon": "Pre orders open soon."
+  },
+  "contact": {
+    "email": "email",
+    "phone": "phone",
+    "message": "message",
+    "topic": "Topic"
+  },
+  "policies": {
+    "nav_label": "Policies"
   }
 }

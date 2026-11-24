@@ -13,6 +13,7 @@
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'sections.css' | asset_url | stylesheet_tag }}
     {{ 'order.css' | asset_url | stylesheet_tag }}
+    {{ 'pages.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'header.js' | asset_url }}" defer></script>
     <script src="{{ 'order.js' | asset_url }}" defer></script>
     <script src="{{ 'follow-us.js' | asset_url }}" defer></script>
@@ -28,7 +29,23 @@
     {% sections 'header-group' %}
 
     <main id="MainContent" tabindex="-1">
-      {{ content_for_layout }}
+      {%- if request.page_type == 'policy' -%}
+        {%- comment -%} Policy pages: title on the top line, the policy list left, the text right. {%- endcomment -%}
+        <div class="shopify-section block block--white">
+          <div class="policy page-width">
+            <nav class="policy__nav" aria-label="{{ 'policies.nav_label' | t | escape }}">
+              <ul role="list">
+                {%- for policy in shop.policies -%}
+                  <li><a href="{{ policy.url }}"{% if policy.url == request.path %} aria-current="page"{% endif %}>{{ policy.title | downcase | escape }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </nav>
+            {{ content_for_layout }}
+          </div>
+        </div>
+      {%- else -%}
+        {{ content_for_layout }}
+      {%- endif -%}
     </main>
 
     {% sections 'footer-group' %}

@@ -1,0 +1,61 @@
+{%- comment -%}
+  Today's counter (a white block): title and copy on the top line, then the
+  menu items of one group on the left and a photo on the right. Items marked
+  "On the counter today" show a "by the slice" button; the rest show sold out.
+  Items come from Content > Metaobjects > Menu item.
+{%- endcomment -%}
+{%- liquid
+  assign items = shop.metaobjects.menu_item.values
+  assign key = section.settings.group | downcase | strip
+  assign count = 0
+  assign slice_link = section.settings.button_link | default: collections.pies.url | default: routes.all_products_collection_url
+-%}
+<section class="counter page-width">
+  {% render 'block-head', title: section.settings.title, copy: section.settings.copy %}
+  <div class="counter__body">
+    <ul class="counter__list" role="list">
+      {%- for item in items -%}
+        {%- assign item_group = item.group.value | downcase | strip -%}
+        {%- if key != blank and item_group != key -%}{%- continue -%}{%- endif -%}
+        {%- assign count = count | plus: 1 -%}
+        <li class="counter__item">
+          <span class="counter__name">{{ item.name.value | escape }}</span>
+          {%- if item.available.value -%}
+            {% render 'button', label: section.settings.button_label, url: slice_link, style: 'outline', class: 'counter__tag' %}
+          {%- else -%}
+            <span class="button counter__tag counter__tag--sold-out">{{ 'products.sold_out' | t }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+      {%- if count == 0 -%}
+        <li class="counter__item"><span class="counter__name">{{ section.settings.empty_text | escape }}</span></li>
+      {%- endif -%}
+    </ul>
+    {% render 'media',
+      image: section.settings.image,
+      preview: section.settings.preview_image,
+      ratio: '1 / 1',
+      sizes: '(min-width: 750px) 50vw, 100vw',
+      colour: 'clementine',
+      class: 'counter__media'
+    %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Today's counter",
+  "class": "section-counter block block--white",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Today's counter" },
+    { "type": "richtext", "id": "copy", "label": "Copy" },
+    { "type": "text", "id": "group", "label": "Menu group", "default": "pies", "info": "Shows menu items in this group. Tick \"On the counter today\" on an item to show it as available." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "by the slice" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to the Pies collection." },
+    { "type": "text", "id": "empty_text", "label": "Text with no items", "default": "To come." },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "preview_image", "label": "Temporary preview image", "info": "Theme asset from Figma, shown until an image is chosen. Clear before launch." }
+  ],
+  "presets": [{ "name": "Today's counter" }]
+}
+{% endschema %}

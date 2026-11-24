@@ -1,0 +1,16 @@
+{%- comment -%}
+  Page (a white block): the page title on the top line, the page content in
+  the right half. Used by pages without their own template.
+{%- endcomment -%}
+<section class="main-page page-width">
+  <h1 class="main-page__title type-d3">{{ page.title | escape }}</h1>
+  <div class="main-page__content rte">{{ page.content }}</div>
+</section>
+
+{% schema %}
+{
+  "name": "Page",
+  "class": "section-main-page block block--white",
+  "settings": []
+}
+{% endschema %}

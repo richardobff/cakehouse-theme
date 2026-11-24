@@ -1,0 +1,20 @@
+{%- comment -%}
+  Two-column text (a white block): two paragraphs side by side on the 6 and
+  6 columns; stacked on mobile.
+{%- endcomment -%}
+<section class="text-columns page-width">
+  <div class="text-columns__col type-product">{{ section.settings.left }}</div>
+  <div class="text-columns__col type-product">{{ section.settings.right }}</div>
+</section>
+
+{% schema %}
+{
+  "name": "Two-column text",
+  "class": "section-text-columns block block--white",
+  "settings": [
+    { "type": "richtext", "id": "left", "label": "Left", "default": "<p>Short paragraph.</p>" },
+    { "type": "richtext", "id": "right", "label": "Right", "default": "<p>Short paragraph.</p>" }
+  ],
+  "presets": [{ "name": "Two-column text" }]
+}
+{% endschema %}

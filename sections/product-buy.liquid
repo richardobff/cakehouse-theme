@@ -25,7 +25,21 @@
   if whole_variant == nil
     assign start_format = 'slice'
   endif
-  assign add_label = 'product.add_to_cart' | t
+  assign preorder_collection = settings.preorder_collection | default: collections['pre-order']
+  assign is_preorder = false
+  if preorder_collection != blank
+    for c in product.collections
+      if c.id == preorder_collection.id
+        assign is_preorder = true
+        break
+      endif
+    endfor
+  endif
+  if is_preorder
+    assign add_label = 'products.pre_order' | t
+  else
+    assign add_label = 'product.add_to_cart' | t
+  endif
   assign sold_out_label = 'products.sold_out' | t
   assign choose_label = 'product.choose_date' | t
   assign note_label = 'product.add_note' | t
@@ -187,6 +201,7 @@
     {
       "id": {{ product.id }},
       "title": {{ product.title | json }},
+      "preorder": {{ is_preorder | json }},
       "variants": {
         "whole": {% if whole_variant %}{ "id": {{ whole_variant.id }}, "price": {{ whole_variant.price | money | json }}, "available": {{ whole_variant.available | json }} }{% else %}null{% endif %},
         "slice": {% if slice_variant %}{ "id": {{ slice_variant.id }}, "price": {{ slice_variant.price | money | json }}, "available": {{ slice_variant.available | json }} }{% else %}null{% endif %}
@@ -196,6 +211,8 @@
         "infoWholeOne": {{ 'product.info_whole_one' | t | json }},
         "infoWholeNone": {{ 'product.info_whole_none' | t | json }},
         "infoSlice": {{ 'product.info_slice' | t | json }},
+        "infoPreorder": {{ 'product.info_preorder' | t | json }},
+        "infoPreorderSoon": {{ 'product.info_preorder_soon' | t | json }},
         "choose": {{ choose_label | json }},
         "addNote": {{ note_label | json }},
         "editNote": {{ 'product.edit_note' | t | json }},

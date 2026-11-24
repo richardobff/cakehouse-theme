@@ -1,0 +1,54 @@
+{%- comment -%}
+  Question and answer list (a white block): the page title on the top line
+  (optional), then one row per question, question on the left half and
+  answer on the right, 1px rules between rows. Used for ordering and pick
+  up, and for ingredients and allergens. Both pages share the info template,
+  so each list can be limited to one page by its handle.
+{%- endcomment -%}
+{%- liquid
+  assign only_page = section.settings.only_page | strip
+  assign skip = false
+  if only_page != blank and request.page_type == 'page' and page.handle != only_page
+    assign skip = true
+  endif
+-%}
+{%- if skip -%}
+  <div hidden data-block-skip></div>
+{%- else -%}
+<section class="questions page-width">
+  {%- if section.settings.show_head and request.page_type == 'page' -%}
+    {% render 'block-head', title: page.title, copy: section.settings.intro, heading_h1: true %}
+  {%- endif -%}
+  <dl class="questions__list">
+    {%- for block in section.blocks -%}
+      <div class="questions__row" {{ block.shopify_attributes }}>
+        <dt class="questions__question type-product">{{ block.settings.question | escape }}</dt>
+        <dd class="questions__answer">{{ block.settings.answer }}</dd>
+      </div>
+    {%- endfor -%}
+  </dl>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Questions",
+  "class": "section-questions block block--white",
+  "settings": [
+    { "type": "checkbox", "id": "show_head", "label": "Page title on the top line", "default": true },
+    { "type": "richtext", "id": "intro", "label": "Intro", "info": "Beside the page title. Optional." },
+    { "type": "text", "id": "only_page", "label": "Only on page", "info": "Page handle, e.g. ordering-and-pick-up. Leave blank to show on every page using this template." }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>To come.</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Questions", "blocks": [{ "type": "question" }, { "type": "question" }] }]
+}
+{% endschema %}

@@ -1,0 +1,39 @@
+{% doc %}
+  Works out where today (store time, Australia/Sydney) sits against the pre
+  order windows in theme settings. One window per line:
+  "order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24".
+  Outputs one word: open, soon or closed. "soon" also covers no windows set.
+
+  @example
+  {%- capture preorder_state -%}{% render 'preorder-state' %}{%- endcapture -%}
+{% enddoc %}
+{%- liquid
+  assign today = 'now' | date: '%Y-%m-%d'
+  assign state = 'soon'
+  assign any_open = false
+  assign any_future = false
+  assign any_window = false
+  assign lines = settings.preorder_windows | newline_to_br | split: '<br />'
+  for raw in lines
+    assign line = raw | strip | downcase
+    unless line contains 'from' and line contains ' to '
+      continue
+    endunless
+    assign from_date = line | split: 'from' | last | strip | slice: 0, 10
+    assign to_date = line | split: ' to ' | last | strip | slice: 0, 10
+    assign any_window = true
+    if today >= from_date and today <= to_date
+      assign any_open = true
+    elsif today < from_date
+      assign any_future = true
+    endif
+  endfor
+  if any_open
+    assign state = 'open'
+  elsif any_future or any_window == false
+    assign state = 'soon'
+  else
+    assign state = 'closed'
+  endif
+  echo state
+-%}

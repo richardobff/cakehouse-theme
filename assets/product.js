@@ -55,8 +55,9 @@
       chip.disabled = !cv;
     });
 
-    // Add to cart, or sold out.
-    const available = Boolean(v && v.available);
+    // Add to cart, or sold out. Pre order pies can only be bought while a window is open.
+    const preorderClosed = data.preorder && !rules().firstPreorder();
+    const available = Boolean(v && v.available) && !preorderClosed;
     $('[data-product-add]').hidden = !available;
     $('[data-product-sold-out]').hidden = available;
     if (v) $$('[data-product-price]').forEach((el) => (el.textContent = v.price));
@@ -64,8 +65,9 @@
 
     // Pick up line under the description.
     const lead = config.rules.leadDays;
-    const template =
+    let template =
       state.format === 'slice' ? st.infoSlice : lead === 0 ? st.infoWholeNone : lead === 1 ? st.infoWholeOne : st.infoWhole;
+    if (data.preorder) template = preorderClosed ? st.infoPreorderSoon : st.infoPreorder;
     $('[data-product-info]').textContent = shared.fill(template, { address: config.rules.address, days: lead });
 
     // Date button shows the chosen day.
@@ -107,7 +109,7 @@
 
   function renderCalendar() {
     const r = rules();
-    if (!state.month) state.month = shared.firstOfMonth(state.date || r.earliest(state.format));
+    if (!state.month) state.month = shared.firstOfMonth(state.date || (data.preorder && r.firstPreorder()) || r.earliest(state.format));
     const lead = config.rules.leadDays;
     const info =
       state.format === 'slice' ? st.sliceInfo : lead === 0 ? st.leadInfoNone : lead === 1 ? st.leadInfoOne : st.leadInfo;
@@ -120,6 +122,7 @@
       month: state.month,
       rules: r,
       format: state.format,
+      preorder: Boolean(data.preorder),
       selected: state.date,
       strings: st,
     });
@@ -206,7 +209,7 @@
       state.format = chip.dataset.productFormat;
       state.month = null;
       // A date that is fine for slices may be full for whole pies.
-      if (state.date && rules().status(state.date, state.format) !== 'available') state.date = null;
+      if (state.date && rules().status(state.date, state.format, { preorder: Boolean(data.preorder) }) !== 'available') state.date = null;
       render();
       return;
     }

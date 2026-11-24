@@ -21,7 +21,11 @@
   style="--split-colour: var(--colour-{{ s.colour }}); --media-ratio: {{ s.ratio }};"
 >
   <div class="split__text">
-    <h2 class="split__title type-d3">{{ s.title | escape }}</h2>
+    {%- if s.page_title -%}
+      <h1 class="split__title type-d3">{{ s.title | escape }}</h1>
+    {%- else -%}
+      <h2 class="split__title type-d3">{{ s.title | escape }}</h2>
+    {%- endif -%}
     <div class="split__bottom">
       {%- if s.copy != blank -%}
         <div class="split__copy">{{ s.copy }}</div>

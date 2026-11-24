@@ -275,10 +275,20 @@
         "info": "One date per line, as YYYY-MM-DD."
       },
       {
+        "type": "header",
+        "content": "Pre order"
+      },
+      {
         "type": "textarea",
         "id": "preorder_windows",
         "label": "Pre order windows",
-        "info": "One window per line: order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24"
+        "info": "One window per line: order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24. Ordering opens and closes on the first two dates; the pick up dates follow."
+      },
+      {
+        "type": "collection",
+        "id": "preorder_collection",
+        "label": "Pre order collection",
+        "info": "Pies in this collection say \"pre order\" and can only be picked up on the window's dates. Defaults to the collection with the handle pre-order."
       },
       {
         "type": "header",

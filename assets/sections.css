@@ -80,6 +80,17 @@
   background-color: var(--colour-black);
 }
 
+/* A section that has nothing to show on this page (e.g. a question list
+ * meant for another page sharing the template) takes no space and draws no
+ * rule for the block after it. */
+.block:has(> [data-block-skip]) {
+  display: none;
+}
+
+.block:has(> [data-block-skip]) + .block--white::before {
+  content: none;
+}
+
 .spacer,
 .product-grid,
 .about,

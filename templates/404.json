@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "main": {
+      "type": "section-spacer",
+      "settings": {
+        "title": "Not found",
+        "copy": "<p>This page has moved or never existed.</p>",
+        "page_title": true,
+        "button_style": "solid",
+        "button_mobile": true,
+        "button_label": "home",
+        "button_link": "/"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

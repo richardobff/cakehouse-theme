@@ -8,6 +8,9 @@
     assign priority = true
   endif
 -%}
+{%- if section.settings.page_heading and request.page_type == 'page' -%}
+  <h1 class="visually-hidden">{{ page.title | escape }}</h1>
+{%- endif -%}
 <section class="full-bleed{% if section.settings.fill_window %} full-bleed--fill{% endif %}" aria-label="{{ section.settings.image.alt | default: shop.name | escape }}">
   {% render 'media',
     image: section.settings.image,
@@ -25,6 +28,7 @@
   "class": "section-full-bleed block block--image",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "checkbox", "id": "page_heading", "label": "Hidden page heading", "info": "On when this image opens a page: gives screen readers the page title.", "default": false },
     {
       "type": "checkbox",
       "id": "fill_window",

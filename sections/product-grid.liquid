@@ -9,7 +9,6 @@
   assign grid_collection = section.settings.collection
   assign current_product_id = product.id
   assign shown = 0
-  assign colours = 'birthday-pink,clementine,blue-sky,strawberry' | split: ','
 -%}
 <section class="product-grid page-width">
   {% render 'block-head',
@@ -29,33 +28,7 @@
         {%- comment -%} On a product page, leave out the pie being viewed ("more pies"). {%- endcomment -%}
         {%- if current_product_id and product.id == current_product_id -%}{%- continue -%}{%- endif -%}
         {%- assign shown = shown | plus: 1 -%}
-        {%- assign colour_index = forloop.index0 | modulo: 4 -%}
-        <li class="card">
-          <a class="card__link" href="{{ product.url }}">
-            {% render 'media',
-              image: product.featured_image,
-              ratio: '4 / 5',
-              sizes: '(min-width: 750px) 25vw, 50vw',
-              colour: colours[colour_index],
-              alt: product.title,
-              class: 'card__media'
-            %}
-            <span class="card__name">{{ product.title | escape }}</span>
-          </a>
-          <p class="card__price type-product">
-            {%- if product.price_varies -%}
-              {{ 'products.from_price' | t: price: product.price_min | money }}
-            {%- else -%}
-              {{ product.price | money }}
-            {%- endif -%}
-          </p>
-          {%- if product.available -%}
-            {% render 'button', label: section.settings.button_label, url: product.url, style: 'outline' %}
-          {%- else -%}
-            {%- assign sold_out = 'products.sold_out' | t -%}
-            {% render 'button', label: sold_out, style: 'outline', attributes: 'disabled' %}
-          {%- endif -%}
-        </li>
+        {% render 'product-card', product: product, index: forloop.index0, button_label: section.settings.button_label %}
       {%- endfor -%}
     </ul>
   {%- else -%}

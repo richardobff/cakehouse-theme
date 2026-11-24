@@ -8,6 +8,8 @@
 {%- liquid
   assign pie_collection = section.settings.collection
   assign pickup_product = settings.pickup_product
+  assign preorder_collection = settings.preorder_collection | default: collections['pre-order']
+  assign preorder_handle = preorder_collection.handle
   assign total_steps = 5
 -%}
 <dialog
@@ -236,6 +238,13 @@
           {
             "id": {{ product.id }},
             "title": {{ product.title | json }},
+            {%- assign is_preorder = false -%}
+            {%- if preorder_handle != blank -%}
+              {%- for c in product.collections -%}
+                {%- if c.handle == preorder_handle -%}{%- assign is_preorder = true -%}{%- break -%}{%- endif -%}
+              {%- endfor -%}
+            {%- endif %}
+            "preorder": {{ is_preorder | json }},
             "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 1100 | json }}{% else %}null{% endif %},
             "variants": [
               {%- for variant in product.variants -%}

@@ -1,0 +1,44 @@
+{
+  "sections": {
+    "hero": {
+      "type": "full-bleed",
+      "settings": {
+        "ratio": "16 / 10",
+        "ratio_mobile": "4 / 5",
+        "colour": "clementine",
+        "preview_image": "preview-visit.jpg",
+        "fill_window": true,
+        "page_heading": true
+      }
+    },
+    "counter": {
+      "type": "counter",
+      "settings": {
+        "title": "Today's counter",
+        "copy": "<p>What is on the counter today. Updated by the team each morning.</p>",
+        "group": "pies",
+        "button_label": "by the slice",
+        "empty_text": "To come.",
+        "preview_image": "preview-portrait.jpg"
+      }
+    },
+    "visit": {
+      "type": "visit",
+      "settings": {
+        "colour": "blue-sky",
+        "title": "Visit",
+        "address": "336 Brunswick St, Fitzroy VIC 3065.",
+        "no_hours_text": "Hours to come.",
+        "button_label": "directions",
+        "image_side": "right",
+        "ratio": "4 / 5",
+        "preview_image": "preview-hero.jpg"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "counter",
+    "visit"
+  ]
+}

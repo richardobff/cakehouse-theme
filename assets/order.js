@@ -200,12 +200,23 @@
       return day;
     }
 
-    /** 'available' | 'full' | 'unavailable' */
-    function status(iso, format) {
+    /** First pick up date of the open pre order windows, or null when none is open. */
+    function firstPreorder() {
+      const today = nowIn(raw.timezone).date;
+      const dates = [...windowDates(today)].filter((d) => d >= today).sort();
+      return dates[0] || null;
+    }
+
+    /**
+     * 'available' | 'full' | 'unavailable'. Pre order pies (options.preorder)
+     * can only be picked up on the open windows' dates.
+     */
+    function status(iso, format, options = {}) {
       const now = nowIn(raw.timezone);
       const last = addDays(now.date, raw.horizonDays);
       const preorder = windowDates(now.date);
       const inWindow = preorder.has(iso);
+      if (options.preorder && (!inWindow || iso < now.date)) return 'unavailable';
       if (iso > last && !inWindow) return 'unavailable';
       if (!inWindow) {
         if (iso < earliest(format) || !isOpenDay(iso)) return 'unavailable';
@@ -221,7 +232,7 @@
       return 'available';
     }
 
-    return { status, earliest, today: () => nowIn(raw.timezone).date, horizon: () => addDays(nowIn(raw.timezone).date, raw.horizonDays) };
+    return { status, earliest, firstPreorder, today: () => nowIn(raw.timezone).date, horizon: () => addDays(nowIn(raw.timezone).date, raw.horizonDays) };
   }
 
   /* -------------------------------------------------------------------------
@@ -237,7 +248,7 @@
    * name and the previous/next month buttons. Days follow the rules: only
    * available days can be chosen; full days are greyed and labelled full.
    */
-  function renderMonth({ grid, nameEl, prevBtn, nextBtn, month, rules, format, selected, strings: st, dayClass = 'hmo-day' }) {
+  function renderMonth({ grid, nameEl, prevBtn, nextBtn, month, rules, format, preorder = false, selected, strings: st, dayClass = 'hmo-day' }) {
     const prevMonth = firstOfMonth(addDays(month, -1));
     const following = firstOfMonth(addDays(month, 31));
     nameEl.textContent = monthName.format(toDate(month));
@@ -246,14 +257,15 @@
     prevBtn.setAttribute('aria-label', fill(st.monthPrev, { month: monthName.format(toDate(prevMonth)) }));
     nextBtn.setAttribute('aria-label', fill(st.monthNext, { month: monthName.format(toDate(following)) }));
     prevBtn.disabled = month <= firstOfMonth(rules.today());
-    nextBtn.disabled = following > rules.horizon();
+    const lastWindow = preorder ? rules.firstPreorder() : null;
+    nextBtn.disabled = following > rules.horizon() && !(lastWindow && following <= lastWindow);
 
     grid.textContent = '';
     const offset = (weekday(month) + 6) % 7; // Monday first
     for (let i = 0; i < offset; i += 1) grid.append(document.createElement('span'));
     let day = month;
     while (day.slice(0, 7) === month.slice(0, 7)) {
-      const status = rules.status(day, format);
+      const status = rules.status(day, format, { preorder });
       const button = document.createElement('button');
       button.type = 'button';
       button.className = `${dayClass} ${dayClass}--${status}`;
@@ -479,7 +491,8 @@
     }
 
     function renderCalendar() {
-      if (!state.month) state.month = firstOfMonth(state.date || rules.earliest(state.format));
+      const pre = Boolean(product() && product().preorder);
+      if (!state.month) state.month = firstOfMonth(state.date || (pre && rules.firstPreorder()) || rules.earliest(state.format));
       renderMonth({
         grid: $('[data-hmo-grid]'),
         nameEl: $('[data-hmo-month]'),
@@ -488,6 +501,7 @@
         month: state.month,
         rules,
         format: state.format,
+        preorder: pre,
         selected: state.date,
         strings: s,
       });
