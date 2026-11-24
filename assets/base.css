@@ -643,6 +643,77 @@
   text-underline-offset: 0.12em;
 }
 
+/* Bottom line: copyright, policies and credits at Meta size, in black. */
+.footer__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: calc(24 * var(--u));
+  row-gap: 4px;
+  width: 100%;
+}
+
+.footer__base p {
+  margin: 0;
+}
+
+.footer__policies ul {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: calc(16 * var(--u));
+  row-gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__base a,
+.footer__credit-toggle {
+  color: var(--colour-black);
+  text-decoration: none;
+}
+
+.footer__base a:hover,
+.footer__base a:focus-visible,
+.footer__credit-toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.footer__credit-toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+/* The credit stays hidden until "credits" is hovered, focused or tapped. */
+.footer__credit-link {
+  visibility: hidden;
+  margin-left: 0.6em;
+  opacity: 0;
+  transition: opacity 150ms var(--ease-out), visibility 0s linear 150ms;
+}
+
+.footer__credit:hover .footer__credit-link,
+.footer__credit:focus-within .footer__credit-link,
+.footer__credit.is-open .footer__credit-link {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 150ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__credit-link,
+  .footer__credit:hover .footer__credit-link,
+  .footer__credit:focus-within .footer__credit-link,
+  .footer__credit.is-open .footer__credit-link {
+    transition: none;
+  }
+}
+
 @media (max-width: 749px) {
   .footer {
     flex-direction: column-reverse;
@@ -663,8 +734,21 @@
   }
 
   /* Social links sit in the follow us section on mobile. */
-  .footer__item--social,
-  .footer__copyright {
+  .footer__item--social {
+    display: none;
+  }
+
+  .footer__base {
+    flex-direction: column;
+    row-gap: 6px;
+  }
+
+  .footer__credit-link {
+    display: block;
+    margin: 4px 0 0;
+  }
+
+  .footer__credit:not(.is-open, :focus-within) .footer__credit-link {
     display: none;
   }
 }

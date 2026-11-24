@@ -4,20 +4,8 @@
       "type": "product-buy",
       "settings": {
         "prompt": "Ordering for an occasion?",
-        "colour": "clementine"
-      }
-    },
-    "pre-order": {
-      "type": "colour-split",
-      "settings": {
-        "colour": "birthday-pink",
-        "title": "Pre order",
-        "copy": "<p>Order window and pick up dates to come.</p>",
-        "button_label": "pre order",
-        "button_link": "/pages/pre-order",
-        "image_side": "right",
-        "ratio": "1 / 1",
-        "preview_image": "preview-pre-order.jpg"
+        "colour": "clementine",
+        "preview_images": "preview-pre-order.jpg, preview-hero.jpg"
       }
     },
     "more-pies": {
@@ -38,7 +26,6 @@
   },
   "order": [
     "buy",
-    "pre-order",
     "more-pies"
   ]
 }

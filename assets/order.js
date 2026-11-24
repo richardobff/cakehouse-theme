@@ -311,7 +311,7 @@
     };
     const visibleCount = (cart) => cart.items.reduce((n, item) => (isPickupLine(item) ? n : n + item.quantity), 0);
 
-    async function addPie({ variantId, format, date, note, resolveConflict }) {
+    async function addPie({ variantId, format, date, note, quantity = 1, resolveConflict }) {
       let cart = await json(config.routes.cartJs);
       const existing = cart.attributes && cart.attributes['Pick up date'];
       const hasPies = cart.items.some((item) => !isPickupLine(item));
@@ -331,7 +331,8 @@
       // With daily caps off, the pick up line is left out entirely.
       const useCaps = Boolean(config.rules.useCaps);
       const pickupVariant = useCaps ? config.pickup.variants[date] : null;
-      const adding = format === 'slice' ? 0 : 1;
+      const qty = Math.max(1, Number(quantity) || 1);
+      const adding = format === 'slice' ? 0 : qty;
       const wholePies = cart.items.reduce((n, item) => (isWholePie(item) ? n + item.quantity : n), 0) + adding;
       for (const item of useCaps ? cart.items : []) {
         if (!isPickupLine(item)) continue;
@@ -352,7 +353,7 @@
         'Pick up': formatLong(date),
       };
       if (format !== 'slice' && note && note.trim()) properties.Note = note.trim();
-      await json(config.routes.add, { items: [{ id: variantId, quantity: 1, properties }] });
+      await json(config.routes.add, { items: [{ id: variantId, quantity: qty, properties }] });
       cart = await json(config.routes.update, { attributes: { 'Pick up date': date } });
 
       document.querySelectorAll('[data-cart-count]').forEach((el) => (el.textContent = String(visibleCount(cart))));
@@ -361,12 +362,12 @@
     }
 
     /**
-     * Removes a pie line, then keeps the rest of the cart in step: the pick up
-     * line follows the number of whole pies (caps on), and an order with no
-     * pies left loses its pick up date.
+     * Sets a pie line's quantity (0 removes it), then keeps the rest of the
+     * cart in step: the pick up line follows the number of whole pies (caps
+     * on), and an order with no pies left loses its pick up date.
      */
-    async function removeLine(key) {
-      await json(config.routes.change, { id: key, quantity: 0 });
+    async function changeLine(key, quantity) {
+      await json(config.routes.change, { id: key, quantity: Math.max(0, quantity) });
       let cart = await json(config.routes.cartJs);
       const pies = cart.items.filter((item) => !isPickupLine(item));
       const wholePies = pies.reduce((n, item) => (isWholePie(item) ? n + item.quantity : n), 0);
@@ -383,13 +384,15 @@
       return cart;
     }
 
+    const removeLine = (key) => changeLine(key, 0);
+
     /** After adding: open the cart drawer, or go to the cart page when there is none. */
     function showCart() {
       const opened = document.dispatchEvent(new CustomEvent('cart:open', { cancelable: true }));
       if (opened && !document.querySelector('[data-cart-drawer]')) window.location.href = config.routes.cart;
     }
 
-    return { addPie, removeLine, showCart, visibleCount };
+    return { addPie, changeLine, removeLine, showCart, visibleCount };
   }
 
   /* -------------------------------------------------------------------------

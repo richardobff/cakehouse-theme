@@ -1067,8 +1067,25 @@
   line-height: var(--type-meta-line);
 }
 
-.cart__remove {
+.cart__controls {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: calc(14 * var(--u));
   margin-left: auto;
+}
+
+.quantity--small {
+  font-size: var(--type-body-size);
+}
+
+.quantity--small .quantity__step {
+  width: calc(30 * var(--u));
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.cart__remove {
   color: inherit;
   text-underline-offset: 0.2em;
 }

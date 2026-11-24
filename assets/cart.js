@@ -99,17 +99,30 @@
     }
 
     const remove = event.target.closest('[data-cart-remove]');
-    if (remove) {
+    const step = event.target.closest('[data-cart-step]');
+    if (remove || (step && !step.disabled)) {
       event.preventDefault();
-      const root = remove.closest('[data-cart-root]');
+      const control = remove || step;
+      const root = control.closest('[data-cart-root]');
+      const inDrawer = control.closest('[data-cart-drawer]');
+      const key = remove ? remove.dataset.cartRemove : step.dataset.cartStep;
+      const quantity = remove ? 0 : Number(step.dataset.cartQty);
+      const stepSign = step ? step.textContent.trim() : null;
       root.setAttribute('aria-busy', 'true');
       try {
-        await cart.removeLine(remove.dataset.cartRemove);
+        await cart.changeLine(key, quantity);
         if (pending) await pending;
         const roots = [...document.querySelectorAll('[data-cart-root]')];
-        roots.forEach((r) => announce(r, shared.config.strings.cartRemoved || ''));
-        const focusRoot = roots.find((r) => r.closest('[data-cart-drawer]') === remove.closest('[data-cart-drawer]'));
-        if (focusRoot) (focusRoot.querySelector('[data-cart-remove]') || focusRoot.querySelector('.cart__keep') || focusRoot).focus();
+        const message = quantity === 0 ? shared.config.strings.cartRemoved : shared.config.strings.cartUpdated;
+        roots.forEach((r) => announce(r, message || ''));
+        const focusRoot = roots.find((r) => r.closest('[data-cart-drawer]') === inDrawer);
+        if (focusRoot) {
+          // Keep focus on the same stepper button while the line is still there.
+          const same = quantity > 0
+            ? [...focusRoot.querySelectorAll(`[data-cart-step="${CSS.escape(key)}"]`)].find((b) => b.textContent.trim() === stepSign)
+            : null;
+          (same || focusRoot.querySelector('[data-cart-remove]') || focusRoot.querySelector('.cart__keep') || focusRoot).focus();
+        }
       } catch (error) {
         root.removeAttribute('aria-busy');
         announce(root, error.message || shared.config.strings.error);

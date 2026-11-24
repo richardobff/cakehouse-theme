@@ -11,7 +11,7 @@
         "button_label": "send",
         "success_text": "Thanks, we'll be in touch.",
         "show_head": true,
-        "intro": "<p>Orders, wholesale, events and anything else.</p>"
+        "intro": "<p>Orders, wholesale, events and anything else. We reply within two business days.</p>"
       },
       "blocks": {
         "detail-1": {

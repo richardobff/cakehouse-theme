@@ -40,15 +40,15 @@
 
 {%- comment -%}
   Sharing image: the product's featured image on product pages, a page's
-  own image (page metafield custom.share_image) on pages, otherwise the
+  own image (page metafield custom.social_image) on pages, otherwise the
   "Social sharing image" theme setting, otherwise assets/social-share.jpg.
 {%- endcomment -%}
 {%- liquid
   assign share_image = nil
   if request.page_type == 'product' and product.featured_image
     assign share_image = product.featured_image
-  elsif request.page_type == 'page' and page.metafields.custom.share_image != blank
-    assign share_image = page.metafields.custom.share_image.value
+  elsif request.page_type == 'page' and page.metafields.custom.social_image != blank
+    assign share_image = page.metafields.custom.social_image.value.preview_image | default: page.metafields.custom.social_image.value
   elsif request.page_type == 'article' and article.image
     assign share_image = article.image
   elsif request.page_type == 'collection' and collection.image

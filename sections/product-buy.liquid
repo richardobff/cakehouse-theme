@@ -1,13 +1,18 @@
 {%- comment -%}
-  Product main block (white). Desktop: the photo on the left (from the screen
-  edge to the end of column 7, 4:5, sticky while the right column scrolls);
-  the right column has the title, price and add to cart, the description and
-  pick up line, then the options: format (whole pie or by the slice), pick up
-  date, handwritten message (whole pies only) and the help me order prompt.
-  Mobile: photo, then title and add to cart, description and rows, with a
-  slim add to cart bar at the bottom while the main button is out of view.
-  Sold out shows instead of add to cart. assets/product.js runs it, sharing the date rules and the cart logic
-  with help me order (assets/order.js).
+  Product main block (white).
+  Desktop: gallery on the left (columns 1 to 7, edge to edge from the left),
+  photos stacked with a 4px gap and scrolling with the page; the first photo
+  is capped at the window height minus the header so it shows whole on load.
+  Later photos are 4:5. The buy column on the right (columns 8 to 12) is
+  sticky: title, price, description, ruled rows (size, pick up, message),
+  quantity and add to cart, the pick up line, the help me order prompt, then
+  info rows from product metafields (ingredients, allergens, serves, storage
+  and serving), each shown only when it has content.
+  Mobile: the first photo at 4:5, then the buy column; a full-width add to
+  cart bar shows at the bottom while the main button is out of view.
+  assets/product.js runs it, sharing the date rules and the cart logic with
+  help me order (assets/order.js). ?variant= picks the starting format (the
+  menu's "by the slice" links use it).
 {%- endcomment -%}
 {%- liquid
   assign whole_variant = nil
@@ -25,6 +30,11 @@
   if whole_variant == nil
     assign start_format = 'slice'
   endif
+  if product.selected_variant and slice_variant and product.selected_variant.id == slice_variant.id
+    assign start_variant = slice_variant
+    assign start_format = 'slice'
+  endif
+
   assign preorder_collection = settings.preorder_collection | default: collections['pre-order']
   assign is_preorder = false
   if preorder_collection != blank
@@ -44,68 +54,67 @@
   assign choose_label = 'product.choose_date' | t
   assign note_label = 'product.add_note' | t
   assign hmo_label = 'product.help_me_order' | t
-  assign photo_alt = product.featured_media.alt | default: product.title
+  assign photo_alt = product.title
+
+  assign photos = product.media | where: 'media_type', 'image'
+  assign preview_list = section.settings.preview_images | split: ','
 -%}
 <section class="product-buy" data-product-buy data-format="{{ start_format }}">
-  <div class="product-buy__media">
-    {% render 'media',
-      image: product.featured_media.preview_image,
-      ratio: '4 / 5',
-      sizes: '(min-width: 750px) 58vw, 100vw',
-      colour: section.settings.colour,
-      alt: photo_alt,
-      priority: true
-    %}
+  <div class="product-buy__gallery">
+    {%- if photos.size > 0 -%}
+      {%- for photo in photos -%}
+        {%- assign this_alt = photo.alt | default: photo_alt -%}
+        <div class="product-buy__photo{% if forloop.first %} product-buy__photo--first{% endif %}">
+          {% render 'media',
+            image: photo.preview_image,
+            ratio: '4 / 5',
+            sizes: '(min-width: 750px) 58vw, 100vw',
+            colour: section.settings.colour,
+            alt: this_alt,
+            priority: forloop.first
+          %}
+        </div>
+      {%- endfor -%}
+    {%- elsif section.settings.preview_images != blank -%}
+      {%- for file in preview_list -%}
+        <div class="product-buy__photo{% if forloop.first %} product-buy__photo--first{% endif %}">
+          {%- assign file_name = file | strip -%}
+          {% render 'media', preview: file_name, ratio: '4 / 5', colour: section.settings.colour, alt: photo_alt, priority: forloop.first %}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      <div class="product-buy__photo product-buy__photo--first">
+        {% render 'media', ratio: '4 / 5', colour: section.settings.colour %}
+      </div>
+    {%- endif -%}
   </div>
 
   <div class="product-buy__main">
-  <div class="product-buy__head">
-    <h1 class="product-buy__title type-d3">{{ product.title | escape }}</h1>
-    <button
-      type="button"
-      class="button button--large product-buy__add"
-      data-product-add
-      {% unless start_variant.available %}hidden{% endunless %}
-    >
-      <span>{{ add_label }}</span>
-      <span data-product-price>{{ start_variant.price | money }}</span>
-    </button>
-    <span
-      class="button button--outline button--large product-buy__sold-out"
-      data-product-sold-out
-      {% if start_variant.available %}hidden{% endif %}
-    >
-      {{- sold_out_label -}}
-    </span>
-  </div>
+    <h1 class="product-buy__title type-d4">{{ product.title | escape }}</h1>
+    <p class="product-buy__price type-body-l" data-product-unit-price>{{ start_variant.price | money }}</p>
+    {%- if product.description != blank -%}
+      <div class="product-buy__description type-body">{{ product.description }}</div>
+    {%- endif -%}
 
-  {% render 'rule', class: 'product-buy__rule' %}
-
-  <div class="product-buy__cols">
-    <div class="product-buy__about">
-      {%- if product.description != blank -%}
-        <div class="product-buy__description">{{ product.description }}</div>
-      {%- endif -%}
-      <p class="product-buy__info" data-product-info></p>
-    </div>
-
-    <div class="product-buy__options">
+    <div class="product-buy__rows">
       {%- if whole_variant and slice_variant -%}
         <div class="product-buy__row">
           <p class="product-buy__label" id="ProductFormatLabel">{{ 'product.size' | t }}</p>
           <div class="product-buy__chips" role="group" aria-labelledby="ProductFormatLabel">
-            <button type="button" class="button" data-product-format="whole" aria-pressed="true">
-              {{- 'product.whole_pie' | t -}}
+            <button type="button" class="button{% if start_format != 'whole' %} button--outline{% endif %}" data-product-format="whole" aria-pressed="{% if start_format == 'whole' %}true{% else %}false{% endif %}">
+              <span>{{ 'product.whole_pie' | t }}</span>
+              <span data-format-price>{{ whole_variant.price | money }}</span>
             </button>
-            <button type="button" class="button button--outline" data-product-format="slice" aria-pressed="false">
-              {{- 'product.by_the_slice' | t -}}
+            <button type="button" class="button{% if start_format != 'slice' %} button--outline{% endif %}" data-product-format="slice" aria-pressed="{% if start_format == 'slice' %}true{% else %}false{% endif %}">
+              <span>{{ 'product.by_the_slice' | t }}</span>
+              <span data-format-price>{{ slice_variant.price | money }}</span>
             </button>
           </div>
         </div>
       {%- endif -%}
 
       <div class="product-buy__row">
-        <p class="product-buy__label" id="ProductDateLabel">{{ 'product.pick_up_date' | t }}</p>
+        <p class="product-buy__label" id="ProductDateLabel">{{ 'product.pick_up' | t }}</p>
         <button
           type="button"
           class="button button--outline product-buy__control"
@@ -118,7 +127,7 @@
       </div>
 
       <div class="product-buy__row product-buy__row--note" data-product-note-row {% if start_format == 'slice' %}hidden{% endif %}>
-        <p class="product-buy__label">{{ 'product.handwritten_message' | t }}</p>
+        <p class="product-buy__label">{{ 'product.message' | t }}</p>
         <button
           type="button"
           class="button button--outline product-buy__control"
@@ -137,37 +146,91 @@
           </p>
         </div>
       </div>
+    </div>
 
-      <div class="product-buy__row">
-        <p class="product-buy__label">{{ section.settings.prompt | escape }}</p>
-        <button
-          type="button"
-          class="button button--outline product-buy__control"
-          data-help-me-order-open
-          data-product-id="{{ product.id }}"
-        >
-          {{- hmo_label -}}
-        </button>
+    <div class="product-buy__add-row">
+      <div class="quantity" role="group" aria-label="{{ 'product.quantity' | t | escape }}" data-product-qty>
+        <button type="button" class="quantity__step" data-qty-step="-1" aria-label="{{ 'product.quantity_less' | t | escape }}">&minus;</button>
+        <output class="quantity__value" data-qty-value aria-live="polite">1</output>
+        <button type="button" class="quantity__step" data-qty-step="1" aria-label="{{ 'product.quantity_more' | t | escape }}">+</button>
+      </div>
+      <button
+        type="button"
+        class="button product-buy__add"
+        data-product-add
+        {% unless start_variant.available %}hidden{% endunless %}
+      >
+        <span data-product-add-label>{{ add_label }}</span>
+        <span data-product-price>{{ start_variant.price | money }}</span>
+      </button>
+      <span class="button button--outline product-buy__sold-out" data-product-sold-out {% if start_variant.available %}hidden{% endif %}>
+        {{- sold_out_label -}}
+      </span>
+    </div>
+
+    <p class="product-buy__info">
+      <span class="product-buy__pin" aria-hidden="true">{{ 'icon-pin.svg' | inline_asset_content }}</span>
+      <span data-product-info></span>
+    </p>
+
+    <div class="product-buy__help">
+      <p class="product-buy__prompt">{{ section.settings.prompt | escape }}</p>
+      <button type="button" class="button button--outline" data-help-me-order-open data-product-id="{{ product.id }}">
+        {{- hmo_label -}}
+      </button>
+    </div>
+
+    <div class="hmo-conflict product-buy__conflict" data-product-conflict hidden>
+      <p class="hmo-conflict__text" data-product-conflict-text></p>
+      <div class="hmo-conflict__actions">
+        {%- assign keep_label = 'help_me_order.conflict_keep' | t -%}
+        {%- assign use_label = 'help_me_order.conflict_use' | t -%}
+        {% render 'button', label: keep_label, style: 'outline', attributes: 'data-product-conflict-choice="keep"' %}
+        {% render 'button', label: use_label, attributes: 'data-product-conflict-choice="use"' %}
       </div>
     </div>
+    <p class="product-buy__status" role="status" data-product-status></p>
+
+    {%- liquid
+      assign info_ingredients = product.metafields.custom.ingredients.value
+      assign info_allergens = product.metafields.custom.allergens.value
+      assign info_serves = product.metafields.custom.serves.value
+      assign info_storage = product.metafields.custom.storage.value
+    -%}
+    {%- if info_ingredients != blank or info_allergens != blank or info_serves != blank or info_storage != blank -%}
+      <div class="product-buy__info-rows">
+        {%- if info_ingredients != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.ingredients' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_ingredients | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+        {%- if info_allergens != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.allergens' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_allergens | escape }}</div>
+          </details>
+        {%- endif -%}
+        {%- if info_serves != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.serves' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_serves | escape }}</div>
+          </details>
+        {%- endif -%}
+        {%- if info_storage != blank -%}
+          <details class="product-info">
+            <summary class="product-info__summary">{{ 'product.storage' | t }}<span class="product-info__icon" aria-hidden="true"></span></summary>
+            <div class="product-info__body type-body">{{ info_storage | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
   </div>
 
-  <div class="hmo-conflict product-buy__conflict" data-product-conflict hidden>
-    <p class="hmo-conflict__text" data-product-conflict-text></p>
-    <div class="hmo-conflict__actions">
-      {%- assign keep_label = 'help_me_order.conflict_keep' | t -%}
-      {%- assign use_label = 'help_me_order.conflict_use' | t -%}
-      {% render 'button', label: keep_label, style: 'outline', attributes: 'data-product-conflict-choice="keep"' %}
-      {% render 'button', label: use_label, attributes: 'data-product-conflict-choice="use"' %}
-    </div>
-  </div>
-  <p class="product-buy__status" role="status" data-product-status></p>
-  </div>
-
-  {%- comment -%} Mobile: slim add to cart bar while the main button is out of view. {%- endcomment -%}
+  {%- comment -%} Mobile: full-width add to cart bar while the main button is out of view. {%- endcomment -%}
   <div class="product-bar" data-product-bar aria-hidden="true" inert>
-    <button type="button" class="button button--large product-bar__add" data-product-bar-add>
-      <span>{{ add_label }}</span>
+    <button type="button" class="button product-bar__add" data-product-bar-add>
+      <span data-product-add-label>{{ add_label }}</span>
       <span data-product-price>{{ start_variant.price | money }}</span>
     </button>
   </div>
@@ -202,9 +265,10 @@
       "id": {{ product.id }},
       "title": {{ product.title | json }},
       "preorder": {{ is_preorder | json }},
+      "moneyFormat": {{ shop.money_format | json }},
       "variants": {
-        "whole": {% if whole_variant %}{ "id": {{ whole_variant.id }}, "price": {{ whole_variant.price | money | json }}, "available": {{ whole_variant.available | json }} }{% else %}null{% endif %},
-        "slice": {% if slice_variant %}{ "id": {{ slice_variant.id }}, "price": {{ slice_variant.price | money | json }}, "available": {{ slice_variant.available | json }} }{% else %}null{% endif %}
+        "whole": {% if whole_variant %}{ "id": {{ whole_variant.id }}, "price": {{ whole_variant.price | money | json }}, "cents": {{ whole_variant.price }}, "available": {{ whole_variant.available | json }} }{% else %}null{% endif %},
+        "slice": {% if slice_variant %}{ "id": {{ slice_variant.id }}, "price": {{ slice_variant.price | money | json }}, "cents": {{ slice_variant.price }}, "available": {{ slice_variant.available | json }} }{% else %}null{% endif %}
       },
       "strings": {
         "infoWhole": {{ 'product.info_whole' | t | json }},
@@ -213,6 +277,9 @@
         "infoSlice": {{ 'product.info_slice' | t | json }},
         "infoPreorder": {{ 'product.info_preorder' | t | json }},
         "infoPreorderSoon": {{ 'product.info_preorder_soon' | t | json }},
+        "before": {{ 'product.before' | t | json }},
+        "midday": {{ 'product.midday' | t | json }},
+        "midnight": {{ 'product.midnight' | t | json }},
         "choose": {{ choose_label | json }},
         "addNote": {{ note_label | json }},
         "editNote": {{ 'product.edit_note' | t | json }},
@@ -230,7 +297,7 @@
     {
       "type": "select",
       "id": "colour",
-      "label": "Colour behind the photo while it loads",
+      "label": "Colour behind the photos while they load",
       "options": [
         { "value": "clementine", "label": "Clementine" },
         { "value": "birthday-pink", "label": "Birthday pink" },
@@ -244,6 +311,12 @@
       "id": "prompt",
       "label": "Help me order prompt",
       "default": "Ordering for an occasion?"
+    },
+    {
+      "type": "text",
+      "id": "preview_images",
+      "label": "Temporary preview photos",
+      "info": "Theme assets from Figma, comma separated, shown when a pie has no photos. Clear before launch."
     }
   ]
 }

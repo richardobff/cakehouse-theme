@@ -21,6 +21,23 @@
         "id": "social_sharing_image",
         "label": "Social sharing image",
         "info": "Shown when a link is shared. 1200 x 630 works best. Leave empty to use the lemon meringue on the glass stand. Product pages use the product photo."
+      },
+      {
+        "type": "header",
+        "content": "Footer credit"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_credit",
+        "label": "Show credit",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "credit_link",
+        "label": "Credit link",
+        "default": "https://officebff.com.au",
+        "info": "Opens in a new tab."
       }
     ]
   },

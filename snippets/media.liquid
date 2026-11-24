@@ -25,6 +25,10 @@
   assign onload = "this.classList.add('is-loaded')"
   assign preload = false
   assign alt_text = alt | default: image.alt
+  assign focal = 'center'
+  if image != blank and image.presentation.focal_point != blank
+    assign focal = image.presentation.focal_point
+  endif
   assign ratio_parts = ratio | split: '/'
   assign preview_width = ratio_parts[0] | strip | times: 100
   assign preview_height = ratio_parts[1] | strip | times: 100
@@ -39,7 +43,7 @@
 -%}
 <div
   class="media{% if class != blank %} {{ class }}{% endif %}"
-  style="--media-ratio: {{ ratio }}; --media-ratio-mobile: {{ ratio_mobile }}; --media-bg: var(--colour-{{ colour }});"
+  style="--media-ratio: {{ ratio }}; --media-ratio-mobile: {{ ratio_mobile }}; --media-bg: var(--colour-{{ colour }}); --media-position: {{ focal }};"
 >
   {%- if image != blank -%}
     {{

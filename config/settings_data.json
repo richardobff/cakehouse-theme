@@ -9,6 +9,7 @@
  */
 {
   "current": {
-    "pickup_product": "pick-up"
+    "pickup_product": "pick-up",
+    "preorder_collection": "pre-order"
   }
 }

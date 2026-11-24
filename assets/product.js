@@ -23,9 +23,35 @@
     format: root.dataset.format || (data.variants.whole ? 'whole' : 'slice'),
     date: null,
     note: '',
+    qty: 1,
     month: null,
     busy: false,
   };
+  const MAX_QTY = 20;
+
+  /** Formats cents with the shop's money format, e.g. ${{amount}}. */
+  function money(cents) {
+    const format = data.moneyFormat || '${{amount}}';
+    const value = (cents / 100).toFixed(2);
+    const withCommas = (n) => n.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return format.replace(/\{\{\s*(\w+)\s*\}\}/, (_, key) => {
+      if (key === 'amount_no_decimals') return withCommas(String(Math.round(cents / 100)));
+      if (key === 'amount_with_comma_separator') return value.replace('.', ',');
+      return withCommas(value.split('.')[0]) + '.' + value.split('.')[1];
+    });
+  }
+
+  /** "midday", "midnight" or a time like "2pm" / "2:30pm" from the HH:MM cut-off. */
+  function cutoffText() {
+    const m = String(config.rules.cutoff || '').match(/^(\d{1,2}):(\d{2})$/);
+    if (!m) return '';
+    const h = Number(m[1]);
+    const min = Number(m[2]);
+    if (h === 12 && min === 0) return st.midday;
+    if (h === 0 && min === 0) return st.midnight;
+    const hour12 = h % 12 || 12;
+    return `${hour12}${min ? ':' + m[2] : ''}${h < 12 ? 'am' : 'pm'}`;
+  }
   const rules = () => shared.makeRules(config.rules, config.pickup);
   const variant = () => data.variants[state.format];
 
@@ -60,7 +86,13 @@
     const available = Boolean(v && v.available) && !preorderClosed;
     $('[data-product-add]').hidden = !available;
     $('[data-product-sold-out]').hidden = available;
-    if (v) $$('[data-product-price]').forEach((el) => (el.textContent = v.price));
+    if (v) {
+      $('[data-product-unit-price]').textContent = v.price;
+      $$('[data-product-price]').forEach((el) => (el.textContent = money(v.cents * state.qty)));
+    }
+    $('[data-qty-value]').textContent = String(state.qty);
+    $('[data-qty-step="-1"]').disabled = state.qty <= 1;
+    $('[data-qty-step="1"]').disabled = state.qty >= MAX_QTY;
     updateBar();
 
     // Pick up line under the description.
@@ -68,7 +100,9 @@
     let template =
       state.format === 'slice' ? st.infoSlice : lead === 0 ? st.infoWholeNone : lead === 1 ? st.infoWholeOne : st.infoWhole;
     if (data.preorder) template = preorderClosed ? st.infoPreorderSoon : st.infoPreorder;
-    $('[data-product-info]').textContent = shared.fill(template, { address: config.rules.address, days: lead });
+    const time = cutoffText();
+    const before = time ? shared.fill(st.before, { time }) : '';
+    $('[data-product-info]').textContent = shared.fill(template, { address: config.rules.address, days: lead, before });
 
     // Date button shows the chosen day.
     $('[data-product-date-open]').textContent = state.date ? shared.formatLong(state.date) : st.choose;
@@ -102,6 +136,24 @@
     }).observe(mainAdd);
     mobile.addEventListener('change', updateBar);
   }
+
+  /* ---- Desktop: keep the buy column in view while the gallery scrolls ----
+   * The column is sticky under the header. When it is taller than the window
+   * it pins by its foot instead, so every row can still be reached. */
+  const main = $('.product-buy__main');
+  function pinColumn() {
+    if (mobile.matches) {
+      root.style.removeProperty('--buy-top');
+      return;
+    }
+    const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
+    const top = Math.min(header, window.innerHeight - main.offsetHeight);
+    root.style.setProperty('--buy-top', `${Math.round(top)}px`);
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(pinColumn).observe(main);
+  window.addEventListener('resize', pinColumn);
+  mobile.addEventListener('change', pinColumn);
+  pinColumn();
 
   /* ---- Date panel ---- */
   const panel = $('[data-product-date-panel]');
@@ -188,6 +240,7 @@
         format: state.format,
         date: state.date,
         note: state.note,
+        quantity: state.qty,
         resolveConflict: askConflict,
       });
       state.date = result.date;
@@ -214,6 +267,12 @@
       return;
     }
     if (event.target.closest('[data-product-date-open]')) return openDates();
+    const step = event.target.closest('[data-qty-step]');
+    if (step && !step.disabled) {
+      state.qty = Math.min(MAX_QTY, Math.max(1, state.qty + Number(step.dataset.qtyStep)));
+      render();
+      return;
+    }
     const toggle = event.target.closest('[data-product-note-toggle]');
     if (toggle) {
       const box = $('#ProductNote');

@@ -4,7 +4,7 @@
       "type": "menu-list",
       "settings": {
         "show_head": true,
-        "intro": "<p>What's on the counter.</p>"
+        "intro": ""
       },
       "blocks": {
         "pies": {

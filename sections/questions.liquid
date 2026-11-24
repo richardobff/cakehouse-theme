@@ -19,13 +19,51 @@
   {%- if section.settings.show_head and request.page_type == 'page' -%}
     {% render 'block-head', title: page.title, copy: section.settings.intro, heading_h1: true %}
   {%- endif -%}
+  {%- comment -%}
+    From pies: each pie's custom.ingredients and custom.allergens, so they are
+    entered once, on the product. With no pie filled in yet, the question
+    blocks below show as holding rows.
+  {%- endcomment -%}
+  {%- liquid
+    assign pie_source = section.settings.pie_collection
+    assign pies_filled = false
+    if pie_source != blank
+      for pie in pie_source.products
+        if pie.metafields.custom.ingredients.value != blank or pie.metafields.custom.allergens.value != blank
+          assign pies_filled = true
+          break
+        endif
+      endfor
+    endif
+    assign ingredients_label = 'product.ingredients' | t
+    assign allergens_label = 'product.allergens' | t
+  -%}
   <dl class="questions__list">
+    {%- if pies_filled -%}
+      {%- for pie in pie_source.products -%}
+        {%- if settings.pickup_product != blank and pie.id == settings.pickup_product.id -%}{%- continue -%}{%- endif -%}
+        {%- assign pie_ingredients = pie.metafields.custom.ingredients.value -%}
+        {%- assign pie_allergens = pie.metafields.custom.allergens.value -%}
+        <div class="questions__row">
+          <dt class="questions__question type-product"><a href="{{ pie.url }}">{{ pie.title | escape }}</a></dt>
+          <dd class="questions__answer">
+            {%- if pie_ingredients == blank and pie_allergens == blank -%}
+              <p>{{ section.settings.pie_empty_text | escape }}</p>
+            {%- else -%}
+              {%- if pie_ingredients != blank -%}<p><span class="questions__term">{{ ingredients_label }}:</span> {{ pie_ingredients | newline_to_br }}</p>{%- endif -%}
+              {%- if pie_allergens != blank -%}<p><span class="questions__term">{{ allergens_label }}:</span> {{ pie_allergens | escape }}</p>{%- endif -%}
+            {%- endif -%}
+          </dd>
+        </div>
+      {%- endfor -%}
+    {%- else -%}
     {%- for block in section.blocks -%}
       <div class="questions__row" {{ block.shopify_attributes }}>
         <dt class="questions__question type-product">{{ block.settings.question | escape }}</dt>
         <dd class="questions__answer">{{ block.settings.answer }}</dd>
       </div>
     {%- endfor -%}
+    {%- endif -%}
   </dl>
 </section>
 {%- endif -%}
@@ -37,6 +75,13 @@
   "settings": [
     { "type": "checkbox", "id": "show_head", "label": "Page title on the top line", "default": true },
     { "type": "richtext", "id": "intro", "label": "Intro", "info": "Beside the page title. Optional." },
+    {
+      "type": "collection",
+      "id": "pie_collection",
+      "label": "Pies for ingredients and allergens",
+      "info": "Lists each pie with its Ingredients and Allergens fields (set on the product). Leave empty for a plain question list."
+    },
+    { "type": "text", "id": "pie_empty_text", "label": "Text for a pie not filled in yet", "default": "Ingredients and allergens to come." },
     { "type": "text", "id": "only_page", "label": "Only on page", "info": "Page handle, e.g. ordering-and-pick-up. Leave blank to show on every page using this template." }
   ],
   "blocks": [

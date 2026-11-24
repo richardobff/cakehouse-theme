@@ -122,7 +122,7 @@ Applies to every section on every page.
 - Status line: from Opening hours in theme settings, Australia/Sydney time, rechecked every minute. Open: green dot, "now baking, open now" (Now baking on in the header settings) or "open now". Closed: orange dot, "closed, opens tomorrow at 8am" and so on. Hidden until hours are set.
 - "order" opens the order panel. The panel lists help me order, pick up, pre order and wholesale as large blocks, each with a button. On desktop it is a centred panel, 6 columns wide, under the header. On mobile it is a full-screen sheet. Delivery is not shown.
 - Pre order is reached through the order panel; it is not in the header.
-- Footer group, every page: sign up band directly on top of follow us (no gap, no rule), then the footer with links to ordering and pick up, allergens, wholesale, contact, instagram, tiktok and policies. The footer has no email field.
+- Footer group, every page: sign up band directly on top of follow us (no gap, no rule), then the footer with links to ordering and pick up, allergens, wholesale, contact, instagram and tiktok. The footer has no email field. At the foot, one line at Meta size in black (stacked on mobile): copyright, policy links (refund, privacy, terms of service, shipping, contact information; each only shows once that policy exists in Settings > Policies), then "credits", which reveals "design and development by Office BFF" inline on hover, focus or tap, linking to the Credit link theme setting (default https://officebff.com.au, new tab). "Show credit" turns it off.
 
 ## Sections
 
@@ -141,8 +141,8 @@ Build each as an Online Store 2.0 section with settings so Suzie can edit conten
 - Sign up: a pink band in the footer group on every page, directly on top of follow us: title, copy, email field and button on one line (Shopify customer form at launch; Klaviyo can replace it later).
 - Visit: a colour split (blue on home). Title on the top line; address, hours (from Opening hours in theme settings, consecutive days grouped) and a solid "directions" button (Google Maps) at the foot of the colour side; photo on the other side.
 - Follow us: curated posts from a metaobject (image, link, platform). No feed app at launch. Title left, instagram, tiktok and substack buttons right (each shows once its link is set in the section); then a horizontal strip of rounded tiles (24 radius desktop, 16 mobile), top aligned, mixed heights cycling 4:5, 2:3, 1:1, 3:4, 250 wide desktop (scaled) and 160 mobile, gap 24 and 12, starting at the left margin and running off the right edge. Each tile links to its post. The strip drifts left on a loop (about 30 seconds per cycle), pauses on hover, touch or focus, can be scrolled or dragged by hand, has no visible scrollbar and stays still with reduced motion.
-- Menu list: groups (pies, drinks) driven by the menu_item metaobject (name, price, group, on the counter today) so Suzie can edit items and prices without touching products. The visit page's "today's counter" reads the same entries: on the counter shows "by the slice", otherwise sold out.
-- Question and answer list: used for ordering and pick up, and for ingredients and allergens. Both pages use the info template, so the template holds two lists and each is limited to its page by handle (Only on page).
+- Menu list: groups (pies, drinks) driven by the menu_item metaobject (name, price, group, on the counter today, product) so Suzie can edit items and prices without touching products. No intro line on the menu page. The visit page's "today's counter" reads the same entries: an item linked to a product shows "by the slice" and opens that product with by the slice chosen; an item not on the counter today shows sold out; no product link, no button.
+- Question and answer list: used for ordering and pick up, and for ingredients and allergens. The ingredients and allergens list reads each pie's custom.ingredients and custom.allergens (entered once, on the product); until any pie has them filled in, it shows the holding rows. Both pages use the info template, so the template holds two lists and each is limited to its page by handle (Only on page).
 - Contact form (contact and wholesale): detail rows on the left, Shopify contact form on the right with optional topic chips. Page titles sit inside the first section so no rule is drawn under them.
 - Footer.
 
@@ -159,9 +159,10 @@ index, product, collection (pies), cart, page.menu, page.about, page.pre-order, 
 - One product per pie.
 - Option "Format" with values "Whole pie" and "By the slice".
 - By the slice is pick up only and has no handwritten note.
-- The product page (templates/product.json). Desktop: two columns. The photo runs from the screen edge to the end of column 7 at 4:5. Because a 4:5 photo at 7 columns is taller than the window, the right column is the sticky one: it stays under the compact bar while the photo scrolls past (to confirm with Rich: the brief asked for a sticky photo). The right column (columns 8 to 12) has the title (D3), price and add to cart, the description and pick up line, then four rows: format as two buttons (whole pie, by the slice), pick up date (opens a date panel with the same calendar and rules as help me order), handwritten message (whole pie only) and the help me order prompt (opens the flow with this pie chosen). Everything needed to buy is visible on load at 1280 and up.
-- Mobile: photo at 4:5, then title and add to cart directly under it, then description and rows. While the main add to cart button is out of view, a slim bar at the bottom shows "add to cart $price".
-- Below: the pre order split and "More pies" (the product grid, leaving out the pie being viewed).
+- The product page (templates/product.json), redesigned (Figma "Product redesign" on 06 DESIGN PREVIEW). Desktop: gallery on the left, columns 1 to 7, edge to edge from the left; photos stacked 4px apart, scrolling with the page. The first photo's height is capped at the window minus the header (object-fit cover, using the image's focal point), so it shows whole on load; later photos are 4:5. Buy column on the right, columns 8 to 12, sticky while the gallery scrolls (when it is taller than the window it pins by its foot so every row stays reachable): title (D4), price (Body L), short description (Body), then ruled rows: size (whole pie / by the slice, each showing its price), pick up (choose a date, opens the date panel), message (add a note, whole pie only, hidden for slices). Then a quantity stepper and a full-width solid "add to cart $price" (price times quantity). Then the pick up line with the pin, built from the ordering settings ("Pick up from 336 Brunswick St, Fitzroy. Order 2 days ahead, before midday."). Then "Ordering for an occasion?" with an outline "help me order". Then info rows that open on tap: ingredients, allergens, serves, storage and serving, from product metafields custom.ingredients, custom.allergens, custom.serves, custom.storage; a row only shows when its field has content.
+- Mobile: the first photo at 4:5, then the buy column in the same order. While the main add to cart button is out of view, a full-width bar at the bottom shows "add to cart $price".
+- Below: "More pies" (the product grid, leaving out the pie being viewed), then the footer. No pre order split on product pages.
+- ?variant= picks the starting format, so links can open a pie with by the slice chosen.
 - Sold out: when the chosen format is unavailable, "sold out" replaces add to cart.
 - Add to cart on the product page and in help me order share one cart routine (assets/order.js): pick up line per whole pie, one pick up date per order with the conflict prompt.
 
@@ -203,7 +204,7 @@ Cart rules:
 
 ## Pre order
 
-- A "pre-order" collection holds the pre order pies (Theme settings > Ordering > Pre order collection; falls back to the handle pre-order). The collection does not exist in the store yet.
+- A "pre-order" collection holds the pre order pies (Theme settings > Ordering > Pre order collection, set to pre-order; it falls back to that handle). It exists and is empty.
 - Pre order windows in theme settings, one per line: "order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24". Ordering opens and closes on the first two dates.
 - The page state (snippets/preorder-state) is worked out in store time: soon (before a window or none set), open, closed (after the last window).
 - Outside a window, pre order pies show "pre orders open soon" in place of the button.
@@ -224,7 +225,7 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 ## Cart
 
 - Desktop: a drawer 5 columns wide (566) on the right, under the header. Mobile: a full-screen sheet.
-- Content: "Cart" title, close, then pick up date, items with format and note, and total, as rows with 1px rules. Then keep shopping and checkout.
+- Content: "Cart" title, close, then pick up date, items with format and note, a quantity stepper (− 1 +) and remove on each line, and total, as rows with 1px rules. Then keep shopping and checkout. Changing a whole pie's quantity keeps the pick up line count right when caps are on (createCart().changeLine).
 - Empty state: "Your cart is empty." with a shop button.
 - Update with the Section Rendering API, no page reloads.
 
@@ -263,8 +264,8 @@ Built (motion branch): nav colours are set per link in sections/header.liquid by
 - Favicon: the footer brand mark (blue square, diagonal wordmark, from the footer component on 05 design playground), exported square at 512 and 180 (apple touch icon). A "Favicon" image setting in theme settings overrides the files.
 - Social sharing image: a theme setting, defaulting to the lemon meringue on the glass stand (preview-pre-order.jpg) cropped to 1200 x 630 with the pie centred.
 - Every page outputs og:image, og:title, og:description and twitter:card summary_large_image. Product pages use the featured image when there is one; pages use their own image setting if set; otherwise the default.
-- Built: Theme settings > Brand and sharing (Favicon, Social sharing image). Files: assets/favicon-512.png, favicon-32.png, apple-touch-icon.png (180), social-share.jpg (1200 x 630). A page's own image is the page metafield custom.share_image (file); the definition does not exist in the store yet.
-- Legibility: the diagonal wordmark reads at 48px, is borderline at 32 and becomes a stroke at 16. Rich to judge; a simpler mark for 16 and 32 is an option.
+- Built: Theme settings > Brand and sharing (Favicon, Social sharing image). Files: assets/favicon-512.png, favicon-32.png, apple-touch-icon.png (180), social-share.jpg (1200 x 630). A page's own image is the page metafield custom.social_image (file).
+- Favicon approved as is (the diagonal wordmark reads at 48px, is borderline at 32 and becomes a stroke at 16).
 
 ## Performance and quality
 
@@ -274,6 +275,8 @@ Built (motion branch): nav colours are set per link in sections/header.liquid by
 - Test on desktop 1440 and mobile 390 before merging.
 
 ## Copy
+
+- Every page template ships with the Figma holding copy (section 238:1507 and home v2) as template JSON values, never hard-coded in Liquid. Known values are written in: lead time two days, cut-off midday.
 
 - Content comes from Suzie. Use the holding copy in Figma until it is supplied.
 - Do not invent prices, lead times, hours, ingredients or allergen information.

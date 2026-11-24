@@ -43,6 +43,16 @@
     document.addEventListener('touchstart', prefetch, { passive: true });
   }
 
+  /* ---- Footer credit: tap to reveal (hover and focus are handled in CSS) ---- */
+  document.querySelectorAll('[data-credit-toggle]').forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+      const credit = toggle.closest('[data-credit]');
+      const open = !credit.classList.contains('is-open');
+      credit.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+  });
+
   /* ---- Cart count bump ---- */
   document.querySelectorAll('[data-cart-count]').forEach((count) => {
     let last = count.textContent;

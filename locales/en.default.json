@@ -30,7 +30,9 @@
     "removed": "Removed from your cart.",
     "updated": "Cart updated.",
     "error": "Something went wrong. Please try again.",
-    "label": "Cart"
+    "label": "Cart",
+    "quantity_less": "One fewer [item]",
+    "quantity_more": "One more [item]"
   },
   "customers": {
     "login": {
@@ -93,7 +95,9 @@
     "instagram": "instagram",
     "tiktok": "tiktok",
     "policies": "policies",
-    "substack": "substack"
+    "substack": "substack",
+    "credits": "credits",
+    "credit": "design and development by Office BFF"
   },
   "products": {
     "from_price": "from {{ price }}",
@@ -169,18 +173,30 @@
     "whole_pie": "whole pie",
     "by_the_slice": "by the slice",
     "pick_up_date": "pick up date",
-    "choose_date": "choose",
+    "choose_date": "choose a date",
     "handwritten_message": "handwritten message",
     "add_note": "add a note",
     "edit_note": "edit note",
     "help_me_order": "help me order",
-    "info_whole": "Local pick up only. Order [days] business days ahead. Pick up from [address].",
-    "info_whole_one": "Local pick up only. Order one business day ahead. Pick up from [address].",
-    "info_whole_none": "Local pick up only. Pick up from [address].",
-    "info_slice": "Slices come from the counter, pick up only. Pick up from [address].",
+    "info_whole": "Pick up from [address]. Order [days] days ahead[before].",
+    "info_whole_one": "Pick up from [address]. Order a day ahead[before].",
+    "info_whole_none": "Pick up from [address]. Order[before] for the same day.",
+    "info_slice": "Pick up from [address]. Slices come from the counter, pick up only.",
     "need_date": "Choose a pick up date first.",
     "info_preorder": "Pre order. Pick up from [address] on the dates shown.",
-    "info_preorder_soon": "Pre orders open soon."
+    "info_preorder_soon": "Pre orders open soon.",
+    "pick_up": "pick up",
+    "message": "message",
+    "quantity": "Quantity",
+    "quantity_less": "One fewer",
+    "quantity_more": "One more",
+    "ingredients": "ingredients",
+    "allergens": "allergens",
+    "serves": "serves",
+    "storage": "storage and serving",
+    "before": ", before [time]",
+    "midday": "midday",
+    "midnight": "midnight"
   },
   "contact": {
     "email": "email",

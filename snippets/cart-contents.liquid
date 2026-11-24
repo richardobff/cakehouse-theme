@@ -65,7 +65,16 @@
                 {%- if item.properties['Note'] != blank -%}
                   <span class="cart__note">{{ 'cart.note' | t | replace: '[note]', item.properties['Note'] }}</span>
                 {%- endif -%}
-                <a class="cart__remove" href="{{ item.url_to_remove }}" data-cart-remove="{{ item.key }}" aria-label="{{ remove_label | escape }}">{{ 'cart.remove' | t }}</a>
+                <span class="cart__controls">
+                  {%- assign less_label = 'cart.quantity_less' | t | replace: '[item]', item_name -%}
+                  {%- assign more_label = 'cart.quantity_more' | t | replace: '[item]', item_name -%}
+                  <span class="quantity quantity--small" role="group" aria-label="{{ 'product.quantity' | t | escape }}">
+                    <button type="button" class="quantity__step" data-cart-step="{{ item.key }}" data-cart-qty="{{ item.quantity | minus: 1 }}" aria-label="{{ less_label | escape }}">&minus;</button>
+                    <span class="quantity__value">{{ item.quantity }}</span>
+                    <button type="button" class="quantity__step" data-cart-step="{{ item.key }}" data-cart-qty="{{ item.quantity | plus: 1 }}" aria-label="{{ more_label | escape }}"{% if item.quantity >= 20 %} disabled{% endif %}>+</button>
+                  </span>
+                  <a class="cart__remove" href="{{ item.url_to_remove }}" data-cart-remove="{{ item.key }}" aria-label="{{ remove_label | escape }}">{{ 'cart.remove' | t }}</a>
+                </span>
               </p>
             </li>
           {%- endfor -%}

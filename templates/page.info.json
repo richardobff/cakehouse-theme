@@ -12,14 +12,14 @@
           "type": "question",
           "settings": {
             "question": "How far ahead do I order?",
-            "answer": "<p>To come.</p>"
+            "answer": "<p>Order whole pies two days ahead. Slices come from the counter on the day.</p>"
           }
         },
         "q-2": {
           "type": "question",
           "settings": {
             "question": "When is the cut-off?",
-            "answer": "<p>To come.</p>"
+            "answer": "<p>Midday. Orders before midday count from that day; orders after midday count from the next day.</p>"
           }
         },
         "q-3": {
@@ -65,7 +65,9 @@
       "settings": {
         "show_head": true,
         "intro": "",
-        "only_page": "ingredients-and-allergens"
+        "only_page": "ingredients-and-allergens",
+        "pie_collection": "pies",
+        "pie_empty_text": "Ingredients and allergens to come."
       },
       "blocks": {
         "q-1": {
