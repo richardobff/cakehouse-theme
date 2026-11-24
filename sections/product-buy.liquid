@@ -1,0 +1,196 @@
+{%- comment -%}
+  Product buy block (white): title and add to cart on the top line; then the
+  description and pick up line on the left, and the options on the right:
+  format (whole pie or by the slice), pick up date, handwritten message (whole
+  pies only) and the help me order prompt. Sold out shows instead of add to
+  cart. assets/product.js runs it, sharing the date rules and the cart logic
+  with help me order (assets/order.js).
+{%- endcomment -%}
+{%- liquid
+  assign whole_variant = nil
+  assign slice_variant = nil
+  for variant in product.variants
+    assign fmt = variant.option1 | downcase
+    if fmt contains 'slice'
+      assign slice_variant = variant
+    elsif fmt contains 'whole' or product.variants.size == 1
+      assign whole_variant = variant
+    endif
+  endfor
+  assign start_variant = whole_variant | default: slice_variant | default: product.selected_or_first_available_variant
+  assign start_format = 'whole'
+  if whole_variant == nil
+    assign start_format = 'slice'
+  endif
+  assign add_label = 'product.add_to_cart' | t
+  assign sold_out_label = 'products.sold_out' | t
+  assign choose_label = 'product.choose_date' | t
+  assign note_label = 'product.add_note' | t
+  assign hmo_label = 'product.help_me_order' | t
+-%}
+<section class="product-buy page-width" data-product-buy data-format="{{ start_format }}">
+  <div class="product-buy__head">
+    <h1 class="product-buy__title type-d3">{{ product.title | escape }}</h1>
+    <button
+      type="button"
+      class="button button--large product-buy__add"
+      data-product-add
+      {% unless start_variant.available %}hidden{% endunless %}
+    >
+      <span>{{ add_label }}</span>
+      <span data-product-price>{{ start_variant.price | money }}</span>
+    </button>
+    <span
+      class="button button--outline button--large product-buy__sold-out"
+      data-product-sold-out
+      {% if start_variant.available %}hidden{% endif %}
+    >
+      {{- sold_out_label -}}
+    </span>
+  </div>
+
+  {% render 'rule', class: 'product-buy__rule' %}
+
+  <div class="product-buy__cols">
+    <div class="product-buy__about">
+      {%- if product.description != blank -%}
+        <div class="product-buy__description">{{ product.description }}</div>
+      {%- endif -%}
+      <p class="product-buy__info" data-product-info></p>
+    </div>
+
+    <div class="product-buy__options">
+      {%- if whole_variant and slice_variant -%}
+        <div class="product-buy__row">
+          <p class="product-buy__label" id="ProductFormatLabel">{{ 'product.size' | t }}</p>
+          <div class="product-buy__chips" role="group" aria-labelledby="ProductFormatLabel">
+            <button type="button" class="button" data-product-format="whole" aria-pressed="true">
+              {{- 'product.whole_pie' | t -}}
+            </button>
+            <button type="button" class="button button--outline" data-product-format="slice" aria-pressed="false">
+              {{- 'product.by_the_slice' | t -}}
+            </button>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="product-buy__row">
+        <p class="product-buy__label" id="ProductDateLabel">{{ 'product.pick_up_date' | t }}</p>
+        <button
+          type="button"
+          class="button button--outline product-buy__control"
+          aria-describedby="ProductDateLabel"
+          aria-haspopup="dialog"
+          data-product-date-open
+        >
+          {{- choose_label -}}
+        </button>
+      </div>
+
+      <div class="product-buy__row product-buy__row--note" data-product-note-row {% if start_format == 'slice' %}hidden{% endif %}>
+        <p class="product-buy__label">{{ 'product.handwritten_message' | t }}</p>
+        <button
+          type="button"
+          class="button button--outline product-buy__control"
+          aria-expanded="false"
+          aria-controls="ProductNote"
+          data-product-note-toggle
+        >
+          {{- note_label -}}
+        </button>
+        <div class="product-buy__note" id="ProductNote" hidden>
+          <label class="visually-hidden" for="ProductNoteField">{{ 'help_me_order.note_label' | t }}</label>
+          <textarea class="product-buy__note-field" id="ProductNoteField" rows="3" data-product-note></textarea>
+          <p class="product-buy__note-meta">
+            <span>{{ 'help_me_order.note_hint' | t }}</span>
+            <span><span data-product-note-count>0</span> / <span data-product-note-max>60</span></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="product-buy__row">
+        <p class="product-buy__label">{{ section.settings.prompt | escape }}</p>
+        <button
+          type="button"
+          class="button button--outline product-buy__control"
+          data-help-me-order-open
+          data-product-id="{{ product.id }}"
+        >
+          {{- hmo_label -}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hmo-conflict product-buy__conflict" data-product-conflict hidden>
+    <p class="hmo-conflict__text" data-product-conflict-text></p>
+    <div class="hmo-conflict__actions">
+      {%- assign keep_label = 'help_me_order.conflict_keep' | t -%}
+      {%- assign use_label = 'help_me_order.conflict_use' | t -%}
+      {% render 'button', label: keep_label, style: 'outline', attributes: 'data-product-conflict-choice="keep"' %}
+      {% render 'button', label: use_label, attributes: 'data-product-conflict-choice="use"' %}
+    </div>
+  </div>
+  <p class="product-buy__status" role="status" data-product-status></p>
+
+  {%- comment -%} Pick up date panel: the same calendar and rules as help me order. {%- endcomment -%}
+  <dialog class="date-panel" aria-labelledby="ProductDateTitle" data-product-date-panel scroll-lock>
+    <div class="date-panel__top">
+      <h2 class="date-panel__title type-d4" id="ProductDateTitle">{{ 'product.pick_up_date' | t }}</h2>
+      {%- assign close_label = 'general.close' | t -%}
+      {% render 'button', label: close_label, style: 'outline', attributes: 'data-dialog-close' %}
+    </div>
+    <p class="date-panel__info" data-product-date-info></p>
+    <div class="hmo-cal">
+      <div class="hmo-cal__month">
+        <p class="hmo-cal__name" aria-live="polite" data-product-month></p>
+        <div class="hmo-cal__arrows">
+          <button type="button" class="button button--outline" data-product-prev></button>
+          <button type="button" class="button button--outline" data-product-next></button>
+        </div>
+      </div>
+      {% render 'rule' %}
+      <div class="hmo-cal__days" aria-hidden="true">
+        {%- assign weekdays = 'help_me_order.weekdays' | t | split: ',' -%}
+        {%- for d in weekdays -%}<span>{{ d }}</span>{%- endfor -%}
+      </div>
+      <div class="hmo-cal__grid" role="group" aria-labelledby="ProductDateTitle" data-product-grid></div>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-product-json>
+    {
+      "id": {{ product.id }},
+      "title": {{ product.title | json }},
+      "variants": {
+        "whole": {% if whole_variant %}{ "id": {{ whole_variant.id }}, "price": {{ whole_variant.price | money | json }}, "available": {{ whole_variant.available | json }} }{% else %}null{% endif %},
+        "slice": {% if slice_variant %}{ "id": {{ slice_variant.id }}, "price": {{ slice_variant.price | money | json }}, "available": {{ slice_variant.available | json }} }{% else %}null{% endif %}
+      },
+      "strings": {
+        "infoWhole": {{ 'product.info_whole' | t | json }},
+        "infoWholeOne": {{ 'product.info_whole_one' | t | json }},
+        "infoWholeNone": {{ 'product.info_whole_none' | t | json }},
+        "infoSlice": {{ 'product.info_slice' | t | json }},
+        "choose": {{ choose_label | json }},
+        "addNote": {{ note_label | json }},
+        "editNote": {{ 'product.edit_note' | t | json }},
+        "needDate": {{ 'product.need_date' | t | json }}
+      }
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Product buy",
+  "class": "section-product-buy block block--white",
+  "settings": [
+    {
+      "type": "text",
+      "id": "prompt",
+      "label": "Help me order prompt",
+      "default": "Ordering for an occasion?"
+    }
+  ]
+}
+{% endschema %}

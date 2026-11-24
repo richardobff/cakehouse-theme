@@ -7,6 +7,8 @@
 {%- endcomment -%}
 {%- liquid
   assign grid_collection = section.settings.collection
+  assign current_product_id = product.id
+  assign shown = 0
   assign colours = 'birthday-pink,clementine,blue-sky,strawberry' | split: ','
 -%}
 <section class="product-grid page-width">
@@ -21,8 +23,12 @@
   %}
   {%- if grid_collection != blank and grid_collection.products_count > 0 -%}
     <ul class="product-grid__list" role="list">
-      {%- for product in grid_collection.products limit: section.settings.limit -%}
+      {%- for product in grid_collection.products -%}
+        {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
         {%- if settings.pickup_product != blank and product.id == settings.pickup_product.id -%}{%- continue -%}{%- endif -%}
+        {%- comment -%} On a product page, leave out the pie being viewed ("more pies"). {%- endcomment -%}
+        {%- if current_product_id and product.id == current_product_id -%}{%- continue -%}{%- endif -%}
+        {%- assign shown = shown | plus: 1 -%}
         {%- assign colour_index = forloop.index0 | modulo: 4 -%}
         <li class="card">
           <a class="card__link" href="{{ product.url }}">

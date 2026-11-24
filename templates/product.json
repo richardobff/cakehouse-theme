@@ -1,0 +1,52 @@
+{
+  "sections": {
+    "hero": {
+      "type": "product-hero",
+      "settings": {
+        "ratio": "3 / 2",
+        "ratio_mobile": "4 / 5",
+        "colour": "clementine"
+      }
+    },
+    "buy": {
+      "type": "product-buy",
+      "settings": {
+        "prompt": "Ordering for an occasion?"
+      }
+    },
+    "pre-order": {
+      "type": "colour-split",
+      "settings": {
+        "colour": "birthday-pink",
+        "title": "Pre order",
+        "copy": "<p>Order window and pick up dates to come.</p>",
+        "button_label": "pre order",
+        "button_link": "/pages/pre-order",
+        "image_side": "right",
+        "ratio": "1 / 1",
+        "preview_image": "preview-pre-order.jpg"
+      }
+    },
+    "more-pies": {
+      "type": "product-grid",
+      "settings": {
+        "title": "More pies",
+        "copy": "",
+        "prompt": "",
+        "cta_label": "",
+        "cta_link": "",
+        "cta_mobile": false,
+        "collection": "pies",
+        "limit": 4,
+        "button_label": "add to cart",
+        "empty_text": "Pies are on their way."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "buy",
+    "pre-order",
+    "more-pies"
+  ]
+}

@@ -8,7 +8,8 @@
  * Shared dialog frame: under the header on desktop, full screen on mobile.
  * ------------------------------------------------------------------------- */
 .order-panel,
-.hmo {
+.hmo,
+.date-panel {
   position: fixed;
   inset: auto;
   top: var(--panel-top, calc(var(--header-bottom, 0px) + 34 * var(--u)));
@@ -25,17 +26,20 @@
 }
 
 .order-panel::backdrop,
-.hmo::backdrop {
+.hmo::backdrop,
+.date-panel::backdrop {
   background-color: rgb(0 0 0 / 0.2);
 }
 
 .order-panel[open],
-.hmo[open] {
+.hmo[open],
+.date-panel[open] {
   animation: panel-in var(--duration-panel) var(--ease-out);
 }
 
 .order-panel[open]::backdrop,
-.hmo[open]::backdrop {
+.hmo[open]::backdrop,
+.date-panel[open]::backdrop {
   animation: backdrop-in var(--duration-panel) var(--ease-out);
 }
 
@@ -54,7 +58,8 @@
 
 @media (max-width: 749px) {
   .order-panel,
-  .hmo {
+  .hmo,
+  .date-panel {
     top: 0;
     left: 0;
     width: 100%;
@@ -73,7 +78,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .order-panel[open],
-  .hmo[open] {
+  .hmo[open],
+  .date-panel[open] {
     animation-name: fade-in;
   }
 
@@ -881,5 +887,44 @@
   .hmo__bar-fill,
   .hmo {
     transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Pick up date panel (product page): the help me order calendar in a
+ * clementine panel, six columns wide under the header; a sheet on mobile.
+ * ------------------------------------------------------------------------- */
+.date-panel {
+  width: calc(684 * var(--u));
+  padding: calc(24 * var(--u)) calc(32 * var(--u)) calc(32 * var(--u));
+  background-color: var(--colour-clementine);
+}
+
+.date-panel__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+  padding-bottom: calc(12 * var(--u));
+}
+
+.date-panel__title {
+  margin: 0;
+}
+
+.date-panel__info {
+  margin: 0 0 calc(20 * var(--u));
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+@media (max-width: 749px) {
+  .date-panel {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .date-panel__info {
+    margin-bottom: 16px;
   }
 }

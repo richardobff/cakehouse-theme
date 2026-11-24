@@ -141,5 +141,22 @@
   },
   "follow_us": {
     "strip_label": "Follow us posts. Scroll or drag sideways."
+  },
+  "product": {
+    "add_to_cart": "add to cart",
+    "size": "size",
+    "whole_pie": "whole pie",
+    "by_the_slice": "by the slice",
+    "pick_up_date": "pick up date",
+    "choose_date": "choose",
+    "handwritten_message": "handwritten message",
+    "add_note": "add a note",
+    "edit_note": "edit note",
+    "help_me_order": "help me order",
+    "info_whole": "Local pick up only. Order [days] business days ahead. Pick up from [address].",
+    "info_whole_one": "Local pick up only. Order one business day ahead. Pick up from [address].",
+    "info_whole_none": "Local pick up only. Pick up from [address].",
+    "info_slice": "Slices come from the counter, pick up only. Pick up from [address].",
+    "need_date": "Choose a pick up date first."
   }
 }

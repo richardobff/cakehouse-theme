@@ -158,7 +158,9 @@ index, product, collection (pies), cart, page.menu, page.about, page.pre-order, 
 - One product per pie.
 - Option "Format" with values "Whole pie" and "By the slice".
 - By the slice is pick up only and has no handwritten note.
-- The product page shows format as two buttons (whole pie, by the slice), then pick up date, handwritten message (whole pie only), and a help me order prompt.
+- The product page (templates/product.json): hero image (3:2, 4:5 on mobile), then the buy block: title and "add to cart $price" on the top line; description and the pick up line on the left; on the right, format as two buttons (whole pie, by the slice), pick up date (opens a date panel with the same calendar and rules as help me order), handwritten message (whole pie only) and the help me order prompt (opens the flow with this pie chosen). Then the pre order split and "More pies" (the product grid, leaving out the pie being viewed).
+- Sold out: when the chosen format is unavailable, "sold out" replaces add to cart.
+- Add to cart on the product page and in help me order share one cart routine (assets/order.js): pick up line per whole pie, one pick up date per order with the conflict prompt.
 
 ## Ordering rules
 

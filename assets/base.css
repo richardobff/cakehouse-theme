@@ -190,6 +190,7 @@
 }
 
 .cart-button svg {
+  flex: none;
   width: calc(20 * var(--u));
   height: calc(20 * var(--u));
 }
@@ -469,7 +470,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0;
     padding: 10px 0 12px;
+  }
+
+  .header__nav-cart {
+    flex: none;
   }
 
   .header--masthead .header__links,
