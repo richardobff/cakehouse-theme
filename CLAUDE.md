@@ -204,7 +204,7 @@ Daily caps:
 
 Cart rules:
 
-- An order has a single pick up date, stored as a cart attribute and matched by the pick up line. If an item is added with a different date, ask the customer which date to keep.
+- An order has a single date, stored as a cart attribute and matched by the pick up line. If an item is added with a different date, ask the customer which date to keep, naming the cart's method: "Your cart is set for delivery on Fri 27 Nov" or "...for pick up on...".
 - Each line keeps its format and any note as line item properties.
 - Lead times, cut-offs, closed days and blackout dates are enforced in the theme (date picker and cart). Caps are enforced by Shopify inventory at checkout.
 - The store timezone is Australia/Sydney (AEDT, the same as Melbourne). Check Settings › General before writing any date logic.

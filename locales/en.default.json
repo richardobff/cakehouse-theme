@@ -158,7 +158,7 @@
     "added": "Added to your cart.",
     "added_another": "Added. Pick another pie.",
     "error": "That did not work. Please try again.",
-    "conflict": "Your cart is set for pick up on [date]. An order has one pick up date. Which should we use?",
+    "conflict": "Your cart is set for [method] on [date]. An order has one date. Which should we use?",
     "conflict_keep": "keep that date",
     "conflict_use": "use this date",
     "pie_size": "[pie], [size]",

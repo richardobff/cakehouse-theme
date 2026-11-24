@@ -222,10 +222,12 @@
   });
 
   /* ---- Conflict: one pick up date per order ---- */
-  function askConflict(existing) {
+  function askConflict(existing, existingMethod) {
     return new Promise((resolve) => {
       const box = $('[data-product-conflict]');
-      $('[data-product-conflict-text]').textContent = shared.fill(st.conflict, { date: shared.formatLong(existing) });
+      // The cart's method in the wording: "set for delivery on Fri 27 Nov".
+      const label = shared.method ? shared.method.label(existingMethod) : 'pick up';
+      $('[data-product-conflict-text]').textContent = shared.fill(st.conflict, { method: label, date: shared.formatShort(existing) });
       box.hidden = false;
       box.querySelector('[data-product-conflict-choice="use"]').focus();
       const onClick = (event) => {

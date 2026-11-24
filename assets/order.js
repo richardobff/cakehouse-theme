@@ -435,7 +435,8 @@
       const existing = cart.attributes && cart.attributes['Pick up date'];
       const hasPies = cart.items.some((item) => !isPickupLine(item));
       if (hasPies && existing && existing !== date && resolveConflict) {
-        if ((await resolveConflict(existing)) === 'keep') date = existing;
+        const existingMethod = cart.attributes.Method === 'delivery' ? 'delivery' : 'pickup';
+        if ((await resolveConflict(existing, existingMethod)) === 'keep') date = existing;
       }
       const m = resolveMethod(cart, wanted, format === 'slice');
 
@@ -720,10 +721,11 @@
     }
 
     /* ---- Cart ---- */
-    function askConflict(existing) {
+    function askConflict(existing, existingMethod) {
       return new Promise((resolve) => {
         const box = $('[data-hmo-conflict]');
-        $('[data-hmo-conflict-text]').textContent = fill(s.conflict, { date: formatLong(existing) });
+        // The cart's method in the wording: "set for delivery on Fri 27 Nov".
+        $('[data-hmo-conflict-text]').textContent = fill(s.conflict, { method: method.label(existingMethod), date: formatShort(existing) });
         box.hidden = false;
         box.querySelector('[data-hmo-conflict="use"]').focus();
         const onClick = (event) => {
@@ -863,7 +865,7 @@
   window.Cakehouse = Object.assign(window.Cakehouse || {}, {
     helpMeOrder: flow,
     order: sharedConfig
-      ? { config: sharedConfig, makeRules, renderMonth, createCart, formatLong, firstOfMonth, addDays, fill, openDialog, closeDialog, wireDialog, method }
+      ? { config: sharedConfig, makeRules, renderMonth, createCart, formatLong, firstOfMonth, addDays, fill, openDialog, closeDialog, wireDialog, method, formatShort }
       : null,
   });
 })();
