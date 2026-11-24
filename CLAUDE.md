@@ -248,12 +248,14 @@ Update this after every branch: move items between lists and add new ones as the
 - pages (stacked on cart): built and pushed, waiting on review. Menu and today's counter from the menu_item metaobject, about, pre order (soon, open and closed states from the theme setting windows; pre order pies get window dates only and a "pre order" button), wholesale and contact (Shopify contact form; not test-submitted), ordering and pick up plus ingredients and allergens (both on the info template, each list limited to its page), policy styling, 404, opening soon password page, gift card. Not previewable yet: the password page (store not password protected) and the gift card (gift cards off).
 - meta (stacked on pages): favicon and link previews built and pushed, waiting on review. Favicon approved as is.
 - motion (stacked on meta), also carrying the product redesign round: product page redesign (gallery and sticky buy column, quantity, info rows from product metafields), ingredients from pies, counter links to products, footer credit and policy links, cart quantity stepper, page sharing image field. Built and pushed, waiting on review.
+- motion, latest fixes: all pies page, order panel rules (pick up to /collections/pies, pre order only while a window is set), keyboard-only focus ring, mobile size row, home h1. Waiting on review.
 - motion, first part: Nav colour underline (option B) with aria-current, order active on product pages and while the panel is open, button and cart hover fills, focus rings, cross-document view transitions, prefetch on hover, cart count bump. Panels, help me order steps, progress bar, image fades, status pulse, sticky bar and the drawer highlight were already in place.
 
 ### Next, in order
 1. Review and merge, in order: product-page, cart, pages, meta, motion.
 2. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
-3. Launch: load follow us posts (follow_us_post entries by hand), delete test data (test pies, test- menu items, pick up test dates), Suzie creates the remaining policies in Settings > Policies and fills in contact information, Suzie fills in ingredients, allergens, serves and storage on each pie, real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
+3. Suzie's editor audit: Suzie walks the theme editor and edits every section and setting she will own, as the last step before launch.
+4. Launch: load follow us posts (follow_us_post entries by hand), delete test data (test pies, test- menu items, pick up test dates), Suzie creates the remaining policies in Settings > Policies and fills in contact information, Suzie fills in ingredients, allergens, serves and storage on each pie, real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
 
 ### Backlog (not scheduled)
 - How pick up date variants are created and topped up over time, so Suzie doesn't do it by hand.
@@ -263,6 +265,7 @@ Update this after every branch: move items between lists and add new ones as the
 - Instagram live sync: a scheduled function (likely on Vercel) reads @cakehousepies posts through the Instagram API (professional account, Suzie authorises once), refreshes its own token and writes the latest posts into follow_us_post. The theme stays unchanged. TikTok stays manual unless we apply for TikTok API access after launch.
 
 ### Waiting on Suzie
+- Confirm "We reply within two business days" (contact page).
 - Pie list, prices and photos.
 - Opening times for December (open every day). Daily cap numbers, if caps are switched on.
 - Opening hours, about copy, policy wording, wholesale details, drinks for the menu.
