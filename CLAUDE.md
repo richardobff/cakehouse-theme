@@ -245,19 +245,22 @@ Update this after every branch: move items between lists and add new ones as the
 ### In progress
 - product-page: rebuilt and pushed, waiting on Rich's review. Desktop two columns (4:5 photo to column 7, buy column sticky on the right, everything to buy in view on load from 1280), mobile add to cart bar, pre order split, More pies. Suzie's ordering values set as defaults (lead 2, cut-off 12:00, caps off via "Use daily caps"). To confirm with Rich: the buy column is sticky rather than the photo, because a 4:5 photo at 7 columns is taller than the window.
 - cart (stacked on product-page): built and pushed, waiting on review. Drawer on every page (pink, 566 on the right; full-screen sheet on mobile), cart page with the same contents, remove per line, empty state, live count, Section Rendering API refresh, newest line highlights. Moving an order to a new date updates the pies already in the cart. No quantity stepper (not in Figma): a pie added twice shows as 2, remove takes the line out.
-- pages, motion: stacked on cart, in that order.
+- pages (stacked on cart): built and pushed, waiting on review. Menu and today's counter from the menu_item metaobject, about, pre order (soon, open and closed states from the theme setting windows; pre order pies get window dates only and a "pre order" button), wholesale and contact (Shopify contact form; not test-submitted), ordering and pick up plus ingredients and allergens (both on the info template, each list limited to its page), policy styling, 404, opening soon password page, gift card. Not previewable yet: the password page (store not password protected) and the gift card (gift cards off).
+- Then, stacked on pages: favicon and link previews, then motion (with the hover and active states).
 
 ### Next, in order
-1. Pages (with the links check: pre order, about, get an invite, socials): menu (metaobject, pies and drinks), about, pre order (pre-order collection, window in theme settings, "open soon" state with sign up, window-only dates, "pre order" button), wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
-2. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
+1. Favicon (footer brand mark at 512 and 180, Favicon setting) and link previews (Social sharing image setting, og and twitter tags on every page).
+2. Motion polish, plus hover and active states (nav colour underline, button colour fill, focus ring): view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
 3. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
-4. Launch: real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
+4. Launch: load follow us posts (follow_us_post entries by hand), real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
 
 ### Backlog (not scheduled)
 - How pick up date variants are created and topped up over time, so Suzie doesn't do it by hand.
 - Cookies and merch (designs kept in Figma).
 - Gift cards: off for now.
 - Klaviyo for sign up, later.
+- Instagram live sync: a scheduled function (likely on Vercel) reads @cakehousepies posts through the Instagram API (professional account, Suzie authorises once), refreshes its own token and writes the latest posts into follow_us_post. The theme stays unchanged. TikTok stays manual unless we apply for TikTok API access after launch.
+- Pre order collection (handle pre-order) to create in the store, and the footer policies link to set (only the privacy policy exists so far).
 
 ### Waiting on Suzie
 - Pie list, prices and photos.
