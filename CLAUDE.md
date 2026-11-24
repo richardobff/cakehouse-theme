@@ -247,12 +247,13 @@ Update this after every branch: move items between lists and add new ones as the
 - cart (stacked on product-page): built and pushed, waiting on review. Drawer on every page (pink, 566 on the right; full-screen sheet on mobile), cart page with the same contents, remove per line, empty state, live count, Section Rendering API refresh, newest line highlights. Moving an order to a new date updates the pies already in the cart. No quantity stepper (not in Figma): a pie added twice shows as 2, remove takes the line out.
 - pages (stacked on cart): built and pushed, waiting on review. Menu and today's counter from the menu_item metaobject, about, pre order (soon, open and closed states from the theme setting windows; pre order pies get window dates only and a "pre order" button), wholesale and contact (Shopify contact form; not test-submitted), ordering and pick up plus ingredients and allergens (both on the info template, each list limited to its page), policy styling, 404, opening soon password page, gift card. Not previewable yet: the password page (store not password protected) and the gift card (gift cards off).
 - meta (stacked on pages): favicon and link previews built and pushed, waiting on review. Favicon legibility at 16 and 32 is for Rich to judge.
-- motion (stacked on meta): built and pushed, waiting on review. Nav colour underline (option B) with aria-current, order active on product pages and while the panel is open, button and cart hover fills, focus rings, cross-document view transitions, prefetch on hover, cart count bump. Panels, help me order steps, progress bar, image fades, status pulse, sticky bar and the drawer highlight were already in place.
+- motion (stacked on meta), also carrying the product redesign round: product page redesign (gallery and sticky buy column, quantity, info rows from product metafields), ingredients from pies, counter links to products, footer credit and policy links, cart quantity stepper, page sharing image field. Built and pushed, waiting on review.
+- motion, first part: Nav colour underline (option B) with aria-current, order active on product pages and while the panel is open, button and cart hover fills, focus rings, cross-document view transitions, prefetch on hover, cart count bump. Panels, help me order steps, progress bar, image fades, status pulse, sticky bar and the drawer highlight were already in place.
 
 ### Next, in order
 1. Review and merge, in order: product-page, cart, pages, meta, motion.
 2. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
-3. Launch: load follow us posts (follow_us_post entries by hand), real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
+3. Launch: load follow us posts (follow_us_post entries by hand), delete test data (test pies, test- menu items, pick up test dates), Suzie creates the remaining policies in Settings > Policies and fills in contact information, Suzie fills in ingredients, allergens, serves and storage on each pie, real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
 
 ### Backlog (not scheduled)
 - How pick up date variants are created and topped up over time, so Suzie doesn't do it by hand.
@@ -260,7 +261,6 @@ Update this after every branch: move items between lists and add new ones as the
 - Gift cards: off for now.
 - Klaviyo for sign up, later.
 - Instagram live sync: a scheduled function (likely on Vercel) reads @cakehousepies posts through the Instagram API (professional account, Suzie authorises once), refreshes its own token and writes the latest posts into follow_us_post. The theme stays unchanged. TikTok stays manual unless we apply for TikTok API access after launch.
-- Pre order collection (handle pre-order) to create in the store, and the footer policies link to set (only the privacy policy exists so far).
 
 ### Waiting on Suzie
 - Pie list, prices and photos.
