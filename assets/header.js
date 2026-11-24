@@ -15,22 +15,52 @@
   setHeight();
   if ('ResizeObserver' in window) new ResizeObserver(setHeight).observe(header);
 
-  /* ---- Sticky compact bar ---- */
+  /* ---- Sticky bar ----
+   * Desktop: the compact bar shows whenever the header has scrolled away.
+   * Mobile (below 750): a slim nav bar that shows once the header has
+   * scrolled away, hides while scrolling down and slides in when scrolling
+   * up; it stays shown while the order panel or the cart is open. */
   const sticky = document.querySelector('[data-header-sticky]');
   const desktop = window.matchMedia('(min-width: 750px)');
   if (sticky && 'IntersectionObserver' in window) {
-    const show = (visible) => {
-      const on = visible && desktop.matches;
+    let headerGone = false;
+    let scrollingUp = false;
+    let lastY = window.scrollY;
+    const panelOpen = () => Boolean(document.querySelector('[data-order-panel][open], [data-cart-drawer][open]'));
+    const update = () => {
+      const on = headerGone && (desktop.matches || scrollingUp || panelOpen());
       sticky.classList.toggle('is-visible', on);
       sticky.toggleAttribute('inert', !on);
       sticky.setAttribute('aria-hidden', String(!on));
     };
-    let headerGone = false;
     new IntersectionObserver(([entry]) => {
       headerGone = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
-      show(headerGone);
+      update();
     }).observe(header);
-    desktop.addEventListener('change', () => show(headerGone));
+    desktop.addEventListener('change', update);
+
+    // Scroll direction, with a little slack so small jitters don't flicker it.
+    let ticking = false;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          const y = window.scrollY;
+          if (Math.abs(y - lastY) < 6) return;
+          scrollingUp = y < lastY;
+          lastY = y;
+          update();
+        });
+      },
+      { passive: true },
+    );
+
+    // Opening or closing the order panel or the cart.
+    const watch = new MutationObserver(update);
+    document.querySelectorAll('[data-order-panel], [data-cart-drawer]').forEach((d) => watch.observe(d, { attributes: true, attributeFilter: ['open'] }));
   }
 
   /* ---- Open / closed status ---- */
