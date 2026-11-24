@@ -8,7 +8,7 @@
     assign priority = true
   endif
 -%}
-<section class="full-bleed" aria-label="{{ section.settings.image.alt | default: shop.name | escape }}">
+<section class="full-bleed{% if section.settings.fill_window %} full-bleed--fill{% endif %}" aria-label="{{ section.settings.image.alt | default: shop.name | escape }}">
   {% render 'media',
     image: section.settings.image,
     preview: section.settings.preview_image,
@@ -22,9 +22,16 @@
 {% schema %}
 {
   "name": "Full-bleed image",
-  "class": "section-full-bleed",
+  "class": "section-full-bleed block block--image",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "checkbox",
+      "id": "fill_window",
+      "label": "Fill the window",
+      "info": "Height is the window minus the header (at least 480). Use for the first image on a page.",
+      "default": false
+    },
     {
       "type": "select",
       "id": "ratio",

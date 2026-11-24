@@ -15,6 +15,7 @@
   --colour-blue-sky: #409fd7;
   --colour-black: #000000;
   --colour-white: #ffffff;
+  --colour-status-open: #2e9e4f;
 
   --colour-background: var(--colour-white);
   --colour-foreground: var(--colour-black);
@@ -109,7 +110,9 @@
   --page-margin: calc(24 * var(--u));
   --grid-columns: 12;
   --grid-gutter: calc(24 * var(--u));
-  --section-spacing: calc(140 * var(--u));
+  /* Block system: title on the top line at 24, 64 below the content. */
+  --block-top: calc(24 * var(--u));
+  --block-bottom: calc(64 * var(--u));
 
   /* Components */
   --button-height: max(36px, calc(43 * var(--u)));
@@ -138,7 +141,8 @@
     --type-d3-size: 64px;
     --page-margin: 16px;
     --grid-gutter: 16px;
-    --section-spacing: 64px;
+    --block-top: 16px;
+    --block-bottom: 40px;
   }
 }
 

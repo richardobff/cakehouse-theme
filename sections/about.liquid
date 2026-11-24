@@ -1,33 +1,42 @@
 {%- comment -%}
-  About: portrait on the left half, copy and button at the foot of the right half.
-  On mobile the portrait runs edge to edge with the copy below.
+  About (a white block, "Suzie" on home): title and intro on the top line,
+  portrait on the left half, copy and a solid button at the foot of the
+  right half, level with the bottom of the portrait. On mobile the portrait
+  runs edge to edge and the copy and button sit under it.
 {%- endcomment -%}
 <section class="about">
-  {% render 'media',
-    image: section.settings.portrait,
-    preview: section.settings.preview_image,
-    ratio: '4 / 5',
-    sizes: '(min-width: 750px) 50vw, 100vw',
-    colour: 'clementine',
-    class: 'about__portrait'
-  %}
-  <div class="about__copy">
-    {%- if section.settings.copy != blank -%}
-      <div class="about__text type-body">{{ section.settings.copy }}</div>
-    {%- endif -%}
-    {%- if section.settings.button_label != blank -%}
-      {% render 'button', label: section.settings.button_label, url: section.settings.button_link, style: 'outline' %}
-    {%- endif -%}
+  <div class="about__head page-width">
+    {% render 'block-head', title: section.settings.title, copy: section.settings.intro %}
+  </div>
+  <div class="about__body">
+    {% render 'media',
+      image: section.settings.portrait,
+      preview: section.settings.preview_image,
+      ratio: '4 / 5',
+      sizes: '(min-width: 750px) 50vw, 100vw',
+      colour: 'clementine',
+      class: 'about__portrait'
+    %}
+    <div class="about__copy">
+      {%- if section.settings.copy != blank -%}
+        <div class="about__text type-body">{{ section.settings.copy }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        {% render 'button', label: section.settings.button_label, url: section.settings.button_link %}
+      {%- endif -%}
+    </div>
   </div>
 </section>
 
 {% schema %}
 {
   "name": "About",
-  "class": "section-about",
+  "class": "section-about block block--white",
   "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Suzie" },
+    { "type": "richtext", "id": "intro", "label": "Intro", "info": "Beside the title on the top line." },
     { "type": "image_picker", "id": "portrait", "label": "Portrait" },
-    { "type": "richtext", "id": "copy", "label": "Copy" },
+    { "type": "richtext", "id": "copy", "label": "Copy", "info": "At the foot of the right column." },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "about" },
     { "type": "url", "id": "button_link", "label": "Button link" },
     {

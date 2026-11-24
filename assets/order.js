@@ -16,10 +16,16 @@
   /* -------------------------------------------------------------------------
    * Dialog helpers
    * ----------------------------------------------------------------------- */
+  /** Bottom edge of whichever header is showing: the sticky bar or the page header. */
+  function headerBottom() {
+    const sticky = document.querySelector('[data-header-sticky].is-visible');
+    const header = document.querySelector('[data-header]');
+    const bottoms = [sticky, header].filter(Boolean).map((el) => el.getBoundingClientRect().bottom);
+    return Math.max(0, ...bottoms);
+  }
+
   function setHeaderBottom() {
-    const header = document.querySelector('.header');
-    const bottom = header ? Math.max(0, header.getBoundingClientRect().bottom) : 0;
-    root.style.setProperty('--header-bottom', `${Math.round(bottom)}px`);
+    root.style.setProperty('--header-bottom', `${Math.round(headerBottom())}px`);
   }
 
   /** Pixels in one scale unit (--u), measured from the page. */
@@ -43,10 +49,9 @@
       return;
     }
     const u = unit();
-    const header = document.querySelector('.header');
-    const headerBottom = header ? Math.max(0, header.getBoundingClientRect().bottom) : 0;
+    const below = headerBottom();
     const wanted = dialog.matches('[data-hmo]') ? 780 * u : dialog.scrollHeight;
-    const underHeader = headerBottom + 34 * u;
+    const underHeader = below + 34 * u;
     const fits = window.innerHeight - wanted - 24 * u;
     const top = Math.max(24 * u, Math.min(underHeader, fits));
     dialog.style.setProperty('--panel-top', `${Math.round(top)}px`);

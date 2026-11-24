@@ -1,0 +1,40 @@
+{% doc %}
+  The top line of a white block: display title on the left half, copy on
+  the right half, and an optional button (with an optional lead-in line)
+  24 under the copy. Used by the section spacer, the product grid and Suzie.
+
+  @param {string} [title] - Display title.
+  @param {string} [copy] - Rich text beside the title.
+  @param {string} [prompt] - Lead-in line before the button, e.g. "Not sure what to get?".
+  @param {string} [button_label] - Button label. No button when blank.
+  @param {string} [button_link] - Button link.
+  @param {string} [button_style] - 'solid' (default) or 'outline'.
+  @param {boolean} [button_mobile] - false hides the button below 750px. Default true.
+
+  @example
+  {% render 'block-head', title: section.settings.title, copy: section.settings.copy %}
+{% enddoc %}
+{%- liquid
+  assign show_mobile = true
+  if button_mobile == false
+    assign show_mobile = false
+  endif
+-%}
+<div class="block-head">
+  {%- if title != blank -%}
+    <h2 class="block-head__title type-d3">{{ title | escape }}</h2>
+  {%- endif -%}
+  <div class="block-head__body">
+    {%- if copy != blank -%}
+      <div class="block-head__copy">{{ copy }}</div>
+    {%- endif -%}
+    {%- if button_label != blank -%}
+      <div class="block-head__action{% unless show_mobile %} block-head__action--desktop-only{% endunless %}">
+        {%- if prompt != blank -%}
+          <p class="block-head__prompt type-product">{{ prompt | escape }}</p>
+        {%- endif -%}
+        {% render 'button', label: button_label, url: button_link, style: button_style %}
+      </div>
+    {%- endif -%}
+  </div>
+</div>

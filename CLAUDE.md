@@ -43,6 +43,7 @@ All current designs are on the page `06 DESIGN PREVIEW`. Use `get_design_context
 | Later: cookies and merch (not for this build) | section 243:2406 |
 | Opening options | section 249:2676 |
 | Header and home info component (page 05 design playground) | 250:779 |
+| Home v2, block system (desktop and mobile) | section 276:2765 |
 
 The page `05 design playground` holds the source components (button, header, product card, section spacer, footer, cart lines).
 
@@ -93,9 +94,19 @@ Sizes are desktop at 1440. Scale display sizes fluidly down to the mobile sizes 
 
 - Desktop frame 1440. Margin 24. 12 columns, gutter 24 (column 94).
 - Mobile frame 390. Margin 16.
-- Section spacing: section spacers have 140 top padding on desktop and 64 on mobile.
 - Colour splits are half text, half image: 720 + 720 on desktop, stacked on mobile.
 - Product card image ratio 4:5.
+
+### Spacing (block system)
+
+Applies to every section on every page.
+
+- Sections butt together. No gaps between sections.
+- Colour changes separate sections. A 1px rule appears only where a white section follows another white section, at the top of the lower one, at content width. Never a rule against a colour or image edge.
+- Section padding: title on the top line at 24, 64 below the content. Mobile 16 and 40. Content sets the height; no fixed section heights.
+- Titles sit inside their section (for example, the order pies title, the "not sure what to get?" prompt and the grid are one section).
+- Images run edge to edge.
+- In code: each section's schema class marks its surface (`block--white`, `block--colour` or `block--image`), and `assets/sections.css` draws the rule between white blocks. Padding tokens are `--block-top` and `--block-bottom`.
 
 ### Components
 
@@ -105,32 +116,38 @@ Sizes are desktop at 1440. Scale display sizes fluidly down to the mobile sizes 
 
 ## Navigation
 
-- Desktop header: wordmark, then order, menu, visit, about, and the cart button with count.
-- Mobile header: now baking bar, large wordmark, then order, menu, visit, about and the cart button.
+- Desktop home header (masthead): wordmark on columns 1 to 8; the details block (status line, address with a pin that links to Google Maps directions) starts on column 9 and is 3 columns wide; the cart sits alone, right-aligned in column 12, top aligned with the status line; nav row below at Medium 40.
+- Desktop other pages: compact header, wordmark left, nav and cart right. On every desktop page a compact bar slides in once the header scrolls away.
+- Mobile header, every page: wordmark, status line, address with pin, then order, menu, visit, about and the cart button.
+- Status line: from Opening hours in theme settings, Australia/Sydney time, rechecked every minute. Open: green dot, "now baking, open now" (Now baking on in the header settings) or "open now". Closed: orange dot, "closed, opens tomorrow at 8am" and so on. Hidden until hours are set.
 - "order" opens the order panel. The panel lists help me order, pick up, pre order and wholesale as large blocks, each with a button. On desktop it is a centred panel, 6 columns wide, under the header. On mobile it is a full-screen sheet. Delivery is not shown.
 - Pre order is reached through the order panel; it is not in the header.
-- Footer: follow us posts, email sign up, links to ordering and pick up, allergens, wholesale, contact, instagram, tiktok and policies.
+- Footer group, every page: sign up band directly on top of follow us (no gap, no rule), then the footer with links to ordering and pick up, allergens, wholesale, contact, instagram, tiktok and policies. The footer has no email field.
 
 ## Sections
 
 Build each as an Online Store 2.0 section with settings so Suzie can edit content in the theme editor.
 
-- Now baking bar: on/off toggle, ticker text, dot colour. Turning it off removes the bar entirely.
+- Now baking: an on/off switch in the header settings that sets the open status wording. The ticker bar was removed in header-info (in git history if it comes back).
 - Header: masthead variant for home, compact variant for other pages.
-- Full-bleed image.
-- Section spacer: title and copy.
+- Full-bleed image, with an option to fill the window under the header (home hero: 100svh minus the header, at least 480).
+- Section spacer: title and copy on the top line, optional button under the copy.
 - Help me order entry block: colour, image, title, copy, button.
-- Product grid: collection picker.
+- Product grid: title, copy and an optional prompt with a button on the top line, then the products from a collection picker, all one section.
 - Colour split: colour, title, copy, image, button, image side.
 - Photo pair.
-- About: portrait, copy, button.
+- About (Suzie): title and intro on the top line, portrait left, copy and a solid button at the foot of the right column, level with the bottom of the portrait. On mobile the copy and button sit under the portrait.
 - Two-column text.
-- Sign up: title, copy, email form (Shopify customer form at launch; Klaviyo can replace it later).
-- Visit: address and hours.
-- Follow us: curated posts from a metaobject (image, link, platform). No feed app at launch.
+- Sign up: a pink band in the footer group on every page, directly on top of follow us: title, copy, email field and button on one line (Shopify customer form at launch; Klaviyo can replace it later).
+- Visit: a colour split (blue on home). Title on the top line; address, hours (from Opening hours in theme settings, consecutive days grouped) and a solid "directions" button (Google Maps) at the foot of the colour side; photo on the other side.
+- Follow us: curated posts from a metaobject (image, link, platform). No feed app at launch. Title left, instagram, tiktok and substack buttons right (each shows once its link is set in the section); then a horizontal strip of rounded tiles (24 radius desktop, 16 mobile), top aligned, mixed heights cycling 4:5, 2:3, 1:1, 3:4, 250 wide desktop (scaled) and 160 mobile, gap 24 and 12, starting at the left margin and running off the right edge. Each tile links to its post. The strip drifts left on a loop (about 30 seconds per cycle), pauses on hover, touch or focus, can be scrolled or dragged by hand, has no visible scrollbar and stays still with reduced motion.
 - Menu list: groups (pies, drinks) driven by a metaobject so Suzie can edit items and prices without touching products.
 - Question and answer list: used for ordering and pick up, and for ingredients and allergens.
 - Footer.
+
+## Home order
+
+Header, hero, opening soon, order pies, help me order (orange split), pre order (pink split), photo pair, Suzie, visit (blue split), then the footer group: sign up (pink band), follow us, footer.
 
 ## Templates
 
@@ -198,8 +215,9 @@ A pop out flow with 5 steps: which pie, size, pick up and date, note, your order
 - Images sit on a flat brand colour at their final aspect ratio and fade in when loaded. No layout shift.
 - Panels, the help me order flow and the cart slide or scale in from their trigger in about 250ms with ease-out, and the page behind dims slightly. Help me order steps slide sideways and the progress bar animates its width.
 - Add to cart: the cart count updates, the drawer opens and the new line highlights briefly.
-- Now baking: the dot pulses slowly and the ticker scrolls.
-- Respect `prefers-reduced-motion`: no ticker scroll, no pulse, no slides, fades only.
+- Status: the green open dot pulses slowly. The compact header bar slides in over about 200ms.
+- Follow us: the strip drifts slowly to the left and pauses on hover, touch or focus.
+- Respect `prefers-reduced-motion`: no pulse, no slides, no strip drift, fades only.
 
 ## Performance and quality
 

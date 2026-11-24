@@ -2,14 +2,25 @@
   "type": "footer",
   "name": "Footer group",
   "sections": {
+    "sign-up": {
+      "type": "sign-up",
+      "settings": {
+        "colour": "birthday-pink",
+        "title": "Sign up",
+        "copy": "<p>Get recipes and stay up to date with Suz.</p>",
+        "button_label": "sign up",
+        "anchor": "sign-up"
+      }
+    },
     "follow-us": {
       "type": "follow-us",
       "settings": {
         "title": "Follow us",
-        "limit": 4,
-        "instagram_url": "https://www.instagram.com/cake_house_collective/",
-        "tiktok_url": "",
-        "preview_posts": true
+        "instagram_url": "https://www.instagram.com/cakehousepies/",
+        "tiktok_url": "https://www.tiktok.com/@cakehousecollective",
+        "preview_posts": true,
+        "limit": 8,
+        "substack_url": "https://substack.com/@suziethepielady"
       }
     },
     "footer": {
@@ -17,13 +28,14 @@
       "settings": {
         "mark_colour": "blue-sky",
         "menu": "footer",
-        "instagram_url": "https://www.instagram.com/cake_house_collective/",
-        "tiktok_url": "",
+        "instagram_url": "https://www.instagram.com/cakehousepies/",
+        "tiktok_url": "https://www.tiktok.com/@cakehousecollective",
         "policies_url": ""
       }
     }
   },
   "order": [
+    "sign-up",
     "follow-us",
     "footer"
   ]

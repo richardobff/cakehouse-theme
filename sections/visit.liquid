@@ -1,40 +1,150 @@
 {%- comment -%}
-  Visit: address and hours beside a display title, in the section spacer layout.
+  Visit: a colour split. Title on the top line; address, opening hours and a
+  directions button at the foot of the colour side; photo on the other side.
+  Hours come from Theme settings › Opening hours: consecutive days with the
+  same hours are grouped ("Monday to Friday, 8am to 4pm").
 {%- endcomment -%}
-<section class="spacer spacer--top-{{ section.settings.spacing_top }}">
-  <div class="spacer__inner page-width">
-    {% render 'rule' %}
-    <div class="spacer__row">
-      <h2 class="spacer__title type-d3">{{ section.settings.title | escape }}</h2>
-      <div class="spacer__body"><div class="spacer__copy">
-        {%- if section.settings.address != blank -%}
-          <address class="visit__address">{{ section.settings.address | escape | newline_to_br }}</address>
+{%- liquid
+  assign s = section.settings
+  assign day_keys = 'monday,tuesday,wednesday,thursday,friday,saturday,sunday' | split: ','
+  assign day_names = 'help_me_order.day_names' | t | split: ','
+
+  # One label per day: "8am to 4pm", "closed" or blank (not set).
+  assign labels = ''
+  assign any_hours = false
+  for key in day_keys
+    assign open_key = 'hours_' | append: key | append: '_open'
+    assign close_key = 'hours_' | append: key | append: '_close'
+    assign closed_key = 'hours_' | append: key | append: '_closed'
+    assign open_t = settings[open_key] | strip
+    assign close_t = settings[close_key] | strip
+    if settings[closed_key]
+      assign label = 'visit.closed' | t
+      assign any_hours = true
+    elsif open_t != blank and close_t != blank
+      capture open_f
+        render 'format-time', time: open_t
+      endcapture
+      capture close_f
+        render 'format-time', time: close_t
+      endcapture
+      assign open_f = open_f | strip
+      assign close_f = close_f | strip
+      assign label = 'visit.hours' | t: open: open_f, close: close_f
+      assign any_hours = true
+    else
+      assign label = '-'
+    endif
+    assign labels = labels | append: label | append: '|'
+  endfor
+  assign labels = labels | split: '|'
+
+  assign image_colour = 'clementine'
+  if s.colour == 'clementine'
+    assign image_colour = 'birthday-pink'
+  endif
+-%}
+<section
+  class="split split--image-{{ s.image_side }} visit"
+  style="--split-colour: var(--colour-{{ s.colour }}); --media-ratio: {{ s.ratio }};"
+>
+  <div class="split__text">
+    <h2 class="split__title type-d3">{{ s.title | escape }}</h2>
+    <div class="split__bottom">
+      <div class="split__copy">
+        {%- if s.address != blank -%}
+          <p class="visit__address">{{ s.address | escape }}</p>
         {%- endif -%}
-        {%- if section.settings.hours != blank -%}
-          <p class="visit__hours">{{ section.settings.hours | escape | newline_to_br }}</p>
+        {%- if any_hours -%}
+          <p class="visit__hours">
+            {%- assign start = 0 -%}
+            {%- for i in (0..6) -%}
+              {%- assign next_i = i | plus: 1 -%}
+              {%- if i == 6 or labels[i] != labels[next_i] -%}
+                {%- if labels[i] != '-' -%}
+                  {%- if start == i -%}
+                    {{- day_names[i] -}}
+                  {%- else -%}
+                    {{- 'visit.day_range' | t: from: day_names[start], to: day_names[i] -}}
+                  {%- endif -%}
+                  , {{ labels[i] }}<br>
+                {%- endif -%}
+                {%- assign start = next_i -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </p>
+        {%- elsif s.no_hours_text != blank -%}
+          <p class="visit__hours">{{ s.no_hours_text | escape }}</p>
         {%- endif -%}
-      </div></div>
+      </div>
+      {%- if s.button_label != blank -%}
+        {% render 'button', label: s.button_label, url: s.button_link, attributes: 'target="_blank" rel="noopener"' %}
+      {%- endif -%}
     </div>
   </div>
+  {% render 'media',
+    image: s.image,
+    preview: s.preview_image,
+    ratio: s.ratio,
+    sizes: '(min-width: 750px) 50vw, 100vw',
+    colour: image_colour,
+    class: 'split__media'
+  %}
 </section>
 
 {% schema %}
 {
   "name": "Visit",
-  "class": "section-visit",
+  "class": "section-visit block block--colour",
   "settings": [
-    { "type": "text", "id": "title", "label": "Title", "default": "Visit" },
-    { "type": "textarea", "id": "address", "label": "Address", "default": "336 Brunswick St\nFitzroy VIC 3065" },
-    { "type": "textarea", "id": "hours", "label": "Hours", "info": "One line per day or range." },
     {
       "type": "select",
-      "id": "spacing_top",
-      "label": "Space above",
+      "id": "colour",
+      "label": "Colour",
       "options": [
-        { "value": "default", "label": "Section (140, mobile 64)" },
-        { "value": "tight", "label": "Tight (24, mobile 16)" }
+        { "value": "blue-sky", "label": "Blue sky" },
+        { "value": "clementine", "label": "Clementine" },
+        { "value": "birthday-pink", "label": "Birthday pink" },
+        { "value": "strawberry", "label": "Strawberry" }
       ],
-      "default": "default"
+      "default": "blue-sky"
+    },
+    { "type": "text", "id": "title", "label": "Title", "default": "Visit" },
+    { "type": "text", "id": "address", "label": "Address", "default": "336 Brunswick St, Fitzroy VIC 3065." },
+    {
+      "type": "paragraph",
+      "content": "Hours come from Theme settings › Opening hours."
+    },
+    { "type": "text", "id": "no_hours_text", "label": "Text before hours are set", "default": "Hours to come." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "directions" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Google Maps directions to the shop." },
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "image_side",
+      "label": "Image side on desktop",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Image shape",
+      "options": [
+        { "value": "1 / 1", "label": "Square (720 x 720)" },
+        { "value": "4 / 5", "label": "Portrait (720 x 900)" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "text",
+      "id": "preview_image",
+      "label": "Temporary preview image",
+      "info": "Theme asset from Figma, shown until an image is chosen. Clear before launch."
     }
   ],
   "presets": [{ "name": "Visit" }]

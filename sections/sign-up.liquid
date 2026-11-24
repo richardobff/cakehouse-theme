@@ -39,19 +39,19 @@
 {% schema %}
 {
   "name": "Sign up",
-  "class": "section-sign-up",
+  "class": "section-sign-up block block--colour",
   "settings": [
     {
       "type": "select",
       "id": "colour",
       "label": "Colour",
       "options": [
+        { "value": "birthday-pink", "label": "Birthday pink" },
         { "value": "blue-sky", "label": "Blue sky" },
         { "value": "clementine", "label": "Clementine" },
-        { "value": "birthday-pink", "label": "Birthday pink" },
         { "value": "strawberry", "label": "Strawberry" }
       ],
-      "default": "blue-sky"
+      "default": "birthday-pink"
     },
     { "type": "text", "id": "title", "label": "Title", "default": "Sign up" },
     { "type": "richtext", "id": "copy", "label": "Copy", "default": "<p>Get recipes and stay up to date with Suz.</p>" },

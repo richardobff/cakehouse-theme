@@ -52,14 +52,19 @@
   "accessibility": {
     "skip_to_content": "Skip to content"
   },
-  "now_baking": {
-    "label": "Now baking",
-    "status": "now baking"
-  },
   "header": {
     "nav_label": "Main",
     "order": "order",
-    "cart": "Cart, items:"
+    "cart": "Cart, items:",
+    "directions": "directions in Google Maps",
+    "status": {
+      "open": "open now",
+      "now_baking_open": "now baking, open now",
+      "closed_today": "closed, opens at [time]",
+      "closed_tomorrow": "closed, opens tomorrow at [time]",
+      "closed_day": "closed, opens [day] at [time]",
+      "closed": "closed"
+    }
   },
   "footer": {
     "nav_label": "Footer",
@@ -68,7 +73,8 @@
     "sign_up_success": "Thanks, you are signed up.",
     "instagram": "instagram",
     "tiktok": "tiktok",
-    "policies": "policies"
+    "policies": "policies",
+    "substack": "substack"
   },
   "products": {
     "from_price": "from {{ price }}",
@@ -125,6 +131,15 @@
     "conflict": "Your cart is set for pick up on [date]. An order has one pick up date. Which should we use?",
     "conflict_keep": "keep that date",
     "conflict_use": "use this date",
-    "pie_size": "[pie], [size]"
+    "pie_size": "[pie], [size]",
+    "day_names": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+  },
+  "visit": {
+    "hours": "{{ open }} to {{ close }}",
+    "closed": "closed",
+    "day_range": "{{ from }} to {{ to }}"
+  },
+  "follow_us": {
+    "strip_label": "Follow us posts. Scroll or drag sideways."
   }
 }

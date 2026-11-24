@@ -1,8 +1,12 @@
 {%- comment -%}
-  Site header. Masthead on home (large wordmark, Nav XL links) and compact
-  everywhere else. On mobile every page uses the large wordmark.
-  "order" opens the order panel once it is built; until then it links to
-  the order URL so it always works without JavaScript.
+  Site header.
+  - Desktop home (masthead): wordmark across 8 columns; right column with the
+    cart, the open/closed status line and the address; nav row below.
+  - Desktop other pages (compact): small wordmark left, nav and cart right.
+  - Mobile, every page: wordmark, status line, address, nav with cart.
+  A compact bar slides in on desktop once the header scrolls away.
+  Opening hours live in Theme settings › Opening hours; assets/header.js
+  works out the status line in Australia/Sydney time every minute.
 {%- endcomment -%}
 {%- liquid
   assign variant = section.settings.variant
@@ -24,44 +28,108 @@
       endif
     endfor
   endif
+
+  assign address_lines = section.settings.address | newline_to_br | split: '<br />'
 -%}
-<header class="header header--{{ variant }}">
+
+{%- capture nav_links -%}
+  <a class="header__link" href="{{ order_url }}" data-order-trigger aria-haspopup="dialog">
+    {{- 'header.order' | t -}}
+  </a>
+  {%- for link in section.settings.menu.links -%}
+    <a class="header__link" href="{{ link.url }}" {% if link.current %}aria-current="page"{% endif %}>
+      {{- link.title | downcase -}}
+    </a>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture cart_button -%}
+  <a class="cart-button" href="{{ routes.cart_url }}" data-cart-trigger>
+    {{ 'icon-cart.svg' | inline_asset_content }}
+    <span class="visually-hidden">{{ 'header.cart' | t }}</span>
+    <span class="cart-button__count" data-cart-count>{{ cart_count }}</span>
+  </a>
+{%- endcapture -%}
+
+<header class="header header--{{ variant }}" data-header>
   <a class="visually-hidden skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
 
-  <div class="header__row">
-    <a class="header__wordmark" href="{{ routes.root_url }}">
+  <a class="header__wordmark" href="{{ routes.root_url }}">
+    <span class="visually-hidden">{{ shop.name }}</span>
+    {{ 'logo-wordmark.svg' | inline_asset_content }}
+  </a>
+
+  <div class="header__info">
+    <div class="header__info-cart">{{ cart_button }}</div>
+    <div class="header__details">
+      <p class="header__detail header__status" data-open-status hidden>
+        <span class="header__marker" aria-hidden="true"><span class="header__dot"></span></span>
+        <span class="header__detail-text" data-open-status-text></span>
+      </p>
+      {%- if section.settings.address != blank -%}
+        <a class="header__detail header__address" href="{{ section.settings.directions_url }}" target="_blank" rel="noopener">
+          <span class="header__marker" aria-hidden="true">{{ 'icon-pin.svg' | inline_asset_content }}</span>
+          <span class="header__detail-text">
+            {%- for line in address_lines -%}
+              <span class="header__address-line">{{ line | strip | escape }}</span>
+            {%- endfor -%}
+            <span class="visually-hidden">{{ 'header.directions' | t }}</span>
+          </span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <nav class="header__nav" aria-label="{{ 'header.nav_label' | t }}">
+    <div class="header__links">{{ nav_links }}</div>
+    <div class="header__nav-cart">{{ cart_button }}</div>
+  </nav>
+
+  {% render 'rule', class: 'header__rule' %}
+</header>
+
+{%- comment -%} Desktop: a compact bar that slides in once the header has scrolled away. {%- endcomment -%}
+<div class="header-sticky" data-header-sticky aria-hidden="true" inert>
+  <div class="header-sticky__row">
+    <a class="header__wordmark" href="{{ routes.root_url }}" tabindex="-1">
       <span class="visually-hidden">{{ shop.name }}</span>
       {{ 'logo-wordmark.svg' | inline_asset_content }}
     </a>
-
     <nav class="header__nav" aria-label="{{ 'header.nav_label' | t }}">
-      <a
-        class="header__link"
-        href="{{ order_url }}"
-        data-order-trigger
-        aria-haspopup="dialog"
-      >
-        {{- 'header.order' | t -}}
-      </a>
-      {%- for link in section.settings.menu.links -%}
-        <a
-          class="header__link"
-          href="{{ link.url }}"
-          {% if link.current %}aria-current="page"{% endif %}
-        >
-          {{- link.title | downcase -}}
-        </a>
-      {%- endfor -%}
-      <a class="cart-button" href="{{ routes.cart_url }}" data-cart-trigger>
-        {{ 'icon-cart.svg' | inline_asset_content }}
-        <span class="visually-hidden">{{ 'header.cart' | t }}</span>
-        <span class="cart-button__count" data-cart-count>{{ cart_count }}</span>
-      </a>
+      <div class="header__links">{{ nav_links }}</div>
+      {{ cart_button }}
     </nav>
   </div>
-
   {% render 'rule' %}
-</header>
+</div>
+
+{%- comment -%} Opening hours for assets/header.js. {%- endcomment -%}
+<script type="application/json" data-opening-hours>
+  {
+    "timezone": "Australia/Sydney",
+    "nowBaking": {{ section.settings.now_baking | json }},
+    "days": [
+      {%- assign day_keys = 'sunday,monday,tuesday,wednesday,thursday,friday,saturday' | split: ',' -%}
+      {%- for key in day_keys -%}
+        {%- liquid
+          assign open_key = 'hours_' | append: key | append: '_open'
+          assign close_key = 'hours_' | append: key | append: '_close'
+          assign closed_key = 'hours_' | append: key | append: '_closed'
+        -%}
+        { "open": {{ settings[open_key] | strip | json }}, "close": {{ settings[close_key] | strip | json }}, "closed": {{ settings[closed_key] | json }} }
+        {%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ],
+    "strings": {
+      "open": {{ 'header.status.open' | t | json }},
+      "nowBakingOpen": {{ 'header.status.now_baking_open' | t | json }},
+      "closedToday": {{ 'header.status.closed_today' | t | json }},
+      "closedTomorrow": {{ 'header.status.closed_tomorrow' | t | json }},
+      "closedDay": {{ 'header.status.closed_day' | t | json }},
+      "closed": {{ 'header.status.closed' | t | json }}
+    }
+  }
+</script>
 
 {% schema %}
 {
@@ -91,7 +159,28 @@
       "type": "url",
       "id": "order_url",
       "label": "Order link",
-      "info": "Where \"order\" goes before the order panel loads. Defaults to all products."
+      "info": "Where \"order\" goes if the order panel cannot open. Defaults to all products."
+    },
+    { "type": "header", "content": "Status and address" },
+    {
+      "type": "checkbox",
+      "id": "now_baking",
+      "label": "Now baking",
+      "info": "When on, the open status reads \"now baking, open now\". Opening hours are in Theme settings.",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Address",
+      "info": "Line breaks are kept on the desktop masthead.",
+      "default": "336 Brunswick St,\nFitzroy, Melbourne"
+    },
+    {
+      "type": "url",
+      "id": "directions_url",
+      "label": "Directions link",
+      "info": "Google Maps directions to the shop."
     }
   ]
 }
