@@ -239,20 +239,19 @@ Update this after every branch: move items between lists and add new ones as the
 ### Done
 - Figma: all pages desktop and mobile, order flow (5 steps), cart, states, opening options, header/home info component, later section for cookies and merch.
 - Repo connected to the store as an unpublished theme. Live landing page untouched.
-- Merged: foundations, home, home-scale (one-unit scaling with floors), order-panel (order panel, help me order pop out, ordering rules in theme settings, pick up line per whole pie; pointed at the test data).
+- Merged: foundations, home, home-scale (one-unit scaling with floors), order-panel (order panel, help me order pop out, ordering rules in theme settings, pick up line per whole pie; pointed at the test data), header-info (info masthead on the 12-column grid, opening hours and open/closed status, sticky compact header, new mobile header, block system on every section, home v2 order, visit split with hours, pink sign up band, follow us drifting strip with instagram, tiktok and substack).
 - Store: pick up address, timezone Australia/Sydney, header and footer menus, follow_us_post metaobject, test data (4 test pies tagged test, Pies collection, hidden Pick up product with dates 2026-11-20 to 2026-12-10, cap 20, 21 and 28 Nov sold out).
 
 ### In progress
-- header-info: built and pushed, waiting on Rich's review. Info masthead on the 12-column grid (wordmark columns 1 to 8, details from column 9, cart in column 12), opening hours settings and open/closed status, hero fills the window, sticky compact header, new mobile header. Block system on every section (no gaps, rule only between white blocks, 24/64 padding). Home v2 order with order pies as one block, Suzie, visit as a blue split with hours, pink sign up band on follow us, and the follow us drifting tile strip. Now baking became a header switch; the ticker bar is gone.
+- product-page: started.
 
 ### Next, in order
 1. Links check: pre order, about, get an invite (#sign-up), Instagram. TikTok empty.
-2. Product page: format choice, pick up date, note (whole pie only), help me order prompt, sold out state, more pies.
-3. Cart drawer and cart page: lines, pick up date, empty state, date conflict prompt, live count.
-4. Pages: menu (metaobject, pies and drinks), about, pre order, wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
-5. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
-6. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
-7. Launch: real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
+2. Cart drawer and cart page: lines, pick up date, empty state, date conflict prompt, live count.
+3. Pages: menu (metaobject, pies and drinks), about, pre order, wholesale form, visit, contact, ordering and pick up, ingredients and allergens, policy styling, 404, password.
+4. Motion polish: view transitions, prefetch, panel and step animations, add to cart feedback, order flow visual polish.
+5. QA: 1024, 1280, 1440, 1920, 390, accessibility, speed, test orders, notification emails (order confirmation, ready for pick up), checkout branding.
+6. Launch: real products in, test data removed, photos moved to Shopify Files, domain connected, redirects from the old site, publish theme.
 
 ### Backlog (not scheduled)
 - How pick up date variants are created and topped up over time, so Suzie doesn't do it by hand.
@@ -263,4 +262,4 @@ Update this after every branch: move items between lists and add new ones as the
 ### Waiting on Suzie
 - Pie list, prices and photos.
 - Ordering rule values: lead time, cut-off, daily cap, closed days.
-- Opening hours, about copy, policy wording, wholesale details, drinks for the menu, TikTok link.
+- Opening hours, about copy, policy wording, wholesale details, drinks for the menu.
