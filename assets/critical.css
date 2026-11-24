@@ -340,3 +340,29 @@ html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
 .full-bleed {
   width: 100%;
 }
+
+/* Page changes: a short crossfade between documents, the header held in
+ * place. Browsers without cross-document view transitions load normally. */
+@view-transition {
+  navigation: auto;
+}
+
+[data-header] {
+  view-transition-name: site-header;
+}
+
+::view-transition-group(site-header) {
+  animation-duration: 0s;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

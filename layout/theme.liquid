@@ -18,6 +18,24 @@
     <script src="{{ 'order.js' | asset_url }}" defer></script>
     <script src="{{ 'follow-us.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
+    <script src="{{ 'motion.js' | asset_url }}" defer></script>
+    {%- comment -%} Prefetch same-site pages on hover (Chromium). motion.js covers other browsers. {%- endcomment -%}
+    <script type="speculationrules">
+      {
+        "prefetch": [
+          {
+            "where": {
+              "and": [
+                { "href_matches": "/*" },
+                { "not": { "href_matches": ["/cart", "/cart/*", "/checkout", "/checkouts/*", "/account", "/account/*"] } },
+                { "not": { "selector_matches": "[data-order-trigger], [data-cart-trigger], [target=_blank]" } }
+              ]
+            },
+            "eagerness": "moderate"
+          }
+        ]
+      }
+    </script>
     {%- if template.name == 'product' %}
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     {%- endif %}

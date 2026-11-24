@@ -256,6 +256,8 @@ Buttons:
 - Keyboard focus matches hover, plus a 2px black focus ring offset 2px.
 - Reduced motion: swap instantly, no fade.
 
+Built (motion branch): nav colours are set per link in sections/header.liquid by the link's handle (menu, visit, about; anything else clementine). Colour blocks carry a surface--{colour} class; surface--clementine switches the button hover to white. Page changes use cross-document view transitions (header held, 180ms crossfade); prefetch uses speculation rules on hover, with assets/motion.js as the fallback for other browsers. The cart button bumps when its count changes.
+
 ## Favicon and link previews
 
 - Favicon: the footer brand mark (blue square, diagonal wordmark, from the footer component on 05 design playground), exported square at 512 and 180 (apple touch icon). A "Favicon" image setting in theme settings overrides the files.
