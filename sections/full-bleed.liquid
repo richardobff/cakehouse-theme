@@ -2,16 +2,24 @@
   Full-bleed image, edge to edge, at a fixed aspect ratio per breakpoint.
   The first section on a page loads eagerly and is preloaded.
 {%- endcomment -%}
+{%- comment -%}
+  Page hero rule: a full-bleed image that opens a page (the first section)
+  always fills the window under the header (100svh minus the header, at
+  least 480), object-fit cover on the image's focal point, same as the home
+  hero, on desktop and mobile. Further down a page it keeps its shape.
+{%- endcomment -%}
 {%- liquid
   assign priority = false
+  assign fill = section.settings.fill_window
   if section.index == 1
     assign priority = true
+    assign fill = true
   endif
 -%}
 {%- if section.settings.page_heading and request.page_type == 'page' -%}
   <h1 class="visually-hidden">{{ page.title | escape }}</h1>
 {%- endif -%}
-<section class="full-bleed{% if section.settings.fill_window %} full-bleed--fill{% endif %}" aria-label="{{ section.settings.image.alt | default: shop.name | escape }}">
+<section class="full-bleed{% if fill %} full-bleed--fill{% endif %}" aria-label="{{ section.settings.image.alt | default: shop.name | escape }}">
   {% render 'media',
     image: section.settings.image,
     preview: section.settings.preview_image,
@@ -33,7 +41,7 @@
       "type": "checkbox",
       "id": "fill_window",
       "label": "Fill the window",
-      "info": "Height is the window minus the header (at least 480). Use for the first image on a page.",
+      "info": "Height is the window minus the header (at least 480). Always on when this image opens a page.",
       "default": false
     },
     {

@@ -121,6 +121,17 @@
 
   {% render 'rule', class: 'header__rule' %}
 </header>
+{%- comment -%}
+  The header's height, set before first paint so a page-top hero (100svh
+  minus the header) is the right height straight away instead of jumping
+  when assets/header.js loads. header.js keeps it current after that.
+{%- endcomment -%}
+<script>
+  (function () {
+    var h = document.currentScript.previousElementSibling;
+    if (h && h.matches('[data-header]')) document.documentElement.style.setProperty('--header-height', h.offsetHeight + 'px');
+  })();
+</script>
 
 {%- comment -%} Desktop: a compact bar that slides in once the header has scrolled away. {%- endcomment -%}
 <div class="header-sticky" data-header-sticky aria-hidden="true" inert>
