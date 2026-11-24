@@ -11,7 +11,8 @@ This file is the build brief. Read it at the start of each session. Figma is the
 - The `main` branch is connected to an unpublished theme through the Shopify GitHub integration. Pushes to `main` update that theme. Changes made in the theme editor commit back to `main`, so pull before starting work.
 - The live theme is `cakehouse-shopify-theme-2`, a landing page. Do not edit or publish over it. The new theme is published on launch day only.
 - Local preview: `shopify theme dev --store cakehouse-kjnxd8hc`.
-- Work on feature branches and merge to `main` when a section renders correctly on desktop and mobile.
+- Suzie has a share preview of the GitHub-connected theme, so anything merged into `main` is visible to her within minutes.
+- Merging (standing rule from Rich): small fixes that pass Theme Check and the regression tests can merge straight to `main`. New features and layout changes stay on their feature branch until Rich says merge.
 - Git author: Richard Ellis.
 
 ## Scope
