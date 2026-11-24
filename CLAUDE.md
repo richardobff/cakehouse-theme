@@ -225,7 +225,7 @@ Update this after every branch: move items between lists and add new ones as the
 - Store: pick up address, timezone Australia/Sydney, header and footer menus, follow_us_post metaobject, test data (4 test pies tagged test, Pies collection, hidden Pick up product with dates 2026-11-20 to 2026-12-10, cap 20, 21 and 28 Nov sold out).
 
 ### In progress
-- header-info: built and pushed, waiting on Rich's review. Info masthead (wordmark 8 columns, cart, status line, address with pin), opening hours settings and open/closed status (green/orange dot), hero fills the window, sticky compact header, new mobile header, sign up band flush above follow us in the footer group, footer email field removed. Now baking became a header switch; the ticker bar is gone.
+- header-info: built and pushed, waiting on Rich's review. Info masthead on the 12-column grid (wordmark columns 1 to 8, details from column 9, cart in column 12), opening hours settings and open/closed status, hero fills the window, sticky compact header, new mobile header. Block system on every section (no gaps, rule only between white blocks, 24/64 padding). Home v2 order with order pies as one block, Suzie, visit as a blue split with hours, pink sign up band on follow us, and the follow us drifting tile strip. Now baking became a header switch; the ticker bar is gone.
 
 ### Next, in order
 1. Links check: pre order, about, get an invite (#sign-up), Instagram. TikTok empty.
