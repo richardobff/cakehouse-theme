@@ -30,6 +30,10 @@
   endif
 
   assign address_lines = section.settings.address | newline_to_br | split: '<br />'
+
+  # Directions: the setting, or Google Maps directions to the pick up address.
+  assign maps_destination = settings.pickup_address | default: 'Fitzroy VIC' | url_param_escape
+  assign directions_url = section.settings.directions_url | default: 'https://www.google.com/maps/dir/?api=1&destination=' | append: maps_destination
 -%}
 
 {%- capture nav_links -%}
@@ -67,7 +71,7 @@
         <span class="header__detail-text" data-open-status-text></span>
       </p>
       {%- if section.settings.address != blank -%}
-        <a class="header__detail header__address" href="{{ section.settings.directions_url }}" target="_blank" rel="noopener">
+        <a class="header__detail header__address" href="{{ directions_url }}" target="_blank" rel="noopener">
           <span class="header__marker" aria-hidden="true">{{ 'icon-pin.svg' | inline_asset_content }}</span>
           <span class="header__detail-text">
             {%- for line in address_lines -%}

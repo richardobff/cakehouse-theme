@@ -39,6 +39,9 @@
   endfor
   assign labels = labels | split: '|'
 
+  assign maps_destination = settings.pickup_address | default: 'Fitzroy VIC' | url_param_escape
+  assign button_link = s.button_link | default: 'https://www.google.com/maps/dir/?api=1&destination=' | append: maps_destination
+
   assign image_colour = 'clementine'
   if s.colour == 'clementine'
     assign image_colour = 'birthday-pink'
@@ -78,7 +81,7 @@
         {%- endif -%}
       </div>
       {%- if s.button_label != blank -%}
-        {% render 'button', label: s.button_label, url: s.button_link, attributes: 'target="_blank" rel="noopener"' %}
+        {% render 'button', label: s.button_label, url: button_link, attributes: 'target="_blank" rel="noopener"' %}
       {%- endif -%}
     </div>
   </div>
