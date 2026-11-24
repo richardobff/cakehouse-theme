@@ -47,7 +47,7 @@
 }
 
 /* Rich text paragraphs inside sections. */
-.spacer__copy p,
+.block-head__copy p,
 .split__copy p,
 .sign-up__copy p,
 .about__text p {
@@ -55,87 +55,105 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Section spacer and visit
+ * Block system
+ * - Sections butt together: no gaps between sections.
+ * - Colour changes separate sections. A 1px rule appears only where a white
+ *   block follows another white block, at the top of the lower one, at
+ *   content width. Never against a colour or image edge.
+ * - Block padding: title on the top line at 24, 64 below the content
+ *   (mobile 16 and 40). Content sets the height.
+ * Each section's schema class marks its surface: block--white,
+ * block--colour or block--image.
  * ------------------------------------------------------------------------- */
-.spacer {
-  padding-top: var(--section-spacing);
+.block {
+  position: relative;
 }
 
-.spacer--top-tight {
-  padding-top: var(--page-margin);
+.block--white + .block--white::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: var(--page-margin);
+  left: var(--page-margin);
+  height: var(--rule-width);
+  background-color: var(--colour-black);
 }
 
-.spacer__row {
+.spacer,
+.product-grid,
+.about,
+.follow-us {
+  padding-top: var(--block-top);
+  padding-bottom: var(--block-bottom);
+}
+
+/* ---------------------------------------------------------------------------
+ * Block head: title on the top line, copy beside it, optional button below.
+ * ------------------------------------------------------------------------- */
+.block-head {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--grid-gutter);
-  padding: calc(14 * var(--u)) 0 calc(28 * var(--u));
 }
 
-/* Space below: section padding before a colour block or image block. */
-.spacer--bottom-section .spacer__row {
-  padding-bottom: var(--section-spacing);
+.block-head__title {
+  margin: 0;
 }
 
-/* Copy column: copy, then the button 24 below it. */
-.spacer__body {
+.block-head__body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: calc(24 * var(--u));
 }
 
-.spacer__copy {
+.block-head__copy {
   font-size: var(--type-medium-40-size);
   line-height: var(--type-medium-40-line);
   letter-spacing: var(--type-medium-40-tracking);
 }
 
-.visit__address {
-  font-style: normal;
-}
-
-.spacer__action {
+.block-head__action {
   display: flex;
   align-items: center;
   gap: calc(16 * var(--u));
 }
 
+.block-head__prompt {
+  margin: 0;
+}
+
 @media (max-width: 749px) {
-  .spacer__row {
+  .block-head {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 12px;
-    padding: 12px 0 24px;
   }
 
-  .spacer__title {
+  .block-head__title {
     font-size: var(--type-d4-size);
     line-height: var(--type-d4-line);
     letter-spacing: var(--type-d4-tracking);
   }
 
-  .spacer__copy {
+  .block-head__copy {
     font-size: var(--type-body-l-size);
     line-height: var(--type-body-l-line);
     letter-spacing: var(--type-body-l-tracking);
   }
 
-  /* Mobile keeps the 390 frame: 24 below the row either way. */
-  .spacer--bottom-section .spacer__row {
-    padding-bottom: 24px;
-  }
-
-  .spacer__body {
+  .block-head__body {
     gap: 24px;
   }
 
-  .spacer__action--desktop-only {
+  .block-head__action--desktop-only {
     display: none;
   }
 }
 
 /* ---------------------------------------------------------------------------
- * Colour split and help me order entry
+ * Colour split: help me order entry, colour split, visit.
+ * The image sets the height; title on the top line, copy and button at the foot.
  * ------------------------------------------------------------------------- */
 .split {
   display: grid;
@@ -152,7 +170,11 @@
   flex-direction: column;
   justify-content: space-between;
   gap: calc(24 * var(--u));
-  padding: calc(20 * var(--u)) var(--page-margin) calc(32 * var(--u));
+  padding: var(--block-top) var(--page-margin) var(--block-bottom);
+}
+
+.split__title {
+  margin: 0;
 }
 
 .split__bottom {
@@ -169,6 +191,11 @@
   letter-spacing: var(--type-medium-40-tracking);
 }
 
+.visit__address,
+.visit__hours {
+  margin: 0;
+}
+
 @media (max-width: 749px) {
   .split {
     grid-template-columns: minmax(0, 1fr);
@@ -181,7 +208,6 @@
 
   .split__text {
     gap: 20px;
-    padding: 16px var(--page-margin) 32px;
   }
 
   .split__title {
@@ -202,17 +228,18 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Product grid
+ * Product grid: title row, then the grid, all one block.
  * ------------------------------------------------------------------------- */
-.product-grid {
-  padding-bottom: var(--section-spacing);
+.product-grid__list,
+.product-grid__empty {
+  margin-top: calc(24 * var(--u));
 }
 
 .product-grid__list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: calc(72 * var(--u)) var(--grid-gutter);
-  margin: 0;
+  margin-bottom: 0;
 }
 
 .card {
@@ -256,12 +283,18 @@
 
 .product-grid__empty-text {
   grid-column: 2;
+  margin: 0;
   font-size: var(--type-medium-40-size);
   line-height: var(--type-medium-40-line);
   letter-spacing: var(--type-medium-40-tracking);
 }
 
 @media (max-width: 749px) {
+  .product-grid__list,
+  .product-grid__empty {
+    margin-top: 24px;
+  }
+
   .product-grid__list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 40px var(--grid-gutter);
@@ -300,19 +333,21 @@
 }
 
 /* ---------------------------------------------------------------------------
- * About
+ * About ("Suzie"): title and intro on the top line, portrait left, copy and
+ * button at the foot of the right column, level with the portrait's bottom.
  * ------------------------------------------------------------------------- */
-.about {
+.about__body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--grid-gutter);
-  padding: 0 var(--page-margin) var(--section-spacing);
+  margin-top: calc(24 * var(--u));
+  padding-inline: var(--page-margin);
 }
 
 .about__copy {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: flex-start;
   gap: calc(24 * var(--u));
 }
@@ -322,9 +357,10 @@
 }
 
 @media (max-width: 749px) {
-  .about {
+  .about__body {
     grid-template-columns: minmax(0, 1fr);
-    padding: 0 0 32px;
+    margin-top: 24px;
+    padding-inline: 0;
   }
 
   .about__copy {
@@ -338,7 +374,7 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Sign up
+ * Sign up band (footer group): title left, copy and the email row right.
  * ------------------------------------------------------------------------- */
 .sign-up {
   /* Clears the sticky compact bar when jumped to with /#sign-up. */
@@ -347,8 +383,12 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--grid-gutter);
   align-items: start;
-  padding: calc(20 * var(--u)) var(--page-margin) calc(56 * var(--u));
+  padding: var(--block-top) var(--page-margin) var(--block-bottom);
   background-color: var(--sign-up-colour);
+}
+
+.sign-up__title {
+  margin: 0;
 }
 
 .sign-up__form {
@@ -387,20 +427,10 @@
   margin: 0;
 }
 
-/* Follow us sits directly under the band: no rule, the band's own top inset. */
-.section-sign-up + .section-follow-us .follow-us {
-  padding-top: calc(20 * var(--u));
-}
-
-.section-sign-up + .section-follow-us .follow-us > .rule {
-  display: none;
-}
-
 @media (max-width: 749px) {
   .sign-up {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 16px;
-    padding: 16px var(--page-margin) 32px;
   }
 
   .sign-up__title {
@@ -412,70 +442,94 @@
   .sign-up__form {
     padding-top: 0;
   }
-
-  .section-sign-up + .section-follow-us .follow-us {
-    padding-top: 16px;
-  }
 }
 
 /* ---------------------------------------------------------------------------
- * Follow us
+ * Follow us: title and buttons, then a strip of rounded tiles that starts at
+ * the left margin and runs off the right edge (assets/follow-us.js).
  * ------------------------------------------------------------------------- */
 .follow-us {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
-    'rule rule'
     'title buttons'
-    'posts posts';
+    'strip strip';
   align-items: center;
-  gap: calc(24 * var(--u));
-  padding-block: var(--section-spacing);
+  row-gap: calc(24 * var(--u));
 }
 
-.follow-us > .rule {
-  grid-area: rule;
-}
-
-.follow-us__head {
+.follow-us__title {
   grid-area: title;
+  margin: 0;
+  padding-left: var(--page-margin);
 }
 
 .follow-us__buttons {
   grid-area: buttons;
   display: flex;
   gap: calc(10 * var(--u));
+  padding-right: var(--page-margin);
 }
 
-.follow-us__posts {
-  grid-area: posts;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.follow-us__strip {
+  grid-area: strip;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.follow-us__strip::-webkit-scrollbar {
+  display: none;
+}
+
+.follow-us__strip.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.follow-us__strip:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Two classes so this beats the ul[role='list'] padding reset. */
+.follow-us .follow-us__track {
+  display: flex;
+  align-items: flex-start;
   gap: calc(24 * var(--u));
+  width: max-content;
   margin: 0;
+  padding: 0 0 0 var(--page-margin);
+}
+
+.follow-us__tile {
+  flex: none;
+  width: calc(250 * var(--u));
 }
 
 .follow-us__link {
-  display: flex;
-  flex-direction: column;
-  gap: calc(12 * var(--u));
+  display: block;
   color: inherit;
   text-decoration: none;
+  -webkit-user-drag: none;
 }
 
 .follow-us__media {
   border-radius: calc(24 * var(--u));
 }
 
+.follow-us__media img {
+  pointer-events: none;
+}
+
 @media (max-width: 749px) {
   .follow-us {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      'rule'
       'title'
-      'posts'
+      'strip'
       'buttons';
-    gap: 16px;
+    row-gap: 16px;
   }
 
   .follow-us__title {
@@ -484,17 +538,20 @@
     letter-spacing: var(--type-d4-tracking);
   }
 
-  .follow-us__posts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 12px;
+  .follow-us__buttons {
+    padding: 0 var(--page-margin);
+  }
+
+  .follow-us .follow-us__track {
+    gap: 12px;
+  }
+
+  .follow-us__tile {
+    width: 160px;
   }
 
   .follow-us__media {
-    border-radius: 18px;
-  }
-
-  .follow-us__platform {
-    display: none;
+    border-radius: 16px;
   }
 }
 

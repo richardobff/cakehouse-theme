@@ -1,0 +1,26 @@
+{% doc %}
+  Prints a 24-hour time as a short 12-hour time: 08:00 → 8am, 08:30 → 8:30am, 13:00 → 1pm.
+
+  @param {string} time - Time as HH:MM.
+
+  @example
+  {% render 'format-time', time: '08:00' %}
+{% enddoc %}
+{%- liquid
+  assign parts = time | strip | replace: '.', ':' | split: ':'
+  assign h = parts[0] | plus: 0
+  assign m = parts[1] | default: '00'
+  assign suffix = 'am'
+  if h >= 12
+    assign suffix = 'pm'
+  endif
+  assign h12 = h | modulo: 12
+  if h12 == 0
+    assign h12 = 12
+  endif
+  if m == '00'
+    echo h12 | append: suffix
+  else
+    echo h12 | append: ':' | append: m | append: suffix
+  endif
+-%}

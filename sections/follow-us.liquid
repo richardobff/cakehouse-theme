@@ -1,8 +1,12 @@
 {%- comment -%}
-  Follow us: curated posts from the follow_us_post metaobject (image, link,
-  platform), with links to Instagram and TikTok. No feed app.
-  With no posts the section shows the title and links only.
-  "Temporary preview posts" shows the Figma photos until real posts exist.
+  Follow us (a white block): title left, instagram and tiktok right, then a
+  strip of rounded photo tiles from the follow_us_post metaobject (image,
+  link, platform). Tiles are top aligned with mixed heights (cycling 4:5,
+  2:3, 1:1, 3:4), start at the left margin and run off the right edge.
+  assets/follow-us.js drifts the strip slowly to the left on a loop; it
+  pauses on hover, touch and focus, and stays still with reduced motion.
+  With no posts the strip is left out. "Temporary preview posts" shows the
+  Figma photos until real posts exist.
 {%- endcomment -%}
 {%- liquid
   assign posts = shop.metaobjects.follow_us_post.values
@@ -14,72 +18,68 @@
   if has_posts == false and section.settings.preview_posts
     assign show_preview = true
   endif
-  assign preview_files = 'preview-follow-1.jpg,preview-portrait.jpg,preview-photo-pair-1.jpg,preview-photo-pair-2.jpg' | split: ','
-  assign preview_platforms = 'instagram,tiktok,instagram,tiktok' | split: ','
+  assign preview_files = 'preview-follow-1.jpg,preview-hero.jpg,preview-photo-pair-2.jpg,preview-portrait.jpg,preview-pre-order.jpg,preview-photo-pair-1.jpg,preview-visit.jpg' | split: ','
+  assign ratios = '4 / 5,2 / 3,1 / 1,3 / 4' | split: ','
   assign colours = 'blue-sky,birthday-pink,clementine,strawberry' | split: ','
+  assign strip_label = 'follow_us.strip_label' | t
 -%}
-<section class="follow-us page-width{% unless has_posts or show_preview %} follow-us--empty{% endunless %}">
-  {% render 'rule' %}
-  <div class="follow-us__head">
-    <h2 class="follow-us__title type-d3">{{ section.settings.title | escape }}</h2>
-  </div>
-
-  {%- if has_posts or show_preview -%}
-    <ul class="follow-us__posts" role="list">
-      {%- if has_posts -%}
-        {%- for post in posts limit: section.settings.limit -%}
-          {%- assign colour_index = forloop.index0 | modulo: 4 -%}
-          <li class="follow-us__post">
-            {%- assign post_link = post.link.value -%}
-            {%- comment -%} image is a file_reference: a media image, so use its preview image. {%- endcomment -%}
-            {%- assign post_image = post.image.value.preview_image | default: post.image.value -%}
-            {%- assign post_alt = post.image.value.alt | default: post.platform.value -%}
-            {%- if post_link != blank -%}
-              <a href="{{ post_link }}" class="follow-us__link" target="_blank" rel="noopener">
-            {%- else -%}
-              <div class="follow-us__link">
-            {%- endif -%}
-              {% render 'media',
-                image: post_image,
-                alt: post_alt,
-                ratio: '4 / 5',
-                sizes: '(min-width: 750px) 25vw, 50vw',
-                colour: colours[colour_index],
-                class: 'follow-us__media'
-              %}
-              <span class="follow-us__platform type-body">{{ post.platform.value | downcase | escape }}</span>
-            {%- if post_link != blank -%}</a>{%- else -%}</div>{%- endif -%}
-          </li>
-        {%- endfor -%}
-      {%- else -%}
-        {%- for file in preview_files -%}
-          {%- assign i = forloop.index0 -%}
-          <li class="follow-us__post">
-            <div class="follow-us__link">
-              {% render 'media',
-                preview: file,
-                ratio: '4 / 5',
-                colour: colours[i],
-                class: 'follow-us__media'
-              %}
-              <span class="follow-us__platform type-body">{{ preview_platforms[i] }}</span>
-            </div>
-          </li>
-        {%- endfor -%}
-      {%- endif -%}
-    </ul>
-  {%- endif -%}
+<section class="follow-us" data-follow-us>
+  <h2 class="follow-us__title type-d3">{{ section.settings.title | escape }}</h2>
 
   {%- if section.settings.instagram_url != blank or section.settings.tiktok_url != blank -%}
     <div class="follow-us__buttons">
       {%- if section.settings.instagram_url != blank -%}
         {%- assign label = 'footer.instagram' | t -%}
-        {% render 'button', label: label, url: section.settings.instagram_url, style: 'outline' %}
+        {% render 'button', label: label, url: section.settings.instagram_url, style: 'outline', attributes: 'target="_blank" rel="noopener"' %}
       {%- endif -%}
       {%- if section.settings.tiktok_url != blank -%}
         {%- assign label = 'footer.tiktok' | t -%}
-        {% render 'button', label: label, url: section.settings.tiktok_url, style: 'outline' %}
+        {% render 'button', label: label, url: section.settings.tiktok_url, style: 'outline', attributes: 'target="_blank" rel="noopener"' %}
       {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if has_posts or show_preview -%}
+    <div class="follow-us__strip" tabindex="0" role="region" aria-label="{{ strip_label | escape }}" data-strip>
+      <ul class="follow-us__track" role="list" data-strip-track>
+        {%- if has_posts -%}
+          {%- for post in posts limit: section.settings.limit -%}
+            {%- liquid
+              assign i = forloop.index0 | modulo: 4
+              assign post_link = post.link.value
+              assign post_image = post.image.value.preview_image | default: post.image.value
+              assign platform = post.platform.value | default: 'instagram' | downcase
+              assign post_alt = post.image.value.alt | default: platform
+            -%}
+            <li class="follow-us__tile">
+              {%- if post_link != blank -%}
+                <a class="follow-us__link" href="{{ post_link }}" target="_blank" rel="noopener" draggable="false">
+              {%- else -%}
+                <div class="follow-us__link">
+              {%- endif -%}
+              {% render 'media',
+                image: post_image,
+                ratio: ratios[i],
+                sizes: '(min-width: 750px) 18vw, 42vw',
+                colour: colours[i],
+                alt: post_alt,
+                class: 'follow-us__media'
+              %}
+              <span class="visually-hidden">{{ platform }}</span>
+              {%- if post_link != blank -%}</a>{%- else -%}</div>{%- endif -%}
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for file in preview_files -%}
+            {%- assign i = forloop.index0 | modulo: 4 -%}
+            <li class="follow-us__tile">
+              <div class="follow-us__link">
+                {% render 'media', preview: file, ratio: ratios[i], colour: colours[i], class: 'follow-us__media' %}
+              </div>
+            </li>
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
     </div>
   {%- endif -%}
 </section>
@@ -87,17 +87,17 @@
 {% schema %}
 {
   "name": "Follow us",
-  "class": "section-follow-us",
+  "class": "section-follow-us block block--white",
   "settings": [
     { "type": "text", "id": "title", "label": "Title", "default": "Follow us" },
     {
       "type": "range",
       "id": "limit",
       "label": "Posts to show",
-      "min": 2,
-      "max": 8,
-      "step": 2,
-      "default": 4
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 8
     },
     { "type": "url", "id": "instagram_url", "label": "Instagram" },
     { "type": "url", "id": "tiktok_url", "label": "TikTok" },

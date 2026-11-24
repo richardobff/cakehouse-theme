@@ -267,22 +267,38 @@
   text-underline-offset: 0.15em;
 }
 
-/* Masthead (desktop home): wordmark across 8 columns, info column flush right. */
+/* Masthead (desktop home) on the 12-column grid: wordmark columns 1 to 8,
+ * details (status, address) from column 9 across 3 columns, cart alone at
+ * the right of column 12, top aligned with the status line. */
 .header--masthead {
-  grid-template-columns: calc(920 * var(--u)) minmax(0, 1fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
-    'wordmark info'
-    'nav nav'
-    'rule rule';
+    'wordmark wordmark wordmark wordmark wordmark wordmark wordmark wordmark info info info info'
+    'nav nav nav nav nav nav nav nav nav nav nav nav'
+    'rule rule rule rule rule rule rule rule rule rule rule rule';
   column-gap: var(--grid-gutter);
 }
 
 .header--masthead .header__info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: calc(16 * var(--u));
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  align-items: start;
+}
+
+.header--masthead .header__details {
+  grid-column: 1 / 4;
+  grid-row: 1;
+}
+
+.header--masthead .header__info-cart {
+  grid-column: 4;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.header--masthead .header__detail {
+  white-space: nowrap;
 }
 
 .header--masthead .header__nav {

@@ -5,7 +5,7 @@
     "sign-up": {
       "type": "sign-up",
       "settings": {
-        "colour": "blue-sky",
+        "colour": "birthday-pink",
         "title": "Sign up",
         "copy": "<p>Get recipes and stay up to date with Suz.</p>",
         "button_label": "sign up",
@@ -16,10 +16,10 @@
       "type": "follow-us",
       "settings": {
         "title": "Follow us",
-        "limit": 4,
         "instagram_url": "https://www.instagram.com/cake_house_collective/",
         "tiktok_url": "",
-        "preview_posts": true
+        "preview_posts": true,
+        "limit": 8
       }
     },
     "footer": {

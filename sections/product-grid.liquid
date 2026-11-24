@@ -1,5 +1,7 @@
 {%- comment -%}
-  Product grid from a chosen collection: 4 across on desktop, 2 on mobile.
+  Product grid (a white block): title, copy and an optional prompt with a
+  button on the top line, then the products from a chosen collection,
+  4 across on desktop, 2 on mobile.
   The button goes to the product page, where format and pick up date are
   chosen. With no collection or no products it shows a short empty state.
 {%- endcomment -%}
@@ -8,6 +10,15 @@
   assign colours = 'birthday-pink,clementine,blue-sky,strawberry' | split: ','
 -%}
 <section class="product-grid page-width">
+  {% render 'block-head',
+    title: section.settings.title,
+    copy: section.settings.copy,
+    prompt: section.settings.prompt,
+    button_label: section.settings.cta_label,
+    button_link: section.settings.cta_link,
+    button_style: 'outline',
+    button_mobile: section.settings.cta_mobile
+  %}
   {%- if grid_collection != blank and grid_collection.products_count > 0 -%}
     <ul class="product-grid__list" role="list">
       {%- for product in grid_collection.products limit: section.settings.limit -%}
@@ -51,8 +62,15 @@
 {% schema %}
 {
   "name": "Product grid",
-  "class": "section-product-grid",
+  "class": "section-product-grid block block--white",
   "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Order pies" },
+    { "type": "richtext", "id": "copy", "label": "Copy" },
+    { "type": "text", "id": "prompt", "label": "Lead-in line", "info": "Optional, e.g. Not sure what to get?" },
+    { "type": "text", "id": "cta_label", "label": "Lead-in button label" },
+    { "type": "url", "id": "cta_link", "label": "Lead-in button link" },
+    { "type": "checkbox", "id": "cta_mobile", "label": "Show lead-in on mobile", "default": false },
+    { "type": "header", "content": "Products" },
     { "type": "collection", "id": "collection", "label": "Collection" },
     {
       "type": "range",
