@@ -22,7 +22,8 @@
             "title": "Help me order",
             "button_label": "start",
             "action": "help_me_order",
-            "link": ""
+            "link": "",
+            "show_when": "always"
           }
         },
         "pickup": {
@@ -31,7 +32,8 @@
             "title": "Pick up",
             "button_label": "order with us",
             "action": "link",
-            "link": "/collections/all"
+            "link": "/collections/pies",
+            "show_when": "always"
           }
         },
         "preorder": {
@@ -40,7 +42,8 @@
             "title": "Pre order",
             "button_label": "order ahead",
             "action": "link",
-            "link": "/pages/pre-order"
+            "link": "/pages/pre-order",
+            "show_when": "preorder"
           }
         },
         "wholesale": {
@@ -49,7 +52,8 @@
             "title": "Wholesale",
             "button_label": "stock cakehouse",
             "action": "link",
-            "link": "/pages/wholesale"
+            "link": "/pages/wholesale",
+            "show_when": "always"
           }
         }
       },

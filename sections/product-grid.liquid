@@ -7,6 +7,13 @@
 {%- endcomment -%}
 {%- liquid
   assign grid_collection = section.settings.collection
+  if request.page_type == 'collection' and section.settings.use_current
+    assign grid_collection = collection
+  endif
+  assign heading_h1 = false
+  if request.page_type == 'collection'
+    assign heading_h1 = true
+  endif
   assign current_product_id = product.id
   assign shown = 0
 -%}
@@ -18,13 +25,15 @@
     button_label: section.settings.cta_label,
     button_link: section.settings.cta_link,
     button_style: 'outline',
-    button_mobile: section.settings.cta_mobile
+    button_mobile: section.settings.cta_mobile,
+    heading_h1: heading_h1
   %}
   {%- if grid_collection != blank and grid_collection.products_count > 0 -%}
     <ul class="product-grid__list" role="list">
       {%- for product in grid_collection.products -%}
         {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
         {%- if settings.pickup_product != blank and product.id == settings.pickup_product.id -%}{%- continue -%}{%- endif -%}
+        {%- if product.tags contains 'hidden' or product.tags contains 'pick-up' -%}{%- continue -%}{%- endif -%}
         {%- comment -%} On a product page, leave out the pie being viewed ("more pies"). {%- endcomment -%}
         {%- if current_product_id and product.id == current_product_id -%}{%- continue -%}{%- endif -%}
         {%- assign shown = shown | plus: 1 -%}
@@ -51,6 +60,7 @@
     { "type": "checkbox", "id": "cta_mobile", "label": "Show lead-in on mobile", "default": false },
     { "type": "header", "content": "Products" },
     { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "checkbox", "id": "use_current", "label": "Use the page's collection", "info": "On the collection template: shows the collection being viewed (all pies, /collections/all).", "default": false },
     {
       "type": "range",
       "id": "limit",

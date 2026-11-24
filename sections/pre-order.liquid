@@ -35,6 +35,9 @@
         assign message_title = section.settings.empty_title
         assign message_copy = section.settings.soon_copy
       else
+        comment
+          soon, or none: with no window set yet the page still says pre orders open soon.
+        endcomment
         assign message_title = section.settings.soon_title
         assign message_copy = section.settings.soon_copy
       endif

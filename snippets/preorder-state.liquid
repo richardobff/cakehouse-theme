@@ -2,7 +2,8 @@
   Works out where today (store time, Australia/Sydney) sits against the pre
   order windows in theme settings. One window per line:
   "order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24".
-  Outputs one word: open, soon or closed. "soon" also covers no windows set.
+  Outputs one word: open, soon (a window is set and opens later), closed
+  (every window has passed) or none (no window set).
 
   @example
   {%- capture preorder_state -%}{% render 'preorder-state' %}{%- endcapture -%}
@@ -30,7 +31,9 @@
   endfor
   if any_open
     assign state = 'open'
-  elsif any_future or any_window == false
+  elsif any_window == false
+    assign state = 'none'
+  elsif any_future
     assign state = 'soon'
   else
     assign state = 'closed'

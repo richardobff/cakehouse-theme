@@ -98,7 +98,7 @@
 
     <div class="product-buy__rows">
       {%- if whole_variant and slice_variant -%}
-        <div class="product-buy__row">
+        <div class="product-buy__row product-buy__row--size">
           <p class="product-buy__label" id="ProductFormatLabel">{{ 'product.size' | t }}</p>
           <div class="product-buy__chips" role="group" aria-labelledby="ProductFormatLabel">
             <button type="button" class="button{% if start_format != 'whole' %} button--outline{% endif %}" data-product-format="whole" aria-pressed="{% if start_format == 'whole' %}true{% else %}false{% endif %}">

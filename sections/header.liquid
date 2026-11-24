@@ -81,8 +81,16 @@
   <a class="visually-hidden skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
 
   <a class="header__wordmark" href="{{ routes.root_url }}">
-    <span class="visually-hidden">{{ shop.name }}</span>
-    {{ 'logo-wordmark.svg' | inline_asset_content }}
+    {%- comment -%} On home the wordmark is the page's h1; it looks the same. {%- endcomment -%}
+    {%- if template.name == 'index' -%}
+      <h1 class="header__wordmark-heading">
+        <span class="visually-hidden">{{ shop.name }}</span>
+        {{ 'logo-wordmark.svg' | inline_asset_content }}
+      </h1>
+    {%- else -%}
+      <span class="visually-hidden">{{ shop.name }}</span>
+      {{ 'logo-wordmark.svg' | inline_asset_content }}
+    {%- endif -%}
   </a>
 
   <div class="header__info">

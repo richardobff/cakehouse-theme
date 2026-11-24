@@ -43,6 +43,7 @@
         {%- if pie_collection != blank -%}
           {%- for product in pie_collection.products -%}
             {%- if pickup_product != blank and product.id == pickup_product.id -%}{%- continue -%}{%- endif -%}
+          {%- if product.tags contains 'hidden' or product.tags contains 'pick-up' -%}{%- continue -%}{%- endif -%}
             {%- assign tile_count = tile_count | plus: 1 -%}
             <li>
               <button type="button" class="hmo-tile" data-product-id="{{ product.id }}" aria-pressed="false">

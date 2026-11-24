@@ -116,12 +116,13 @@ Applies to every section on every page.
 
 ## Navigation
 
-- Desktop home header (masthead): wordmark on columns 1 to 8; the details block (status line, address with a pin that links to Google Maps directions) starts on column 9 and is 3 columns wide; the cart sits alone, right-aligned in column 12, top aligned with the status line; nav row below at Medium 40.
+- Desktop home header (masthead): wordmark on columns 1 to 8 (on home the wordmark is the page's h1, visually unchanged); the details block (status line, address with a pin that links to Google Maps directions) starts on column 9 and is 3 columns wide; the cart sits alone, right-aligned in column 12, top aligned with the status line; nav row below at Medium 40.
 - Desktop other pages: compact header, wordmark left, nav and cart right. On every desktop page a compact bar slides in once the header scrolls away.
 - Mobile header, every page: wordmark, status line, address with pin, then order, menu, visit, about and the cart button.
 - Status line: from Opening hours in theme settings, Australia/Sydney time, rechecked every minute. Open: green dot, "now baking, open now" (Now baking on in the header settings) or "open now". Closed: orange dot, "closed, opens tomorrow at 8am" and so on. Hidden until hours are set.
 - "order" opens the order panel. The panel lists help me order, pick up, pre order and wholesale as large blocks, each with a button. On desktop it is a centred panel, 6 columns wide, under the header. On mobile it is a full-screen sheet. Delivery is not shown.
 - Pre order is reached through the order panel; it is not in the header.
+- Order panel rows (desktop panel and mobile sheet, same rules): help me order (opens the flow), pick up (/collections/pies, the all pies page), pre order (/pages/pre-order, shown only while a pre order window is set, open soon or open; hidden otherwise) and wholesale. Pre order means a seasonal window with its own pies and pick up dates; everyday orders are already for a future date. Delivery will be added later as another row pointing to the same pies page.
 - Footer group, every page: sign up band directly on top of follow us (no gap, no rule), then the footer with links to ordering and pick up, allergens, wholesale, contact, instagram and tiktok. The footer has no email field. At the foot, one line at Meta size in black (stacked on mobile): copyright, policy links (refund, privacy, terms of service, shipping, contact information; each only shows once that policy exists in Settings > Policies), then "credits", which reveals "design and development by Office BFF" inline on hover, focus or tap, linking to the Credit link theme setting (default https://officebff.com.au, new tab). "Show credit" turns it off.
 
 ## Sections
@@ -156,11 +157,13 @@ index, product, collection (pies), cart, page.menu, page.about, page.pre-order, 
 
 ## Products
 
+- All pies page: the collection template (/collections/pies and /collections/all) is the home "Order pies" block (title, intro, "Not sure what to get? help me order", the same cards), showing the collection being viewed. Products tagged hidden or pick-up never show in a collection grid, search results, More pies or help me order (the Pick up product is also hidden from search with seo.hidden).
+
 - One product per pie.
 - Option "Format" with values "Whole pie" and "By the slice".
 - By the slice is pick up only and has no handwritten note.
 - The product page (templates/product.json), redesigned (Figma "Product redesign" on 06 DESIGN PREVIEW). Desktop: gallery on the left, columns 1 to 7, edge to edge from the left; photos stacked 4px apart, scrolling with the page. The first photo's height is capped at the window minus the header (object-fit cover, using the image's focal point), so it shows whole on load; later photos are 4:5. Buy column on the right, columns 8 to 12, sticky while the gallery scrolls (when it is taller than the window it pins by its foot so every row stays reachable): title (D4), price (Body L), short description (Body), then ruled rows: size (whole pie / by the slice, each showing its price), pick up (choose a date, opens the date panel), message (add a note, whole pie only, hidden for slices). Then a quantity stepper and a full-width solid "add to cart $price" (price times quantity). Then the pick up line with the pin, built from the ordering settings ("Pick up from 336 Brunswick St, Fitzroy. Order 2 days ahead, before midday."). Then "Ordering for an occasion?" with an outline "help me order". Then info rows that open on tap: ingredients, allergens, serves, storage and serving, from product metafields custom.ingredients, custom.allergens, custom.serves, custom.storage; a row only shows when its field has content.
-- Mobile: the first photo at 4:5, then the buy column in the same order. While the main add to cart button is out of view, a full-width bar at the bottom shows "add to cart $price".
+- Mobile: the first photo at 4:5, then the buy column in the same order (the size label sits on its own line, the two size buttons half and half below, prices kept). While the main add to cart button is out of view, a full-width bar at the bottom shows "add to cart $price".
 - Below: "More pies" (the product grid, leaving out the pie being viewed), then the footer. No pre order split on product pages.
 - ?variant= picks the starting format, so links can open a pie with by the slice chosen.
 - Sold out: when the chosen format is unavailable, "sold out" replaces add to cart.
@@ -254,7 +257,7 @@ Buttons:
 - On hover, fill with a brand colour with black text, 150ms fade. Default hover colour clementine; inside a clementine block, white.
 - Solid and outline buttons both use this. Outline buttons keep their black stroke.
 - Cart button: clementine fill on hover, black icon and count.
-- Keyboard focus matches hover, plus a 2px black focus ring offset 2px.
+- Keyboard focus matches hover, plus a 2px black focus ring offset 2px. The ring shows for keyboard use only, never after a mouse click or a tap (layout/theme.liquid tracks the last input as html[data-input]).
 - Reduced motion: swap instantly, no fade.
 
 Built (motion branch): nav colours are set per link in sections/header.liquid by the link's handle (menu, visit, about; anything else clementine). Colour blocks carry a surface--{colour} class; surface--clementine switches the button hover to white. Page changes use cross-document view transitions (header held, 180ms crossfade); prefetch uses speculation rules on hover, with assets/motion.js as the fallback for other browsers. The cart button bumps when its count changes.

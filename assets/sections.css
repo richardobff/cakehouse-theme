@@ -916,8 +916,21 @@
     line-height: var(--type-product-line);
   }
 
+  /* Size: the label on its own line, the two buttons half and half below. */
+  .product-buy__row--size {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .product-buy__row--size .product-buy__chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .product-buy__chips .button {
     gap: 6px;
+    justify-content: center;
   }
 
   .product-buy__add-row {

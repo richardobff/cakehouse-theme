@@ -2,8 +2,16 @@
   Order panel. Opened by "order" in the header. A centred panel six columns
   wide under the header on desktop, a full-screen sheet on mobile.
   Each option is a block: a title and a button that links somewhere or
-  opens the help me order flow.
+  opens the help me order flow. A block set to "Only while pre orders are
+  set" shows only when a pre order window is open or opens later (Theme
+  settings > Ordering > Pre order windows).
 {%- endcomment -%}
+{%- liquid
+  capture preorder_state
+    render 'preorder-state'
+  endcapture
+  assign preorder_state = preorder_state | strip
+-%}
 <dialog
   class="order-panel"
   id="OrderPanel"
@@ -19,6 +27,7 @@
 
   <ul class="order-panel__list" role="list">
     {%- for block in section.blocks -%}
+      {%- if block.settings.show_when == 'preorder' and preorder_state != 'open' and preorder_state != 'soon' -%}{%- continue -%}{%- endif -%}
       <li class="order-panel__option" {{ block.shopify_attributes }}>
         <h3 class="order-panel__title type-d4">{{ block.settings.title | escape }}</h3>
         {%- if block.settings.action == 'help_me_order' -%}
@@ -53,7 +62,17 @@
           ],
           "default": "link"
         },
-        { "type": "url", "id": "link", "label": "Link" }
+        { "type": "url", "id": "link", "label": "Link" },
+        {
+          "type": "select",
+          "id": "show_when",
+          "label": "Show",
+          "options": [
+            { "value": "always", "label": "Always" },
+            { "value": "preorder", "label": "Only while pre orders are set" }
+          ],
+          "default": "always"
+        }
       ]
     }
   ]
