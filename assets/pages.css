@@ -197,6 +197,42 @@
   grid-column: 2;
 }
 
+/* Wholesale: details as ruled rows (label left, value right, Body L), the
+ * form level with the first row, a full-width send button. */
+.contact-section:has(.contact--rows) > .block-head {
+  margin-bottom: var(--block-bottom);
+}
+
+.contact--rows .contact__detail {
+  align-items: baseline;
+  padding-block: calc(12 * var(--u));
+}
+
+.contact--rows .contact__detail-text {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  width: 100%;
+}
+
+.contact--rows .contact__label {
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+  letter-spacing: var(--type-body-l-tracking);
+}
+
+.contact--rows .contact__value {
+  text-align: right;
+}
+
+.contact__form--full {
+  align-items: stretch;
+}
+
+.contact__form--full .contact__send {
+  width: 100%;
+}
+
 .contact__title {
   margin: 0 0 calc(16 * var(--u));
 }
@@ -567,6 +603,10 @@
   .contact__form-wrap,
   .policy .shopify-policy__body {
     grid-column: 1;
+  }
+
+  .contact-section:has(.contact--rows) > .block-head {
+    margin-bottom: 24px;
   }
 
   .policy__nav {

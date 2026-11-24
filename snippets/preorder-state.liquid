@@ -1,9 +1,13 @@
 {% doc %}
   Works out where today (store time, Australia/Sydney) sits against the pre
-  order windows in theme settings. One window per line:
-  "order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24".
+  order windows in theme settings. One window per line, with an optional
+  name before a colon:
+  "christmas: order from 2026-12-01 to 2026-12-20, pick up 2026-12-23 2026-12-24".
   Outputs one word: open, soon (a window is set and opens later), closed
-  (every window has passed) or none (no window set).
+  (every window has passed) or none (no window set). With output: 'name' it
+  outputs the name of the open window, or else the next one to open.
+
+  @param {string} [output] - 'name' for the window name instead of the state.
 
   @example
   {%- capture preorder_state -%}{% render 'preorder-state' %}{%- endcapture -%}
@@ -14,19 +18,35 @@
   assign any_open = false
   assign any_future = false
   assign any_window = false
+  assign open_name = ''
+  assign next_name = ''
+  assign next_from = '9999-99-99'
   assign lines = settings.preorder_windows | newline_to_br | split: '<br />'
   for raw in lines
-    assign line = raw | strip | downcase
-    unless line contains 'from' and line contains ' to '
+    assign line = raw | strip
+    assign lower = line | downcase
+    unless lower contains 'from' and lower contains ' to '
       continue
     endunless
-    assign from_date = line | split: 'from' | last | strip | slice: 0, 10
-    assign to_date = line | split: ' to ' | last | strip | slice: 0, 10
+    assign name = ''
+    assign head = lower | split: 'from' | first
+    if head contains ':'
+      assign name = line | split: ':' | first | strip
+    endif
+    assign from_date = lower | split: 'from' | last | strip | slice: 0, 10
+    assign to_date = lower | split: ' to ' | last | strip | slice: 0, 10
     assign any_window = true
     if today >= from_date and today <= to_date
       assign any_open = true
+      if open_name == ''
+        assign open_name = name
+      endif
     elsif today < from_date
       assign any_future = true
+      if from_date < next_from
+        assign next_from = from_date
+        assign next_name = name
+      endif
     endif
   endfor
   if any_open
@@ -38,5 +58,13 @@
   else
     assign state = 'closed'
   endif
-  echo state
+  if output == 'name'
+    if any_open
+      echo open_name
+    else
+      echo next_name
+    endif
+  else
+    echo state
+  endif
 -%}

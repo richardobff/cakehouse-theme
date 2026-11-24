@@ -41,7 +41,7 @@
           "settings": {
             "title": "Pre order",
             "button_label": "order ahead",
-            "action": "link",
+            "action": "preorder",
             "link": "/pages/pre-order",
             "show_when": "preorder"
           }
@@ -55,11 +55,22 @@
             "link": "/pages/wholesale",
             "show_when": "always"
           }
+        },
+        "delivery": {
+          "type": "option",
+          "settings": {
+            "title": "Delivery",
+            "button_label": "uber eats",
+            "action": "delivery",
+            "link": "",
+            "show_when": "always"
+          }
         }
       },
       "block_order": [
         "help",
         "pickup",
+        "delivery",
         "preorder",
         "wholesale"
       ],

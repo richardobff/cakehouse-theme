@@ -17,7 +17,7 @@
   {%- if section.settings.show_head and request.page_type == 'page' -%}
     {% render 'block-head', title: page.title, copy: section.settings.intro, heading_h1: true %}
   {%- endif -%}
-<div class="contact">
+<div class="contact contact--{{ section.settings.details_style }}">
   {%- if section.blocks.size > 0 -%}
     <ul class="contact__details" role="list">
       {%- for block in section.blocks -%}
@@ -41,8 +41,15 @@
   {%- endif -%}
 
   <div class="contact__form-wrap">
-    <h2 class="contact__title type-d4" id="{{ form_id }}-title">{{ section.settings.form_title | escape }}</h2>
-    {%- form 'contact', id: form_id, class: 'contact__form' -%}
+    {%- if section.settings.form_title != blank -%}
+      <h2 class="contact__title type-d4" id="{{ form_id }}-title">{{ section.settings.form_title | escape }}</h2>
+    {%- else -%}
+      {%- comment -%} No visible heading: a hidden one keeps the form named for screen readers. {%- endcomment -%}
+      <h2 class="visually-hidden" id="{{ form_id }}-title">{{ section.settings.button_label | escape }}</h2>
+    {%- endif -%}
+    {%- assign form_class = 'contact__form' -%}
+    {%- if section.settings.button_full -%}{%- assign form_class = 'contact__form contact__form--full' -%}{%- endif -%}
+    {%- form 'contact', id: form_id, class: form_class -%}
       {%- if form.posted_successfully? -%}
         <p class="contact__notice type-product" role="status" tabindex="-1">{{ section.settings.success_text | escape }}</p>
       {%- elsif form.errors -%}
@@ -85,9 +92,20 @@
   "name": "Contact form",
   "class": "section-contact-form block block--white",
   "settings": [
+    {
+      "type": "select",
+      "id": "details_style",
+      "label": "Details",
+      "options": [
+        { "value": "stacked", "label": "Label over value, with a button" },
+        { "value": "rows", "label": "Ruled rows, label left and value right" }
+      ],
+      "default": "stacked"
+    },
+    { "type": "checkbox", "id": "button_full", "label": "Full-width send button", "default": false },
     { "type": "checkbox", "id": "show_head", "label": "Page title on the top line", "default": true },
     { "type": "richtext", "id": "intro", "label": "Intro", "info": "Beside the page title. Optional." },
-    { "type": "text", "id": "form_title", "label": "Form title", "default": "Send a message" },
+    { "type": "text", "id": "form_title", "label": "Form title", "default": "Send a message", "info": "Leave blank for no heading over the form." },
     { "type": "text", "id": "topics", "label": "Topics", "info": "Comma separated, shown as chips. Leave blank for none.", "default": "general, orders, wholesale, events" },
     { "type": "text", "id": "first_field", "label": "First field", "info": "e.g. name or business.", "default": "name" },
     { "type": "checkbox", "id": "show_phone", "label": "Phone field", "default": true },

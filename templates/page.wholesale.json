@@ -3,15 +3,17 @@
     "form": {
       "type": "contact-form",
       "settings": {
-        "form_title": "Enquire",
+        "form_title": "",
         "topics": "",
         "first_field": "business",
         "show_phone": true,
         "page_label": "Wholesale",
-        "button_label": "send",
+        "button_label": "send enquiry",
         "success_text": "Thanks, we'll be in touch.",
         "show_head": true,
-        "intro": "<p>Pies for cafes, restaurants and events.</p>"
+        "intro": "<p>Pies for cafes, restaurants and events.</p>",
+        "details_style": "rows",
+        "button_full": true
       },
       "blocks": {
         "detail-1": {
