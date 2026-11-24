@@ -23,6 +23,7 @@
     format: root.dataset.format || (data.variants.whole ? 'whole' : 'slice'),
     date: null,
     note: '',
+    method: shared.method ? shared.method.get() : 'pickup',
     qty: 1,
     month: null,
     busy: false,
@@ -53,6 +54,9 @@
     return `${hour12}${min ? ':' + m[2] : ''}${h < 12 ? 'am' : 'pm'}`;
   }
   const rules = () => shared.makeRules(config.rules, config.pickup);
+  /** The method in effect: slices are pick up only. */
+  const how = () => (shared.method ? shared.method.forFormat(state.method, state.format) : 'pickup');
+  const statusOf = (iso) => rules().status(iso, state.format, { preorder: Boolean(data.preorder), method: how() });
   const variant = () => data.variants[state.format];
 
   const noteField = $('[data-product-note]');
@@ -103,6 +107,15 @@
     const time = cutoffText();
     const before = time ? shared.fill(st.before, { time }) : '';
     $('[data-product-info]').textContent = shared.fill(template, { address: config.rules.address, days: lead, before });
+
+    // Pick up or delivery; slices lock to pick up.
+    $$('[data-product-method]').forEach((b) => {
+      const on = b.dataset.productMethod === how();
+      b.setAttribute('aria-pressed', String(on));
+      b.classList.toggle('button--outline', !on);
+      b.disabled = b.dataset.productMethod === 'delivery' && state.format === 'slice';
+    });
+    $$('[data-help-me-order-open]').forEach((b) => (b.dataset.method = how()));
 
     // Date button shows the chosen day.
     $('[data-product-date-open]').textContent = state.date ? shared.formatLong(state.date) : st.choose;
@@ -163,9 +176,11 @@
     const r = rules();
     if (!state.month) state.month = shared.firstOfMonth(state.date || (data.preorder && r.firstPreorder()) || r.earliest(state.format));
     const lead = config.rules.leadDays;
-    const info =
+    let info =
       state.format === 'slice' ? st.sliceInfo : lead === 0 ? st.leadInfoNone : lead === 1 ? st.leadInfoOne : st.leadInfo;
-    $('[data-product-date-info]').textContent = shared.fill(info, { address: config.rules.address, days: lead, full: config.rules.useCaps ? st.fullNote : '' });
+    if (how() === 'delivery') info = st.deliveryInfo;
+    const note = (config.rules.delivery && config.rules.delivery.note) || '';
+    $('[data-product-date-info]').textContent = shared.fill(info, { address: config.rules.address, days: lead, note, full: config.rules.useCaps ? st.fullNote : '' });
     shared.renderMonth({
       grid: $('[data-product-grid]'),
       nameEl: $('[data-product-month]'),
@@ -175,6 +190,7 @@
       rules: r,
       format: state.format,
       preorder: Boolean(data.preorder),
+      method: how(),
       selected: state.date,
       strings: st,
     });
@@ -241,6 +257,7 @@
         date: state.date,
         note: state.note,
         quantity: state.qty,
+        method: how(),
         resolveConflict: askConflict,
       });
       state.date = result.date;
@@ -262,11 +279,19 @@
       state.format = chip.dataset.productFormat;
       state.month = null;
       // A date that is fine for slices may be full for whole pies.
-      if (state.date && rules().status(state.date, state.format, { preorder: Boolean(data.preorder) }) !== 'available') state.date = null;
+      if (state.date && statusOf(state.date) !== 'available') state.date = null;
       render();
       return;
     }
     if (event.target.closest('[data-product-date-open]')) return openDates();
+    const methodButton = event.target.closest('[data-product-method]');
+    if (methodButton && !methodButton.disabled) {
+      state.method = shared.method.set(methodButton.dataset.productMethod);
+      state.month = null;
+      if (state.date && statusOf(state.date) !== 'available') state.date = null;
+      render();
+      return;
+    }
     const step = event.target.closest('[data-qty-step]');
     if (step && !step.disabled) {
       state.qty = Math.min(MAX_QTY, Math.max(1, state.qty + Number(step.dataset.qtyStep)));
@@ -289,6 +314,14 @@
     state.note = noteField.value;
     $('[data-product-note-count]').textContent = String(state.note.length);
     $('[data-product-note-toggle]').textContent = state.note.trim() ? st.editNote : st.addNote;
+  });
+
+  // Help me order on the same page can change the method too.
+  document.addEventListener('method:change', (event) => {
+    if (event.detail.method === state.method) return;
+    state.method = event.detail.method;
+    if (state.date && statusOf(state.date) !== 'available') state.date = null;
+    render();
   });
 
   render();

@@ -442,7 +442,14 @@
   gap: calc(16 * var(--u));
 }
 
-.hmo-when__mode {
+.hmo-when__toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(8 * var(--u));
+}
+
+.hmo-when__mode:disabled {
+  opacity: 0.35;
   cursor: default;
 }
 
@@ -1025,8 +1032,21 @@
 }
 
 .cart__row--pick-up {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(4 * var(--u));
   padding-bottom: calc(14 * var(--u));
   border-bottom: var(--rule-width) solid var(--colour-black);
+}
+
+.cart__when,
+.cart__method-note {
+  margin: 0;
+}
+
+.cart__method-note {
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line);
 }
 
 .cart__items {
@@ -1190,4 +1210,17 @@
       background-color: rgb(255 255 255 / 0.55);
     }
   }
+}
+
+/* Your order: delivery note and fee line under the method and date. */
+.hmo-review__when {
+  margin: 0;
+}
+
+.hmo-review__delivery {
+  margin-top: calc(6 * var(--u));
+}
+
+.hmo-review__delivery p {
+  margin: 0;
 }

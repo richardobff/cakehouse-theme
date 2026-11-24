@@ -330,18 +330,66 @@
       },
       {
         "type": "paragraph",
-        "content": "Delivery goes through a third-party service, linked from the order panel. The Delivery row shows once the link is set."
+        "content": "Suzie's own driver, through Shopify local delivery. Fees, delivery areas and the minimum order are set in Settings > Shipping and delivery > Local delivery, not here. Delivery is whole pies only."
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_enabled",
+        "label": "Delivery",
+        "default": true
       },
       {
         "type": "text",
-        "id": "delivery_label",
-        "label": "Delivery button label",
-        "default": "uber eats"
+        "id": "delivery_note",
+        "label": "Delivery note",
+        "default": "Delivery areas and fee to come.",
+        "info": "Shown on product pages and in the ordering answers."
       },
       {
-        "type": "url",
-        "id": "delivery_link",
-        "label": "Delivery link"
+        "type": "paragraph",
+        "content": "Delivery days"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_mon",
+        "label": "Monday",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_tue",
+        "label": "Tuesday",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_wed",
+        "label": "Wednesday",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_thu",
+        "label": "Thursday",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_fri",
+        "label": "Friday",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_sat",
+        "label": "Saturday",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_sun",
+        "label": "Sunday",
+        "default": true
       },
       {
         "type": "header",

@@ -32,7 +32,11 @@
     "error": "Something went wrong. Please try again.",
     "label": "Cart",
     "quantity_less": "One fewer [item]",
-    "quantity_more": "One more [item]"
+    "quantity_more": "One more [item]",
+    "delivery_checkout": "You'll confirm delivery and pay the delivery fee at checkout.",
+    "slices_pick_up": "Slices are pick up only, so this order is for pick up.",
+    "method_pickup": "pick up",
+    "method_delivery": "delivery"
   },
   "customers": {
     "login": {
@@ -137,7 +141,9 @@
       "pie": "Pie",
       "pick_up": "Pick up",
       "note": "Note",
-      "total": "Total"
+      "total": "Total",
+      "delivery": "Delivery",
+      "when": "When"
     },
     "lead_info": "[address]. Order [days] business days ahead.[full]",
     "lead_info_one": "[address]. Order one business day ahead.[full]",
@@ -157,7 +163,10 @@
     "conflict_use": "use this date",
     "pie_size": "[pie], [size]",
     "day_names": "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-    "full_note": " Greyed out days are full."
+    "full_note": " Greyed out days are full.",
+    "delivery": "delivery",
+    "method_label": "Pick up or delivery",
+    "delivery_info": "Delivery on the days shown, whole pies only. Order [days] business days ahead. [note]"
   },
   "visit": {
     "hours": "{{ open }} to {{ close }}",
@@ -196,7 +205,10 @@
     "storage": "storage and serving",
     "before": ", before [time]",
     "midday": "midday",
-    "midnight": "midnight"
+    "midnight": "midnight",
+    "pick_up_or_delivery": "pick up or delivery",
+    "method_pickup": "pick up",
+    "method_delivery": "delivery"
   },
   "contact": {
     "email": "email",

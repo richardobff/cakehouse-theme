@@ -58,9 +58,15 @@
       {%- endfor -%}
     {%- else -%}
     {%- for block in section.blocks -%}
-      <div class="questions__row" {{ block.shopify_attributes }}>
+      <div class="questions__row"{% if block.settings.anchor != blank %} id="{{ block.settings.anchor | handle }}"{% endif %} {{ block.shopify_attributes }}>
         <dt class="questions__question type-product">{{ block.settings.question | escape }}</dt>
-        <dd class="questions__answer">{{ block.settings.answer }}</dd>
+        <dd class="questions__answer">
+          {%- if block.settings.answer_source == 'delivery_note' and settings.delivery_note != blank -%}
+            <p>{{ settings.delivery_note | escape }}</p>
+          {%- else -%}
+            {{ block.settings.answer }}
+          {%- endif -%}
+        </dd>
       </div>
     {%- endfor -%}
     {%- endif -%}
@@ -90,7 +96,18 @@
       "name": "Question",
       "settings": [
         { "type": "text", "id": "question", "label": "Question", "default": "Question" },
-        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>To come.</p>" }
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>To come.</p>" },
+        {
+          "type": "select",
+          "id": "answer_source",
+          "label": "Answer from",
+          "options": [
+            { "value": "text", "label": "The answer above" },
+            { "value": "delivery_note", "label": "Delivery note (Theme settings > Ordering)" }
+          ],
+          "default": "text"
+        },
+        { "type": "text", "id": "anchor", "label": "Anchor id", "info": "Lets a link jump to this question, e.g. delivery for #delivery." }
       ]
     }
   ],

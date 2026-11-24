@@ -113,17 +113,36 @@
         </div>
       {%- endif -%}
 
-      <div class="product-buy__row">
-        <p class="product-buy__label" id="ProductDateLabel">{{ 'product.pick_up' | t }}</p>
-        <button
-          type="button"
-          class="button button--outline product-buy__control"
-          aria-describedby="ProductDateLabel"
-          aria-haspopup="dialog"
-          data-product-date-open
-        >
-          {{- choose_label -}}
-        </button>
+      <div class="product-buy__row product-buy__row--when">
+        {%- if settings.delivery_enabled -%}
+          <p class="product-buy__label" id="ProductDateLabel">{{ 'product.pick_up_or_delivery' | t }}</p>
+          <div class="product-buy__when">
+            <div class="product-buy__chips product-buy__methods" role="group" aria-labelledby="ProductDateLabel">
+              <button type="button" class="button" data-product-method="pickup" aria-pressed="true">{{ 'product.method_pickup' | t }}</button>
+              <button type="button" class="button button--outline" data-product-method="delivery" aria-pressed="false">{{ 'product.method_delivery' | t }}</button>
+            </div>
+            <button
+              type="button"
+              class="button button--outline product-buy__control"
+              aria-describedby="ProductDateLabel"
+              aria-haspopup="dialog"
+              data-product-date-open
+            >
+              {{- choose_label -}}
+            </button>
+          </div>
+        {%- else -%}
+          <p class="product-buy__label" id="ProductDateLabel">{{ 'product.pick_up' | t }}</p>
+          <button
+            type="button"
+            class="button button--outline product-buy__control"
+            aria-describedby="ProductDateLabel"
+            aria-haspopup="dialog"
+            data-product-date-open
+          >
+            {{- choose_label -}}
+          </button>
+        {%- endif -%}
       </div>
 
       <div class="product-buy__row product-buy__row--note" data-product-note-row {% if start_format == 'slice' %}hidden{% endif %}>
@@ -172,6 +191,9 @@
       <span class="product-buy__pin" aria-hidden="true">{{ 'icon-pin.svg' | inline_asset_content }}</span>
       <span data-product-info></span>
     </p>
+    {%- if settings.delivery_enabled and settings.delivery_note != blank -%}
+      <p class="product-buy__delivery-note">{{ settings.delivery_note | escape }}</p>
+    {%- endif -%}
 
     <div class="product-buy__help">
       <p class="product-buy__prompt">{{ section.settings.prompt | escape }}</p>
@@ -275,6 +297,7 @@
         "infoWholeOne": {{ 'product.info_whole_one' | t | json }},
         "infoWholeNone": {{ 'product.info_whole_none' | t | json }},
         "infoSlice": {{ 'product.info_slice' | t | json }},
+        "deliveryInfo": {{ 'help_me_order.delivery_info' | t | json }},
         "infoPreorder": {{ 'product.info_preorder' | t | json }},
         "infoPreorderSoon": {{ 'product.info_preorder_soon' | t | json }},
         "before": {{ 'product.before' | t | json }},

@@ -17,6 +17,26 @@
     endif
   endfor
   assign pick_up_date = cart.attributes['Pick up date']
+  comment
+    Method: "pick up" or "delivery" (cart attribute, set by assets/order.js).
+    A cart with any slice is pick up only; _delivery_wanted says delivery
+    had been chosen, so the cart explains why it is pick up.
+  endcomment
+  assign order_method = cart.attributes['Method'] | default: 'pick up'
+  if order_method == 'delivery'
+    assign method_label = 'cart.method_delivery' | t
+  else
+    assign method_label = 'cart.method_pickup' | t
+  endif
+  assign has_slice = false
+  for item in cart.items
+    if item.product_id != pickup_id
+      assign item_format = item.properties['Format'] | default: item.variant.title | downcase
+      if item_format contains 'slice'
+        assign has_slice = true
+      endif
+    endif
+  endfor
   assign close_label = 'cart.close' | t
   assign cart_total = cart.total_price | money
   assign checkout_label = 'cart.checkout' | t | append: '&ensp;' | append: cart_total
@@ -37,10 +57,14 @@
     {%- if pie_count > 0 -%}
       <div class="cart__lines">
         {%- if pick_up_date != blank -%}
-          <p class="cart__row cart__row--pick-up">
-            <span>{{ 'cart.pick_up' | t }}</span>
-            <span>{{ pick_up_date | date: '%a %-d %b' }}</span>
-          </p>
+          <div class="cart__row cart__row--pick-up">
+            <p class="cart__when">{{ method_label }}, {{ pick_up_date | date: '%a %-d %b' }}</p>
+            {%- if order_method == 'delivery' -%}
+              <p class="cart__method-note">{{ 'cart.delivery_checkout' | t }}</p>
+            {%- elsif has_slice and cart.attributes['_delivery_wanted'] == 'yes' -%}
+              <p class="cart__method-note">{{ 'cart.slices_pick_up' | t }}</p>
+            {%- endif -%}
+          </div>
         {%- endif -%}
 
         <ul class="cart__items" role="list">
