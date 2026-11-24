@@ -14,10 +14,23 @@
     "comment_form_title": "Add a comment"
   },
   "cart": {
-    "checkout": "Checkout",
     "title": "Cart",
-    "update": "Update",
-    "remove": "Remove"
+    "close": "close",
+    "pick_up": "pick up",
+    "whole": "whole",
+    "slice": "slice",
+    "note": "note: [note]",
+    "remove": "remove",
+    "remove_label": "Remove [item] from your cart",
+    "total": "total",
+    "checkout": "checkout",
+    "keep_shopping": "keep shopping",
+    "shop": "shop",
+    "empty": "Your cart is empty.",
+    "removed": "Removed from your cart.",
+    "updated": "Cart updated.",
+    "error": "Something went wrong. Please try again.",
+    "label": "Cart"
   },
   "customers": {
     "login": {

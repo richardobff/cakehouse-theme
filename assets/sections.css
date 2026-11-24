@@ -778,6 +778,13 @@
     padding-block: 16px;
   }
 
+  /* The row is a column here, so the note takes the full width, not 100% height. */
+  .product-buy__note {
+    flex-basis: auto;
+    align-self: stretch;
+    min-width: 0;
+  }
+
   .product-buy__control {
     width: 100%;
   }

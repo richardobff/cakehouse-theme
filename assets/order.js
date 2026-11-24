@@ -50,7 +50,7 @@
     }
     const u = unit();
     const below = headerBottom();
-    const wanted = dialog.matches('[data-hmo]') ? 780 * u : dialog.scrollHeight;
+    const wanted = dialog.matches('[data-hmo], [data-cart-drawer]') ? 780 * u : dialog.scrollHeight;
     const underHeader = below + 34 * u;
     const fits = window.innerHeight - wanted - 24 * u;
     const top = Math.max(24 * u, Math.min(underHeader, fits));
@@ -306,6 +306,15 @@
       if (hasPies && existing && existing !== date && resolveConflict) {
         if ((await resolveConflict(existing)) === 'keep') date = existing;
       }
+      // Moving the order to a new date: the pies already in the cart follow it.
+      if (hasPies && existing && existing !== date) {
+        for (const item of cart.items) {
+          if (isPickupLine(item) || !item.properties || !item.properties['Pick up']) continue;
+          const properties = { ...item.properties, 'Pick up': formatLong(date) };
+          await json(config.routes.change, { id: item.key, quantity: item.quantity, properties });
+        }
+        cart = await json(config.routes.cartJs);
+      }
 
       // With daily caps off, the pick up line is left out entirely.
       const useCaps = Boolean(config.rules.useCaps);
@@ -339,13 +348,36 @@
       return { cart, date };
     }
 
-    /** After adding: open the cart drawer, or go to the cart page until it exists. */
+    /**
+     * Removes a pie line, then keeps the rest of the cart in step: the pick up
+     * line follows the number of whole pies (caps on), and an order with no
+     * pies left loses its pick up date.
+     */
+    async function removeLine(key) {
+      await json(config.routes.change, { id: key, quantity: 0 });
+      let cart = await json(config.routes.cartJs);
+      const pies = cart.items.filter((item) => !isPickupLine(item));
+      const wholePies = pies.reduce((n, item) => (isWholePie(item) ? n + item.quantity : n), 0);
+      for (const item of cart.items) {
+        if (!isPickupLine(item) || item.quantity === wholePies) continue;
+        await json(config.routes.change, { id: item.key, quantity: wholePies });
+      }
+      if (!pies.length && cart.attributes && cart.attributes['Pick up date']) {
+        await json(config.routes.update, { attributes: { 'Pick up date': '' } });
+      }
+      cart = await json(config.routes.cartJs);
+      document.querySelectorAll('[data-cart-count]').forEach((el) => (el.textContent = String(visibleCount(cart))));
+      document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
+      return cart;
+    }
+
+    /** After adding: open the cart drawer, or go to the cart page when there is none. */
     function showCart() {
       const opened = document.dispatchEvent(new CustomEvent('cart:open', { cancelable: true }));
       if (opened && !document.querySelector('[data-cart-drawer]')) window.location.href = config.routes.cart;
     }
 
-    return { addPie, showCart, visibleCount };
+    return { addPie, removeLine, showCart, visibleCount };
   }
 
   /* -------------------------------------------------------------------------

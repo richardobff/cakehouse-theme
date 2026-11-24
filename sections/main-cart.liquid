@@ -1,0 +1,23 @@
+{%- comment -%}
+  Cart page (a white block): the same contents as the cart drawer, on the
+  page. Without JavaScript the cart drawer links here.
+{%- endcomment -%}
+{%- assign shop_url = section.settings.shop_collection.url | default: collections.pies.url | default: routes.all_products_collection_url -%}
+<div class="main-cart">
+  {% render 'cart-contents', context: 'page', shop_url: shop_url %}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "class": "section-main-cart block block--white",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "shop_collection",
+      "label": "Shop link",
+      "info": "Where \"keep shopping\" and \"shop\" go. Usually the Pies collection."
+    }
+  ]
+}
+{% endschema %}

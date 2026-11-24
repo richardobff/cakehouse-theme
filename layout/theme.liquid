@@ -16,6 +16,7 @@
     <script src="{{ 'header.js' | asset_url }}" defer></script>
     <script src="{{ 'order.js' | asset_url }}" defer></script>
     <script src="{{ 'follow-us.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
     {%- if template.name == 'product' %}
     <script src="{{ 'product.js' | asset_url }}" defer></script>
     {%- endif %}
@@ -31,5 +32,6 @@
     </main>
 
     {% sections 'footer-group' %}
+    {%- unless template.name == 'cart' -%}{% section 'cart-drawer' %}{%- endunless -%}
   </body>
 </html>

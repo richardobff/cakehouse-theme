@@ -1,0 +1,24 @@
+{%- comment -%}
+  Cart drawer: rendered on every page from layout/theme.liquid. Desktop: a
+  birthday pink panel 5 columns wide (566) on the right, under the header.
+  Mobile: a full-screen sheet. assets/cart.js opens it after add to cart and
+  from the header cart button, and refreshes it without a page reload.
+{%- endcomment -%}
+{%- assign shop_url = section.settings.shop_collection.url | default: collections.pies.url | default: routes.all_products_collection_url -%}
+<dialog class="cart-drawer" aria-labelledby="CartDrawerTitle" data-cart-drawer>
+  {% render 'cart-contents', context: 'drawer', shop_url: shop_url %}
+</dialog>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "shop_collection",
+      "label": "Shop link",
+      "info": "Where \"keep shopping\" and \"shop\" go. Usually the Pies collection."
+    }
+  ]
+}
+{% endschema %}

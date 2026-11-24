@@ -1,0 +1,101 @@
+{% doc %}
+  Cart contents, shared by the cart drawer and the cart page: title and close,
+  the pick up date, one row per pie with its format and any note, the total,
+  then keep shopping and checkout. The hidden pick up product's line is never
+  shown; its date is the "Pick up date" cart attribute. assets/cart.js swaps
+  this markup in place through the Section Rendering API after each change.
+
+  @param {string} context - 'drawer' or 'page'.
+  @param {string} shop_url - Where "keep shopping" and "shop" go.
+{% enddoc %}
+{%- liquid
+  assign pickup_id = settings.pickup_product.id | default: 0
+  assign pie_count = 0
+  for item in cart.items
+    if item.product_id != pickup_id
+      assign pie_count = pie_count | plus: item.quantity
+    endif
+  endfor
+  assign pick_up_date = cart.attributes['Pick up date']
+  assign close_label = 'cart.close' | t
+  assign cart_total = cart.total_price | money
+  assign checkout_label = 'cart.checkout' | t | append: '&ensp;' | append: cart_total
+  assign keep_label = 'cart.keep_shopping' | t
+  assign shop_label = 'cart.shop' | t
+-%}
+<div class="cart cart--{{ context }}" data-cart-root>
+  <div class="cart__top">
+    <div class="cart__title-row">
+      {%- if context == 'drawer' -%}
+        <h2 class="cart__title type-d4" id="CartDrawerTitle">{{ 'cart.title' | t }}</h2>
+        {% render 'button', label: close_label, style: 'outline', attributes: 'data-dialog-close' %}
+      {%- else -%}
+        <h1 class="cart__title type-d3">{{ 'cart.title' | t }}</h1>
+      {%- endif -%}
+    </div>
+
+    {%- if pie_count > 0 -%}
+      <div class="cart__lines">
+        {%- if pick_up_date != blank -%}
+          <p class="cart__row cart__row--pick-up">
+            <span>{{ 'cart.pick_up' | t }}</span>
+            <span>{{ pick_up_date | date: '%a %-d %b' }}</span>
+          </p>
+        {%- endif -%}
+
+        <ul class="cart__items" role="list">
+          {%- for item in cart.items -%}
+            {%- if item.product_id == pickup_id -%}{%- continue -%}{%- endif -%}
+            {%- liquid
+              assign format_text = item.properties['Format'] | default: item.variant.title | downcase
+              if format_text contains 'slice'
+                assign format_label = 'cart.slice' | t
+              else
+                assign format_label = 'cart.whole' | t
+              endif
+              assign item_name = item.product.title | downcase
+              assign remove_label = 'cart.remove_label' | t | replace: '[item]', item_name
+            -%}
+            <li class="cart__item" data-cart-line="{{ item.key }}">
+              <p class="cart__row">
+                <span>{{ item.quantity }} {{ item_name }}, {{ format_label }}</span>
+                <span>{{ item.final_line_price | money }}</span>
+              </p>
+              <p class="cart__meta">
+                {%- if item.properties['Note'] != blank -%}
+                  <span class="cart__note">{{ 'cart.note' | t | replace: '[note]', item.properties['Note'] }}</span>
+                {%- endif -%}
+                <a class="cart__remove" href="{{ item.url_to_remove }}" data-cart-remove="{{ item.key }}" aria-label="{{ remove_label | escape }}">{{ 'cart.remove' | t }}</a>
+              </p>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <p class="cart__row cart__row--total">
+          <span>{{ 'cart.total' | t }}</span>
+          <span>{{ cart.total_price | money }}</span>
+        </p>
+      </div>
+    {%- else -%}
+      <p class="cart__empty">{{ 'cart.empty' | t }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="cart__foot">
+    {%- if pie_count > 0 -%}
+      <form class="cart__nav" action="{{ routes.cart_url }}" method="post">
+        {%- if context == 'drawer' -%}
+          {% render 'button', label: keep_label, style: 'outline', class: 'cart__keep', attributes: 'data-dialog-close' %}
+        {%- else -%}
+          {% render 'button', label: keep_label, url: shop_url, style: 'outline', class: 'cart__keep' %}
+        {%- endif -%}
+        <button type="submit" name="checkout" class="button cart__checkout">{{ checkout_label }}</button>
+      </form>
+    {%- else -%}
+      <div class="cart__nav">
+        {% render 'button', label: shop_label, url: shop_url, style: 'outline', class: 'cart__keep' %}
+      </div>
+    {%- endif -%}
+  </div>
+  <p class="visually-hidden" role="status" data-cart-status></p>
+</div>
